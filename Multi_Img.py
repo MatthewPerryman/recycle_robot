@@ -108,7 +108,8 @@ if __name__ == "__main__":
     # camera.awb_mode = 'off'
     # camera.awb_gains = g
     
-    img_count = 0
+    img_count = int(input("Please enter next image number: "))
+    
     while True:
         if keyboard.is_pressed('f'):  # if key 'f' is pressed
             print('Focussing')
