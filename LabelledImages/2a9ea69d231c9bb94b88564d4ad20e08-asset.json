@@ -1,0 +1,48 @@
+{
+    "asset": {
+        "format": "jpg",
+        "id": "2a9ea69d231c9bb94b88564d4ad20e08",
+        "name": "img2.jpg",
+        "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img2.jpg",
+        "size": {
+            "width": 640,
+            "height": 480
+        },
+        "state": 2,
+        "type": 1
+    },
+    "regions": [
+        {
+            "id": "BYXbim8J4",
+            "type": "RECTANGLE",
+            "tags": [
+                "phillips"
+            ],
+            "boundingBox": {
+                "height": 16.407879490150638,
+                "width": 17.530434782608697,
+                "left": 36.45217391304348,
+                "top": 349.98841251448437
+            },
+            "points": [
+                {
+                    "x": 36.45217391304348,
+                    "y": 349.98841251448437
+                },
+                {
+                    "x": 53.982608695652175,
+                    "y": 349.98841251448437
+                },
+                {
+                    "x": 53.982608695652175,
+                    "y": 366.39629200463503
+                },
+                {
+                    "x": 36.45217391304348,
+                    "y": 366.39629200463503
+                }
+            ]
+        }
+    ],
+    "version": "2.2.0"
+}
