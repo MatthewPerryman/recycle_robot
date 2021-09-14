@@ -82,7 +82,7 @@ def take_photo(img_num):
     #set camera resolution to 2592x1944
     #camera.resolution = (1920,1080)
     #save image to file.
-    camera.capture("UnlabelledData/img{}.jpg".format(img_num))
+    camera.capture("UnlabelledImages/img{}.jpg".format(img_num))
     print("max index = %d,max value = %lf" % (max_index,max_value))
     
     
