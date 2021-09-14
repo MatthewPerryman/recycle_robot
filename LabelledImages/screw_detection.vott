@@ -5,7 +5,7 @@
         "description": "Raw, unlabelled laptop images",
         "providerType": "localFileSystemProxy",
         "providerOptions": {
-            "encrypted": "eyJjaXBoZXJ0ZXh0IjoiOWE2ZTE0ZWU4OWEwZjgyNGI0MDY4MjUwM2U4NTU2ODgxNDA1NWRhN2U3ZTIxZTMwMjhiOTJlOGMwZGM3OTQ3MWRiY2FmYjFjZDZmMzk1Zjc2ZjJmMzY0NWUxYzFlMjcyODM3Y2ZlNGY2YTJiZWE3MjJjYTY3OTVhNGFjYWQwNWJkNjIwNzM4NDgzMGE1NTY2MDk0Y2NhMWMzOTRmMzU5NzFiMDkxOWFkZmI2OTlhZjU3Y2UxMGZmN2ExOTk5MmQxNGQ3MmRiODYzMmJlMzI4ZTQyNzQ4N2FhMjZmOTk4NTEiLCJpdiI6IjY5YjQyNDNhNDBmMzBmOWYzMDNjZjU2NWM0NWQwNzlmMzdhOTg3NmFkMTU5ODdiYyJ9"
+            "encrypted": "eyJjaXBoZXJ0ZXh0IjoiYzQ5MmY4YmFkZTU0ZDY5NTNkYmI3ZGE5OGFlNTZhZTZlMDU3Y2QxNmIxZmI0OGNjZjAxYjBlYTNiYmQ5YjRhZmQxZTU5N2JhNzExZGRjZDVjZDBjNmNlNGM5ODAzMTQzZjM1MThkNGI0NmVkM2I3YzQzYjRlNDE5N2M4N2RiZGFhZTk3ZDUzMjgzZDYyZGIyMTMxNmRiYjc0YmViOTg2YTYwOGRmZDNjYmYyYWY3MTZjOThlODgzMjM0MDdjMjI3N2FhYjZlZTBlZmIyMTE1ZjdmYWE2MzkyZWE4MmQ5NjM1YzBkZDc5ZjdhMjAzY2NmNjEyMzMwNDM4ZDgzNmI1YyIsIml2IjoiYWJkZTlkMGQzYmZkZDg3YWEwZjVhOWMzNmMxMjM4NTc1NWU3NzI4OTQ2Y2RjNDI3In0="
         },
         "id": "zv7HfXVXF"
     },
@@ -14,7 +14,7 @@
         "description": "Labelled output data",
         "providerType": "localFileSystemProxy",
         "providerOptions": {
-            "encrypted": "eyJjaXBoZXJ0ZXh0IjoiMjZiYmJiNjQ3YWY4NDc2NmZkNWFhMDIzMzBlZjU5NGY2MDQyMjM1ZjU2NzQwY2IzOWJiODA2NWFlZDk1OWUyZDY0ZmFhMmNhMjlkZjViZjI3ZGU1Y2E4ZWY2YWUzMjAzY2JhOTFlY2VlZjUwZGNkOGEwY2Y3ZDcxNWNkMjg1NzIxZTk0MjczMjQxZmQzNmMzZGJiMGVlN2JlMTIxMDNmMjg4MWIxOGY5MzczOWMxZmE1OGMyYTk1ZGZlYWQzOTQ4MWVjMTMyMjY3ZmMzZjM1NWJkYWE2MjNhZDdjZTVlNzUiLCJpdiI6IjM2YjE5YjA2NGM1YWJjMzFiNWRlZDM1NjRlZWY5N2MxYTc0YjFjNmU0NWFlNDIxMyJ9"
+            "encrypted": "eyJjaXBoZXJ0ZXh0IjoiZjEyODc1OGVhNDg5MzE2MDMzNTNiNmIxMmMxYjYxODQ4YzY0MDM4MmYzZDhlNzE3Yjk2YTU1YzQ3MDNjNjFmOWZjNWZjNDM5YjIyNWU3OTljNzM3YTVjNjIxZDMxNzU5NTM4NDA4YzUwODUzZjMyNGIwYTFkNmQ1YWEwYzk4M2VhMWQ5ZDlkODQ0YjAyYWIwY2FlOWI3MmVmMjA0ZWRlMDhiZTYwZTQ1NWQ3YWQxNDdiZjY0NDg0NDIyZjYwZmYzMjY0OGFkMzQyYmRlZTYwY2Y1YTRjNTQ2Zjk0Njc1MmIiLCJpdiI6IjM3MWYzODQ4YjUxMDgwMTc5NTY3MWUwZDU1NTA1ZjVkOTI1YjRhNTM0YTk0MTdiNyJ9"
         },
         "id": "1cODEsp-i"
     },
@@ -43,12 +43,636 @@
     "exportFormat": {
         "providerType": "pascalVOC",
         "providerOptions": {
-            "encrypted": "eyJjaXBoZXJ0ZXh0IjoiOTViMTkyOTU4YjViM2NhM2E2NjlkOTUxNWVkYTQ2Yzg4ZDM4ODAxYjVlMGNiZjA1Yjg2YTAwOTJiYTgyZTQzYmRjMjQyNzBlMzFlMmYxOTU1MzIzOWMxZTVmOWE1OTY3ZGRhODQ0ZmUzOTUxZGE2ZDc3Y2Y3NzNmMTBmYzI0YzEwYjNjY2JlYzVjNDcwY2Y4NjIzZWNhNGFmMmJkZThiYyIsIml2IjoiOWE0NWM2OWI5ZDQ4ZTUzZTJmMjA0MmE0NTBhMWNhN2JiMjBjMjNkOTU5N2ViYmQ4In0="
+            "encrypted": "eyJjaXBoZXJ0ZXh0IjoiNThhN2U0NjI3NjA2YjlmYTA0MmRmNzM2YjgwMGUzNTQyOWVmZDZiZGJlNWQxNjU1Yjk0ZjJmNWEyZTYzOWM1ZTg4NzdjOGIzMzk0ODAzOGI3M2VlNWY2MDA4MzBkMDcyMTg2NGYxMzc2MTI2MjA5ZWY4NjJlMzhmZmI2MmFjNTg1NGVmZGY1YzYyODkxYjNhMjI3NjExMGFlNzU2NGI0MSIsIml2IjoiOWE2MDgyODMzM2M1Yzg1MDJiZjRiMmFhNDI0ZmZhMmRhODQwMjNiMTM1YzFkYmI5In0="
         }
     },
     "version": "2.2.0",
-    "lastVisitedAssetId": "a7c9696e55a6b864db6fd41eb33addcd",
+    "lastVisitedAssetId": "f088a9ab3493c9084c9962f707368f5b",
     "assets": {
+        "70c1a0f0b9fcc8ef92672b601856c061": {
+            "format": "jpg",
+            "id": "70c1a0f0b9fcc8ef92672b601856c061",
+            "name": "img0.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img0.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "70691da3d82f6dc07b38f6ae75c4f3cc": {
+            "format": "jpg",
+            "id": "70691da3d82f6dc07b38f6ae75c4f3cc",
+            "name": "img1.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img1.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "a757494e1d404aafe6fc482bc1cc8878": {
+            "format": "jpg",
+            "id": "a757494e1d404aafe6fc482bc1cc8878",
+            "name": "img10.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img10.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f17b55388744221d25ac96558573071a": {
+            "format": "jpg",
+            "id": "f17b55388744221d25ac96558573071a",
+            "name": "img11.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img11.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "9d7a0f42075ff9a121ebabe2daa253ce": {
+            "format": "jpg",
+            "id": "9d7a0f42075ff9a121ebabe2daa253ce",
+            "name": "img12.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img12.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f0ef64d836926ccd921ffa5cb43beee5": {
+            "format": "jpg",
+            "id": "f0ef64d836926ccd921ffa5cb43beee5",
+            "name": "img13.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img13.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "446844771dc2655464a9dd4499e6a44a": {
+            "format": "jpg",
+            "id": "446844771dc2655464a9dd4499e6a44a",
+            "name": "img14.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img14.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "5844847a95cfb07f522723ae883dd74f": {
+            "format": "jpg",
+            "id": "5844847a95cfb07f522723ae883dd74f",
+            "name": "img15.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img15.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "93c11aee4fb33afb0be1761839198a09": {
+            "format": "jpg",
+            "id": "93c11aee4fb33afb0be1761839198a09",
+            "name": "img16.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img16.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "df81f8b1f17a396369fad5af51a32e3e": {
+            "format": "jpg",
+            "id": "df81f8b1f17a396369fad5af51a32e3e",
+            "name": "img17.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img17.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "bb71c942c9eb4d200ae2397786e23e53": {
+            "format": "jpg",
+            "id": "bb71c942c9eb4d200ae2397786e23e53",
+            "name": "img18.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img18.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "3859b730c225418fe580ed87b77d780d": {
+            "format": "jpg",
+            "id": "3859b730c225418fe580ed87b77d780d",
+            "name": "img19.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img19.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "52e0cf7a56346fbcd1f90adf3eef649c": {
+            "format": "jpg",
+            "id": "52e0cf7a56346fbcd1f90adf3eef649c",
+            "name": "img2.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img2.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "2399c47bcca75aa28e010a3812ca31c7": {
+            "format": "jpg",
+            "id": "2399c47bcca75aa28e010a3812ca31c7",
+            "name": "img20.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img20.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "88cf6d0c789f7ba3f116795b328f7b57": {
+            "format": "jpg",
+            "id": "88cf6d0c789f7ba3f116795b328f7b57",
+            "name": "img21.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img21.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "b28a5fa2a5c40edaf6e02bf3ae93120f": {
+            "format": "jpg",
+            "id": "b28a5fa2a5c40edaf6e02bf3ae93120f",
+            "name": "img22.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img22.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "70e0924b3a1ec8688ad40335609fe2c8": {
+            "format": "jpg",
+            "id": "70e0924b3a1ec8688ad40335609fe2c8",
+            "name": "img23.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img23.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f5c0101ac3121c1e8d998a168a52f016": {
+            "format": "jpg",
+            "id": "f5c0101ac3121c1e8d998a168a52f016",
+            "name": "img24.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img24.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "5f99847b4775b3e0ad87e6a35f404f30": {
+            "format": "jpg",
+            "id": "5f99847b4775b3e0ad87e6a35f404f30",
+            "name": "img25.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img25.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f5dd921f8cb3b2267cddad8ca7d1819b": {
+            "format": "jpg",
+            "id": "f5dd921f8cb3b2267cddad8ca7d1819b",
+            "name": "img26.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img26.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "42227ab4ad2d61b16f9b2e0ada883060": {
+            "format": "jpg",
+            "id": "42227ab4ad2d61b16f9b2e0ada883060",
+            "name": "img27.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img27.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "d1e7efae5a8faf2842442950bdf10f52": {
+            "format": "jpg",
+            "id": "d1e7efae5a8faf2842442950bdf10f52",
+            "name": "img28.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img28.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "99dfb68c85aff01a8c9bf112aa7a0b7a": {
+            "format": "jpg",
+            "id": "99dfb68c85aff01a8c9bf112aa7a0b7a",
+            "name": "img29.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img29.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f088a9ab3493c9084c9962f707368f5b": {
+            "format": "jpg",
+            "id": "f088a9ab3493c9084c9962f707368f5b",
+            "name": "img3.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img3.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "9f462e5504b32c26b2f556e05522ccb8": {
+            "format": "jpg",
+            "id": "9f462e5504b32c26b2f556e05522ccb8",
+            "name": "img30.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img30.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "2634e4efc57ae6d24f16ff1db52e311c": {
+            "format": "jpg",
+            "id": "2634e4efc57ae6d24f16ff1db52e311c",
+            "name": "img31.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img31.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "ef2b98b8bbba25a38abf03f71cfc685a": {
+            "format": "jpg",
+            "id": "ef2b98b8bbba25a38abf03f71cfc685a",
+            "name": "img32.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img32.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "1155f710377a197f9456d24911210117": {
+            "format": "jpg",
+            "id": "1155f710377a197f9456d24911210117",
+            "name": "img33.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img33.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "1b62af6e350e9186e8269eeeceda7719": {
+            "format": "jpg",
+            "id": "1b62af6e350e9186e8269eeeceda7719",
+            "name": "img34.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img34.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "e6edefea91951db236e183a1828b90ce": {
+            "format": "jpg",
+            "id": "e6edefea91951db236e183a1828b90ce",
+            "name": "img35.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img35.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "516f08065392ef7e0ead1ebb6671e339": {
+            "format": "jpg",
+            "id": "516f08065392ef7e0ead1ebb6671e339",
+            "name": "img36.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img36.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "8ba2111ff064a5bb09661cbbafb2c177": {
+            "format": "jpg",
+            "id": "8ba2111ff064a5bb09661cbbafb2c177",
+            "name": "img37.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img37.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "d019442dccf3b9bead07f47da6c4a550": {
+            "format": "jpg",
+            "id": "d019442dccf3b9bead07f47da6c4a550",
+            "name": "img38.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img38.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "4cfface48864cb42c91717f08314b1c0": {
+            "format": "jpg",
+            "id": "4cfface48864cb42c91717f08314b1c0",
+            "name": "img39.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img39.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "fe5330ab21a2e0351df0a810a1ff0646": {
+            "format": "jpg",
+            "id": "fe5330ab21a2e0351df0a810a1ff0646",
+            "name": "img4.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img4.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "1a9aa661989922d31eb6627d6d4d919f": {
+            "format": "jpg",
+            "id": "1a9aa661989922d31eb6627d6d4d919f",
+            "name": "img40.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img40.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "4c245ca30050fe5c7bc63c33f7258bc1": {
+            "format": "jpg",
+            "id": "4c245ca30050fe5c7bc63c33f7258bc1",
+            "name": "img41.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img41.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "a95e2817f832c5065d435139da1ab057": {
+            "format": "jpg",
+            "id": "a95e2817f832c5065d435139da1ab057",
+            "name": "img42.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img42.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "03f6ab14356dc827ac817862cf706c76": {
+            "format": "jpg",
+            "id": "03f6ab14356dc827ac817862cf706c76",
+            "name": "img43.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img43.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "81882f335459eb928813ed4cab18650e": {
+            "format": "jpg",
+            "id": "81882f335459eb928813ed4cab18650e",
+            "name": "img44.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img44.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "0ab594e774f858013d72cb80e71ff438": {
+            "format": "jpg",
+            "id": "0ab594e774f858013d72cb80e71ff438",
+            "name": "img45.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img45.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "a80a4b21b7a0082538040cb5e551a3f5": {
+            "format": "jpg",
+            "id": "a80a4b21b7a0082538040cb5e551a3f5",
+            "name": "img46.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img46.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "0ead6a879653ba590e008c751dbc1572": {
+            "format": "jpg",
+            "id": "0ead6a879653ba590e008c751dbc1572",
+            "name": "img47.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img47.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "bc0da999e91299afd40315e7ce6ab72d": {
+            "format": "jpg",
+            "id": "bc0da999e91299afd40315e7ce6ab72d",
+            "name": "img48.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img48.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "d53ac9c6435e2380856f4f8caef700e9": {
+            "format": "jpg",
+            "id": "d53ac9c6435e2380856f4f8caef700e9",
+            "name": "img49.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img49.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "f63996ca5b7949651bd7d91fbe88929a": {
+            "format": "jpg",
+            "id": "f63996ca5b7949651bd7d91fbe88929a",
+            "name": "img5.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img5.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "15e2bdeae3c68c529fb15634d739d6f7": {
+            "format": "jpg",
+            "id": "15e2bdeae3c68c529fb15634d739d6f7",
+            "name": "img50.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img50.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "dc5be65c8579cc7ba4da15f0f5122d72": {
+            "format": "jpg",
+            "id": "dc5be65c8579cc7ba4da15f0f5122d72",
+            "name": "img51.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img51.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "b5719b85fa6d865ec1c7582b352c7b77": {
+            "format": "jpg",
+            "id": "b5719b85fa6d865ec1c7582b352c7b77",
+            "name": "img6.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img6.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "3134f3ba120d4374f582612ef21c5dcd": {
+            "format": "jpg",
+            "id": "3134f3ba120d4374f582612ef21c5dcd",
+            "name": "img7.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img7.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "42d27815cfdaa4e429d522148acad137": {
+            "format": "jpg",
+            "id": "42d27815cfdaa4e429d522148acad137",
+            "name": "img8.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img8.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
+        "1682b52279855e8b99625651fc645d3e": {
+            "format": "jpg",
+            "id": "1682b52279855e8b99625651fc645d3e",
+            "name": "img9.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img9.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 2,
+            "type": 1
+        },
         "92fdf37bbd73e6952bb893a88bee0adc": {
             "format": "jpg",
             "id": "92fdf37bbd73e6952bb893a88bee0adc",
@@ -82,7 +706,7 @@
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "ca3097525848030a9384d1b60bacbb22": {
@@ -94,583 +718,583 @@
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "468044fda7335eead9c27ee9640ce478": {
             "format": "jpg",
             "id": "468044fda7335eead9c27ee9640ce478",
             "name": "img12.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img12.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img12.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "8e108a490242457bc679a672bb8b0451": {
             "format": "jpg",
             "id": "8e108a490242457bc679a672bb8b0451",
             "name": "img13.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img13.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img13.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "11dd83e444713a5523793e0137a6b5cd": {
             "format": "jpg",
             "id": "11dd83e444713a5523793e0137a6b5cd",
             "name": "img14.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img14.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img14.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "55479554013fe9ffd1255cfaaf2adeb6": {
             "format": "jpg",
             "id": "55479554013fe9ffd1255cfaaf2adeb6",
             "name": "img15.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img15.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img15.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "5b0c700b908ccf2293e35300da53a05e": {
             "format": "jpg",
             "id": "5b0c700b908ccf2293e35300da53a05e",
             "name": "img16.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img16.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img16.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "e6aec5cd5ea1c6105725f88ac70fb608": {
             "format": "jpg",
             "id": "e6aec5cd5ea1c6105725f88ac70fb608",
             "name": "img17.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img17.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img17.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "d2fab7b1bceab7e46a61adb64a452193": {
             "format": "jpg",
             "id": "d2fab7b1bceab7e46a61adb64a452193",
             "name": "img18.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img18.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img18.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "88fdc792002c56c6ccd43b8ffbbd2bb1": {
             "format": "jpg",
             "id": "88fdc792002c56c6ccd43b8ffbbd2bb1",
             "name": "img19.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img19.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img19.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "2a9ea69d231c9bb94b88564d4ad20e08": {
             "format": "jpg",
             "id": "2a9ea69d231c9bb94b88564d4ad20e08",
             "name": "img2.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img2.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img2.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "5ea3ad1fceffec4e3b32acf89ec1be62": {
             "format": "jpg",
             "id": "5ea3ad1fceffec4e3b32acf89ec1be62",
             "name": "img20.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img20.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img20.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "26164b703eed4cd8875356b02ff8f1e1": {
             "format": "jpg",
             "id": "26164b703eed4cd8875356b02ff8f1e1",
             "name": "img21.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img21.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img21.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "8c568d7d0b953e2e751298c3355004a0": {
             "format": "jpg",
             "id": "8c568d7d0b953e2e751298c3355004a0",
             "name": "img22.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img22.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img22.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "d4ccb076e94978186ac178c9a70b71cb": {
             "format": "jpg",
             "id": "d4ccb076e94978186ac178c9a70b71cb",
             "name": "img23.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img23.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img23.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "5b0251e07086d48ff736388405732d7c": {
             "format": "jpg",
             "id": "5b0251e07086d48ff736388405732d7c",
             "name": "img24.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img24.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img24.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "cb7f1b49340e9bf7b9aab2a0ffc5633a": {
             "format": "jpg",
             "id": "cb7f1b49340e9bf7b9aab2a0ffc5633a",
             "name": "img25.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img25.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img25.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "314fbe48662a05e2fe608429cea28daa": {
             "format": "jpg",
             "id": "314fbe48662a05e2fe608429cea28daa",
             "name": "img26.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img26.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img26.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "2cd7871ba38e3f6313a92d0dab315f7c": {
             "format": "jpg",
             "id": "2cd7871ba38e3f6313a92d0dab315f7c",
             "name": "img27.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img27.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img27.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "ec57bb01446620d81e6b1b0b40802710": {
             "format": "jpg",
             "id": "ec57bb01446620d81e6b1b0b40802710",
             "name": "img28.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img28.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img28.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "62c4d7a71e06033a17561111dc85488f": {
             "format": "jpg",
             "id": "62c4d7a71e06033a17561111dc85488f",
             "name": "img29.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img29.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img29.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "05d0e7b29d64e56dc46ac86ef0afb3d7": {
             "format": "jpg",
             "id": "05d0e7b29d64e56dc46ac86ef0afb3d7",
             "name": "img3.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img3.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img3.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "2f1404b30bf411b4fa01efad598d68de": {
             "format": "jpg",
             "id": "2f1404b30bf411b4fa01efad598d68de",
             "name": "img30.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img30.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img30.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "9b25218dffdeb06b2bd3b4d7c17fa4cd": {
             "format": "jpg",
             "id": "9b25218dffdeb06b2bd3b4d7c17fa4cd",
             "name": "img31.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img31.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img31.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "bfb0031892f5c4613658e54cc3dad6da": {
             "format": "jpg",
             "id": "bfb0031892f5c4613658e54cc3dad6da",
             "name": "img32.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img32.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img32.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "5b3384b7a15c4fcd0077ff0267f24ecf": {
             "format": "jpg",
             "id": "5b3384b7a15c4fcd0077ff0267f24ecf",
             "name": "img33.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img33.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img33.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "50fe49d07804fb1ac7703a0f2e330bce": {
             "format": "jpg",
             "id": "50fe49d07804fb1ac7703a0f2e330bce",
             "name": "img34.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img34.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img34.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "a34ade6efa9ac39cb845e705feff9f96": {
             "format": "jpg",
             "id": "a34ade6efa9ac39cb845e705feff9f96",
             "name": "img35.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img35.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img35.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "6c7a86eab83d18118799e2d7243eb711": {
             "format": "jpg",
             "id": "6c7a86eab83d18118799e2d7243eb711",
             "name": "img36.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img36.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img36.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "4e1afb7d621d01f1c5ff705f1b7ea4b6": {
             "format": "jpg",
             "id": "4e1afb7d621d01f1c5ff705f1b7ea4b6",
             "name": "img37.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img37.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img37.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "5c43178afcd54029e4a48f27b7190df7": {
             "format": "jpg",
             "id": "5c43178afcd54029e4a48f27b7190df7",
             "name": "img38.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img38.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img38.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
-            "type": 1
-        },
-        "0eb73fb5004756c8a05a43ad4289609e": {
-            "format": "jpg",
-            "id": "0eb73fb5004756c8a05a43ad4289609e",
-            "name": "img39.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img39.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "a3fa8017c83dfded6c10de14f548bbfc": {
-            "format": "jpg",
-            "id": "a3fa8017c83dfded6c10de14f548bbfc",
-            "name": "img4.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img4.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "3c9347ad73a0f57533671e722a2ac465": {
-            "format": "jpg",
-            "id": "3c9347ad73a0f57533671e722a2ac465",
-            "name": "img40.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img40.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "adae6c2f679921ef1d2b2a2d54515fe1": {
-            "format": "jpg",
-            "id": "adae6c2f679921ef1d2b2a2d54515fe1",
-            "name": "img41.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img41.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "508e94a1b23e065aef0b98ee0ebd2be6": {
-            "format": "jpg",
-            "id": "508e94a1b23e065aef0b98ee0ebd2be6",
-            "name": "img42.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img42.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "0d19f7bd16a8fc459761ceeb0b937c03": {
-            "format": "jpg",
-            "id": "0d19f7bd16a8fc459761ceeb0b937c03",
-            "name": "img43.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img43.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "5d1a41196fe3bc399a867ddb5966f892": {
-            "format": "jpg",
-            "id": "5d1a41196fe3bc399a867ddb5966f892",
-            "name": "img44.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img44.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "0cef2fef115c0b8a46e97fcc0fe0982d": {
-            "format": "jpg",
-            "id": "0cef2fef115c0b8a46e97fcc0fe0982d",
-            "name": "img45.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img45.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "7489db23704d836dd5dffee58df1ece7": {
-            "format": "jpg",
-            "id": "7489db23704d836dd5dffee58df1ece7",
-            "name": "img46.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img46.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "75d19e9ee9d1a1fffe383fc43ef83c6e": {
-            "format": "jpg",
-            "id": "75d19e9ee9d1a1fffe383fc43ef83c6e",
-            "name": "img47.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img47.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "105d009e02702670bd6a958674bf8b46": {
-            "format": "jpg",
-            "id": "105d009e02702670bd6a958674bf8b46",
-            "name": "img48.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img48.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "4b2ee15393584fd01f45d33e303d79f0": {
-            "format": "jpg",
-            "id": "4b2ee15393584fd01f45d33e303d79f0",
-            "name": "img49.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img49.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "e7e75f835299fe5f7ed1dac89b4f2c77": {
-            "format": "jpg",
-            "id": "e7e75f835299fe5f7ed1dac89b4f2c77",
-            "name": "img5.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img5.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "249d38024550c676150e45a406b59ce0": {
-            "format": "jpg",
-            "id": "249d38024550c676150e45a406b59ce0",
-            "name": "img50.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img50.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "bb42bfdce9821045202dfced97596e81": {
-            "format": "jpg",
-            "id": "bb42bfdce9821045202dfced97596e81",
-            "name": "img51.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img51.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "f969af86845a476186c0e347a22fee82": {
-            "format": "jpg",
-            "id": "f969af86845a476186c0e347a22fee82",
-            "name": "img6.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img6.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "f7a21f0816c1687d0e06345dd6a5806a": {
-            "format": "jpg",
-            "id": "f7a21f0816c1687d0e06345dd6a5806a",
-            "name": "img7.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img7.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
-            "type": 1
-        },
-        "176dbe83393f37a5ebaa2f777582ddb5": {
-            "format": "jpg",
-            "id": "176dbe83393f37a5ebaa2f777582ddb5",
-            "name": "img8.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img8.jpg",
-            "size": {
-                "width": 640,
-                "height": 480
-            },
-            "state": 2,
+            "state": 1,
             "type": 1
         },
         "a7c9696e55a6b864db6fd41eb33addcd": {
             "format": "jpg",
             "id": "a7c9696e55a6b864db6fd41eb33addcd",
             "name": "img9.jpg",
-            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/UnlabelledImages/img9.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img9.jpg",
             "size": {
                 "width": 640,
                 "height": 480
             },
-            "state": 2,
+            "state": 1,
+            "type": 1
+        },
+        "176dbe83393f37a5ebaa2f777582ddb5": {
+            "format": "jpg",
+            "id": "176dbe83393f37a5ebaa2f777582ddb5",
+            "name": "img8.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img8.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f7a21f0816c1687d0e06345dd6a5806a": {
+            "format": "jpg",
+            "id": "f7a21f0816c1687d0e06345dd6a5806a",
+            "name": "img7.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img7.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "f969af86845a476186c0e347a22fee82": {
+            "format": "jpg",
+            "id": "f969af86845a476186c0e347a22fee82",
+            "name": "img6.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img6.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "bb42bfdce9821045202dfced97596e81": {
+            "format": "jpg",
+            "id": "bb42bfdce9821045202dfced97596e81",
+            "name": "img51.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img51.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "249d38024550c676150e45a406b59ce0": {
+            "format": "jpg",
+            "id": "249d38024550c676150e45a406b59ce0",
+            "name": "img50.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img50.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "e7e75f835299fe5f7ed1dac89b4f2c77": {
+            "format": "jpg",
+            "id": "e7e75f835299fe5f7ed1dac89b4f2c77",
+            "name": "img5.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img5.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "4b2ee15393584fd01f45d33e303d79f0": {
+            "format": "jpg",
+            "id": "4b2ee15393584fd01f45d33e303d79f0",
+            "name": "img49.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img49.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "105d009e02702670bd6a958674bf8b46": {
+            "format": "jpg",
+            "id": "105d009e02702670bd6a958674bf8b46",
+            "name": "img48.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img48.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "75d19e9ee9d1a1fffe383fc43ef83c6e": {
+            "format": "jpg",
+            "id": "75d19e9ee9d1a1fffe383fc43ef83c6e",
+            "name": "img47.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img47.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "7489db23704d836dd5dffee58df1ece7": {
+            "format": "jpg",
+            "id": "7489db23704d836dd5dffee58df1ece7",
+            "name": "img46.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img46.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "0cef2fef115c0b8a46e97fcc0fe0982d": {
+            "format": "jpg",
+            "id": "0cef2fef115c0b8a46e97fcc0fe0982d",
+            "name": "img45.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img45.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "5d1a41196fe3bc399a867ddb5966f892": {
+            "format": "jpg",
+            "id": "5d1a41196fe3bc399a867ddb5966f892",
+            "name": "img44.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img44.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "0d19f7bd16a8fc459761ceeb0b937c03": {
+            "format": "jpg",
+            "id": "0d19f7bd16a8fc459761ceeb0b937c03",
+            "name": "img43.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img43.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "508e94a1b23e065aef0b98ee0ebd2be6": {
+            "format": "jpg",
+            "id": "508e94a1b23e065aef0b98ee0ebd2be6",
+            "name": "img42.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img42.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "adae6c2f679921ef1d2b2a2d54515fe1": {
+            "format": "jpg",
+            "id": "adae6c2f679921ef1d2b2a2d54515fe1",
+            "name": "img41.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img41.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "3c9347ad73a0f57533671e722a2ac465": {
+            "format": "jpg",
+            "id": "3c9347ad73a0f57533671e722a2ac465",
+            "name": "img40.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img40.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "a3fa8017c83dfded6c10de14f548bbfc": {
+            "format": "jpg",
+            "id": "a3fa8017c83dfded6c10de14f548bbfc",
+            "name": "img4.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img4.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
+            "type": 1
+        },
+        "0eb73fb5004756c8a05a43ad4289609e": {
+            "format": "jpg",
+            "id": "0eb73fb5004756c8a05a43ad4289609e",
+            "name": "img39.jpg",
+            "path": "file:C:/Users/matth/Documents/gitrepos/recycle_robot/PiCode/UnlabelledImages/img39.jpg",
+            "size": {
+                "width": 640,
+                "height": 480
+            },
+            "state": 1,
             "type": 1
         }
     }
