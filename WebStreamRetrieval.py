@@ -18,18 +18,10 @@ def main(_argv):
         if ImgRequest.status_code == requests.codes.ok:
             # Read numpy array bytes
             image = np.frombuffer(ImgRequest.content, dtype=np.uint8)
+
             # Reshape image values into 640 x 480 x 3 image as needed
             image = np.reshape(image, newshape=image_shape)
             detect(image)
-
-            # Opening a file to write bytes from response content
-            # Storing this object as an image file on the hard drive
-            # img = open("test.jpg", "wb")
-            # img.write(ImgRequest.content)
-            # img.close()
-            # Opening Image file using PIL Image
-            # img = Image.open("test.jpg")
-            # img.show()
         else:
             print(ImgRequest.status_code)
         t2 = time.time()
