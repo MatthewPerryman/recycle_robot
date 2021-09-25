@@ -16,11 +16,11 @@ class ImageStream():
 	#load arducam shared object file
 	arducam_vcm= CDLL('./lib/libarducam_vcm.so')
 	camera = None
+	# Flipping resolution doesn't work
 	resolution = (640, 480, 3)
 	
 	def adjust_lens(self, val):
 		self.arducam_vcm.vcm_write(val)
-		#print("focus value: {}".format(val))
 		
 
 	def laplacian(self, img):
@@ -90,10 +90,11 @@ class ImageStream():
 		return image_array
 		
 	def cam_open(self):
-		#open camera
+		# open camera
 		self.camera = picamera.PiCamera()
 		
-		#set camera resolution to 640x480(Small resolution for faster speeds.)
+		# set camera resolution to 480x640(Small resolution for faster speeds.)
+		# Camera needs a flipped resolution
 		self.camera.resolution = (self.resolution[1], self.resolution[0])
 		time.sleep(0.1)
 		self.camera.shutter_speed=30000
