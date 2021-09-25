@@ -2,7 +2,6 @@ import time
 from absl import flags, logging
 from absl.flags import FLAGS
 import cv2
-import Model
 import numpy as np
 import tensorflow as tf
 from Model.yolov3_tf2_detection_requirements.models import (
