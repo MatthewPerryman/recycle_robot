@@ -20,50 +20,53 @@ flags.DEFINE_string('output', './output.jpg', 'path to output image')
 flags.DEFINE_integer('num_classes', 1, 'number of classes in the model')
 
 
-def detect(_argv=None):
+class Classifier:
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
-    for physical_device in physical_devices:
-        tf.config.experimental.set_memory_growth(physical_device, True)
 
-    if FLAGS.tiny:
-        yolo = YoloV3Tiny(classes=FLAGS.num_classes)
-    else:
-        yolo = YoloV3(classes=FLAGS.num_classes)
+    def __init__(self):
+        for physical_device in self.physical_devices:
+            tf.config.experimental.set_memory_growth(physical_device, True)
 
-    yolo.load_weights(FLAGS.weights).expect_partial()
-    logging.info('weights loaded')
+        if FLAGS.tiny:
+            self.yolo = YoloV3Tiny(classes=FLAGS.num_classes)
+        else:
+            self.yolo = YoloV3(classes=FLAGS.num_classes)
 
-    class_names = [c.strip() for c in open(FLAGS.classes).readlines()]
-    logging.info('classes loaded')
+        self.yolo.load_weights(FLAGS.weights).expect_partial()
+        logging.info('weights loaded')
 
-    if _argv is not None:
-        img_raw = _argv
-    elif FLAGS.tfrecord:
-        dataset = load_tfrecord_dataset(
-            FLAGS.tfrecord, FLAGS.classes, FLAGS.size)
-        dataset = dataset.shuffle(512)
-        img_raw, _label = next(iter(dataset.take(1)))
-    else:
-        img_raw = tf.image.decode_image(
-            open(FLAGS.image, 'rb').read(), channels=3)
+        self.class_names = [c.strip() for c in open(FLAGS.classes).readlines()]
+        logging.info('classes loaded')
 
-    img = tf.expand_dims(img_raw, 0)
-    img = transform_images(img, FLAGS.size)
+    def detect(self, _argv=None):
+        # Check an image was passed in
+        if _argv is not None:
+            img_raw = _argv
+        else:
+            logging.info("Error: No image Inputted")
 
-    t1 = time.time()
-    boxes, scores, classes, nums = yolo(img)
-    t2 = time.time()
-    logging.info('time: {}'.format(t2 - t1))
+        img = tf.expand_dims(img_raw, 0)
+        img = transform_images(img, FLAGS.size)
 
-    logging.info('detections:')
-    for i in range(nums[0]):
-        logging.info('\t{}, {}, {}'.format(class_names[int(classes[0][i])],
-                                           np.array(scores[0][i]),
-                                           np.array(boxes[0][i])))
-    if _argv is None:
-        img = cv2.cvtColor(img_raw.numpy(), cv2.COLOR_RGB2BGR)
-    else:
-        img = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
-    img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
-    cv2.imwrite(FLAGS.output, img)
-    logging.info('output saved to: {}'.format(FLAGS.output))
+        # Find the screws in the image and get time
+        t1 = time.time()
+        boxes, scores, classes, nums = self.yolo(img)
+        t2 = time.time()
+        logging.info('Detection time: {}'.format(t2 - t1))
+
+        # Display location of each detected screw
+        logging.info('detections:')
+        for i in range(nums[0]):
+            logging.info('\t{}, {}, {}'.format(self.class_names[int(classes[0][i])],
+                                               np.array(scores[0][i]),
+                                               np.array(boxes[0][i])))
+
+        # Highlight the screws within the image
+        if _argv is None:
+            img = cv2.cvtColor(img_raw.numpy(), cv2.COLOR_RGB2BGR)
+        else:
+            img = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
+        img = draw_outputs(img, (boxes, scores, classes, nums), self.class_names)
+        return img
+        #cv2.imwrite(FLAGS.output, img)
+        #logging.info('output saved to: {}'.format(FLAGS.output))
