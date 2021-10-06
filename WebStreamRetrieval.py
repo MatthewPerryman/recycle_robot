@@ -30,7 +30,7 @@ def main(_argv):
                 c2 = time.time()
                 t2 = time.time()
 
-                # Dispay the labelled image with a delay of 1 millisecond (minimum delay)
+                # Display the labelled image with a delay of 1 millisecond (minimum delay)
                 cv2.imshow("Laptop", Model.detect(image))
                 cv2.waitKey(1)
             else:
