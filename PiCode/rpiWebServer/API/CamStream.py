@@ -73,6 +73,7 @@ class ImageStream():
 
 		#Adjust focus to the best
 		self.adjust_lens(self.max_index)
+		print('Focussed')
 
 	# Returns a captured photo
 	# Does not refocus before shot
@@ -91,12 +92,12 @@ class ImageStream():
 		
 	def cam_open(self):
 		# open camera
-		self.camera = picamera.PiCamera()
+		self.camera = picamera.PiCamera(resolution=(self.resolution[1], self.resolution[0]))
 		
 		# set camera resolution to 480x640(Small resolution for faster speeds.)
 		# Camera needs a flipped resolution
-		self.camera.resolution = (self.resolution[1], self.resolution[0])
-		time.sleep(0.1)
+		#self.camera.resolution = (self.resolution[1], self.resolution[0])
+		#time.sleep(0.1)
 		self.camera.shutter_speed=30000
 
 		# https://picamera.readthedocs.io/en/release-1.13/recipes1.html?highlight=shutter%20speed#capturing-consistent-images
@@ -108,7 +109,7 @@ class ImageStream():
 		# camera.awb_mode = 'off'
 		# camera.awb_gains = g
 		
-		#Adjust focus to the best
+		# Adjust focus to the best
 		self.adjust_lens(self.max_index)
 		
 		# Close camera after use in next function
@@ -118,11 +119,11 @@ class ImageStream():
 		self.arducam_vcm.vcm_init()
 		
 		#open camera
-		self.camera = picamera.PiCamera()
+		self.camera = picamera.PiCamera(resolution=(self.resolution[1], self.resolution[0]))
 		
 		#set camera resolution to 640x480(Small resolution for faster speeds.)
-		self.camera.resolution = (self.resolution[1], self.resolution[0])
-		time.sleep(0.1)
+		#self.camera.resolution = (self.resolution[1], self.resolution[0])
+		#time.sleep(0.1)
 		self.camera.shutter_speed=30000
 		
 		# Determine focus values

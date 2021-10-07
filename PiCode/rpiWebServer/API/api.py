@@ -5,6 +5,7 @@ from CamStream import ImageStream
 import numpy as np
 
 app = Flask(__name__)
+# The camera is focussed hear, therefore set up lighting before starting the app
 image_stream = ImageStream()
 
 @app.route('/', methods=['GET'])
