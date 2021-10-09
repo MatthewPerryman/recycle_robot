@@ -33,7 +33,7 @@ yolo_anchors = np.array([(10, 13), (16, 30), (33, 23), (30, 61), (62, 45),
 yolo_anchor_masks = np.array([[6, 7, 8], [3, 4, 5], [0, 1, 2]])
 
 yolo_tiny_anchors = np.array([(10, 14), (23, 27), (37, 58),
-                              (81, 82), (135, 169),  (344, 319)],
+                              (81, 82), (135, 169), (344, 319)],
                              np.float32) / 416
 yolo_tiny_anchor_masks = np.array([[3, 4, 5], [0, 1, 2]])
 
@@ -116,6 +116,7 @@ def YoloConv(filters, name=None):
         x = DarknetConv(x, filters * 2, 3)
         x = DarknetConv(x, filters, 1)
         return Model(inputs, x, name=name)(x_in)
+
     return yolo_conv
 
 
@@ -134,6 +135,7 @@ def YoloConvTiny(filters, name=None):
             x = DarknetConv(x, filters, 1)
 
         return Model(inputs, x, name=name)(x_in)
+
     return yolo_conv
 
 
@@ -145,13 +147,13 @@ def YoloOutput(filters, anchors, classes, name=None):
         x = Lambda(lambda x: tf.reshape(x, (-1, tf.shape(x)[1], tf.shape(x)[2],
                                             anchors, classes + 5)))(x)
         return tf.keras.Model(inputs, x, name=name)(x_in)
+
     return yolo_output
 
 
 # As tensorflow lite doesn't support tf.size used in tf.meshgrid, 
 # we reimplemented a simple meshgrid function that use basic tf function.
 def _meshgrid(n_a, n_b):
-
     return [
         tf.reshape(tf.tile(tf.range(n_a), [n_b]), (n_b, n_a)),
         tf.reshape(tf.repeat(tf.range(n_b), n_a), (n_b, n_a))
@@ -170,11 +172,11 @@ def yolo_boxes(pred, anchors, classes):
     pred_box = tf.concat((box_xy, box_wh), axis=-1)  # original xywh for loss
 
     # !!! grid[x][y] == (y, x)
-    grid = _meshgrid(grid_size[1],grid_size[0])
+    grid = _meshgrid(grid_size[1], grid_size[0])
     grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
 
     box_xy = (box_xy + tf.cast(grid, tf.float32)) / \
-        tf.cast(grid_size, tf.float32)
+             tf.cast(grid_size, tf.float32)
     box_wh = tf.exp(box_wh) * anchors
 
     box_x1y1 = box_xy - box_wh / 2
@@ -197,7 +199,7 @@ def yolo_nms(outputs, anchors, masks, classes):
     confidence = tf.concat(c, axis=1)
     class_probs = tf.concat(t, axis=1)
 
-    #scores = confidence * class_probs -- old
+    # scores = confidence * class_probs -- old
     # If we only have one class, do not multiply by class_prob (always 0.5)
     if classes == 1:
         scores = confidence
@@ -205,9 +207,9 @@ def yolo_nms(outputs, anchors, masks, classes):
         scores = confidence * class_probs
 
     dscores = tf.squeeze(scores, axis=0)
-    scores = tf.reduce_max(dscores,[1])
-    bbox = tf.reshape(bbox,(-1,4))
-    classes = tf.argmax(dscores,1)
+    scores = tf.reduce_max(dscores, [1])
+    bbox = tf.reshape(bbox, (-1, 4))
+    classes = tf.argmax(dscores, 1)
     selected_indices, selected_scores = tf.image.non_max_suppression_with_scores(
         boxes=bbox,
         scores=scores,
@@ -218,16 +220,16 @@ def yolo_nms(outputs, anchors, masks, classes):
     )
     num_valid_nms_boxes = tf.shape(selected_indices)[0]
 
-    selected_indices = tf.concat([selected_indices,tf.zeros(FLAGS.yolo_max_boxes-num_valid_nms_boxes, tf.int32)], 0)
-    selected_scores = tf.concat([selected_scores,tf.zeros(FLAGS.yolo_max_boxes-num_valid_nms_boxes,tf.float32)], -1)
+    selected_indices = tf.concat([selected_indices, tf.zeros(FLAGS.yolo_max_boxes - num_valid_nms_boxes, tf.int32)], 0)
+    selected_scores = tf.concat([selected_scores, tf.zeros(FLAGS.yolo_max_boxes - num_valid_nms_boxes, tf.float32)], -1)
 
-    boxes=tf.gather(bbox, selected_indices)
+    boxes = tf.gather(bbox, selected_indices)
     boxes = tf.expand_dims(boxes, axis=0)
-    scores=selected_scores
+    scores = selected_scores
     scores = tf.expand_dims(scores, axis=0)
-    classes = tf.gather(classes,selected_indices)
+    classes = tf.gather(classes, selected_indices)
     classes = tf.expand_dims(classes, axis=0)
-    valid_detections=num_valid_nms_boxes
+    valid_detections = num_valid_nms_boxes
     valid_detections = tf.expand_dims(valid_detections, axis=0)
 
     return boxes, scores, classes, valid_detections
@@ -312,7 +314,7 @@ def YoloLoss(anchors, classes=80, ignore_thresh=0.5):
         grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
         grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)
         true_xy = true_xy * tf.cast(grid_size, tf.float32) - \
-            tf.cast(grid, tf.float32)
+                  tf.cast(grid, tf.float32)
         true_wh = tf.math.log(true_wh / anchors)
         true_wh = tf.where(tf.math.is_inf(true_wh),
                            tf.zeros_like(true_wh), true_wh)
@@ -329,12 +331,12 @@ def YoloLoss(anchors, classes=80, ignore_thresh=0.5):
 
         # 5. calculate all losses
         xy_loss = obj_mask * box_loss_scale * \
-            tf.reduce_sum(tf.square(true_xy - pred_xy), axis=-1)
+                  tf.reduce_sum(tf.square(true_xy - pred_xy), axis=-1)
         wh_loss = obj_mask * box_loss_scale * \
-            tf.reduce_sum(tf.square(true_wh - pred_wh), axis=-1)
+                  tf.reduce_sum(tf.square(true_wh - pred_wh), axis=-1)
         obj_loss = binary_crossentropy(true_obj, pred_obj)
         obj_loss = obj_mask * obj_loss + \
-            (1 - obj_mask) * ignore_mask * obj_loss
+                   (1 - obj_mask) * ignore_mask * obj_loss
         # TODO: use binary_crossentropy instead
         class_loss = obj_mask * binary_crossentropy(
             true_class_idx, pred_class)
@@ -346,4 +348,5 @@ def YoloLoss(anchors, classes=80, ignore_thresh=0.5):
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
         return xy_loss + wh_loss + obj_loss + class_loss
+
     return yolo_loss

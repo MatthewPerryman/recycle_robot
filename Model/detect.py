@@ -54,19 +54,24 @@ class Classifier:
         t2 = time.time()
         logging.info('Detection time: {}'.format(t2 - t1))
 
-        # Display location of each detected screw
-        logging.info('detections:')
-        for i in range(nums[0]):
-            logging.info('\t{}, {}, {}'.format(self.class_names[int(classes[0][i])],
-                                               np.array(scores[0][i]),
-                                               np.array(boxes[0][i])))
+        # # Display location of each detected screw
+        # logging.info('detections:')
+        # for i in range(nums[0]):
+        #     logging.info('\t{}, {}, {}'.format(self.class_names[int(classes[0][i])],
+        #                                        np.array(scores[0][i]),
+        #                                        np.array(boxes[0][i])))
 
         # Highlight the screws within the image
         if _argv is None:
             img = cv2.cvtColor(img_raw.numpy(), cv2.COLOR_RGB2BGR)
         else:
             img = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
-        img = draw_outputs(img, (boxes, scores, classes, nums), self.class_names)
-        return img
-        #cv2.imwrite(FLAGS.output, img)
-        #logging.info('output saved to: {}'.format(FLAGS.output))
+        img, img_adjusted_coords = draw_outputs(img, (boxes, scores, classes, nums), self.class_names)
+
+        # Display location of each detected screw
+        logging.info('Image Adjusted Detections:')
+        for i in range(nums[0]):
+            logging.info('\t{}, {}, {}'.format(self.class_names[int(classes[0][i])],
+                                               np.array(scores[0][i]),
+                                               np.array(img_adjusted_coords[i])))
+        return img, img_adjusted_coords, scores, nums
