@@ -7,7 +7,7 @@ from absl import app, logging
 import time
 import math
 
-
+# Note: all coordinates are x, y
 image_shape = (640, 480, 3)
 
 # Find the center pixel in the image
@@ -39,31 +39,24 @@ def main(_argv):
 
                 # Find closest object to the center of the image
                 if int(nums[0]) is not 0:
+                    # Store the index and distance of the closest box to the center
                     closest_to_center = [0, math.inf]
                     for i in range(nums[0]):
                         # Boxes: [[(x0, y0), (x3, y3)]]
-                        # 0: top left
-                        # 1: top right
-                        # 2: bottom left
-                        # 3: bottom right
 
-                        # Create the coordinates
-                        coordinates = np.empty((4, 2))
-                        coordinates[0] = img_boxes[i][0][0], img_boxes[i][0][1]
-                        coordinates[1] = img_boxes[i][1][0], img_boxes[i][0][1]
-                        coordinates[2] = img_boxes[i][0][0], img_boxes[i][1][1]
-                        coordinates[3] = img_boxes[i][1][0], img_boxes[i][1][1]
+                        # Find the center coordinate
+                        center_coordinate = (img_boxes[i][0][0] + ((img_boxes[i][1][0] - img_boxes[i][0][0])/2),
+                                             img_boxes[i][0][1] + ((img_boxes[i][1][1] - img_boxes[i][0][1])/2))
 
-                        # Find closest corner to the image center
-                        for j in range(coordinates.shape[0]):
-                            dist_to_center = math.hypot((coordinates[j][0] - center_pixel[0]), (coordinates[j][1] - center_pixel[1]))
-                            if dist_to_center < closest_to_center[1]:
-                                closest_to_center[0] = i
-                                closest_to_center[1] = dist_to_center
+                        # Find the box center closest to the image center
+                        dist_to_center = math.hypot((center_coordinate[0] - center_pixel[0]), (center_coordinate[1] - center_pixel[1]))
+                        if dist_to_center < closest_to_center[1]:
+                            closest_to_center[0] = i
+                            closest_to_center[1] = dist_to_center
+                    # Outputs the box score and corner coordinates
                     logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
                                                                            np.array(img_boxes[closest_to_center[0]])))
 
-                print("{}, {}".format(center_pixel[0], center_pixel[1]))
                 cv2.imshow("Laptop", output_img)
                 cv2.waitKey(1)
             else:
