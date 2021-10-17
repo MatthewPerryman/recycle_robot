@@ -6,6 +6,7 @@ from Model.detect import Classifier
 from absl import app, logging
 import time
 import math
+import json
 
 # Note: all coordinates are x, y
 image_shape = (640, 480, 3)
@@ -34,11 +35,11 @@ def find_closest_box(nums, img_boxes, scores):
     # Outputs the box score and corner coordinates
     logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
                                                            np.array(img_boxes[closest_to_center[0]])))
-    return closest_to_center
+    # Return the closest box top left and right coordinates, and the hypot to centre
+    return closest_to_center, center_coordinate, dist_to_center
 
 
-def main(_argv):
-    Model = Classifier()
+def detect_screws_in_stream(model):
     while True:
         t1 = time.time()
         # Exception Handling for invalid requests
@@ -58,10 +59,10 @@ def main(_argv):
                 t2 = time.time()
 
                 # Display the labelled image with a delay of 1 millisecond (minimum delay)
-                output_img, img_boxes, scores, nums = Model.detect(image)
+                output_img, img_boxes, scores, nums = model.detect(image)
 
                 if int(nums[0]) is not 0:
-                    closest_box = find_closest_box(nums, img_boxes, scores)
+                    closest_box, _, _ = find_closest_box(nums, img_boxes, scores)
 
                 cv2.imshow("Laptop", output_img)
                 cv2.waitKey(1)
@@ -72,6 +73,66 @@ def main(_argv):
             logging.info('Full loop time: {}'.format(t2 - t1))
         except Exception as e:
             print(str(e))
+
+
+def find_and_move_to_screw(model):
+    try:
+        # Creating an request object to store the response
+        # The URL is referenced sys.argv[1]
+        ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
+        if ImgRequest.status_code == requests.codes.ok:
+            # Read numpy array bytes
+            image1, f_len, image2 = json.load(np.frombuffer(ImgRequest.content, dtype=np.uint8))
+
+            # Reshape image values into 640 x 480 x 3 image as needed
+            image1 = np.reshape(image1, newshape=image_shape)
+            image2 = np.reshape(image2, newshape=image_shape)
+
+            # Locate and box the screws in both images
+            output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
+            output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
+
+            if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
+                # Given at least one screw is detected, find the center coordinate
+                _, center_coord1, dist_to_center1 = find_closest_box(nums1, img_boxes1, scores1)
+                _, center_coord1, dist_to_center2 = find_closest_box(nums2, img_boxes2, scores2)
+
+                # Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
+                d = 10 / (1 - (dist_to_center1/dist_to_center2))
+
+                # Distance from the camera in the z axis. Down is negative for these coordinates
+                Zd = -d
+
+                # Hypotenuse h = Frame1Dist_to_Centre * d / f_len
+                h = dist_to_center1 * d / f_len
+
+                # Angle theta between h and vertical = tan-1((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1]))
+                theta = math.degrees(math.atan((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1])))
+
+                # X distance (Xd) = hCos(theta)
+                Xd = h * math.cos(theta)
+                # Y distance (Yd) = hSin(theta)
+                Yd = h * math.sin(theta)
+
+                screw_vector_from_head = (Xd, Yd, Zd)
+
+                requests.get("http://192.168.0.116:80/get_images_for_depth")
+            else:
+                print("Error: No object was detected in one of the frames")
+
+            cv2.imshow("Laptop", output_img)
+            cv2.waitKey(1)
+        else:
+            print("Error: {}".format(ImgRequest.status_code))
+    except Exception as e:
+        print(str(e))
+
+
+def main(_argv):
+    Model = Classifier()
+
+    #detect_screws_in_stream(Model)
+    find_and_move_to_screw(Model)
 
 
 if __name__ == '__main__':
