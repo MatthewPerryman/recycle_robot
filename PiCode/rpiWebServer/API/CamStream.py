@@ -18,7 +18,7 @@ class ImageStream():
 	camera = None
 	# Flipping resolution doesn't work
 	resolution = (640, 480, 3)
-	
+		
 	def adjust_lens(self, val):
 		self.arducam_vcm.vcm_write(val)
 		
@@ -74,21 +74,47 @@ class ImageStream():
 		#Adjust focus to the best
 		self.adjust_lens(self.max_index)
 		print('Focussed')
-
-	# Returns a captured photo
-	# Does not refocus before shot
-	# TODO: (This needs updating when camera motorised in the Z axis!)
-	def take_photo(self):
+		
+	def capture_photo(self):
 		# Create image array
 		image_array = np.empty(self.resolution, dtype=np.uint8)
 		
 		# Catpure image to np array
 		self.camera.capture(image_array, 'rgb')
 		
+		return image_array
+
+	# Returns a captured photo
+	# Does not refocus before shot
+	# TODO: (This needs updating when camera motorised in the Z axis!)
+	def take_photo(self):
+		self.cam_open()
+		
+		self.capture_photo()
+		
 		self.camera.close()
 		
 		# Returns image in numpy array format.
-		return image_array
+		return image_array, self.max_index
+		
+	def get_imgs_for_depth(self, arm_move_func):
+		self.cam_open()
+		
+		# Capture image 1
+		img1 = self.capture_photo()
+		
+		# Get the f_len of the first image
+		focal_len = self.max_index
+		
+		# Move the robot up 10mm
+		arm_move_function((0, 0, 10))
+		
+		# Capture image 2
+		img2 = self.capture_photo()
+		
+		self.camera.close()
+		
+		return img1, focal_len, img2
 		
 	def cam_open(self):
 		# open camera
