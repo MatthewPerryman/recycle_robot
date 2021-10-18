@@ -7,6 +7,7 @@ from absl import app, logging
 import time
 import math
 import json
+import base64
 
 # Note: all coordinates are x, y
 image_shape = (640, 480, 3)
@@ -47,7 +48,7 @@ def detect_screws_in_stream(model):
             c1 = time.time()
             # Creating an request object to store the response
             # The URL is referenced sys.argv[1]
-            ImgRequest = requests.get("http://192.168.0.116:80/get_photo")
+            ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
             # Verifying whether the specified URL exist or not
             if ImgRequest.status_code == requests.codes.ok:
                 # Read numpy array bytes
@@ -82,11 +83,18 @@ def find_and_move_to_screw(model):
         ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
         if ImgRequest.status_code == requests.codes.ok:
             # Read numpy array bytes
-            image1, f_len, image2 = json.load(np.frombuffer(ImgRequest.content, dtype=np.uint8))
+            depth_dict = json.loads(ImgRequest.content)
+
+            image1 = depth_dict['img1']
+            f_len = depth_dict['f_len']/100
+            image2 = depth_dict['img2']
+
+            image1 = np.asarray(image1)
+            image2 = np.asarray(image2)
 
             # Reshape image values into 640 x 480 x 3 image as needed
-            image1 = np.reshape(image1, newshape=image_shape)
-            image2 = np.reshape(image2, newshape=image_shape)
+            image1 = np.reshape(image1, newshape=image_shape).astype(np.uint8)
+            image2 = np.reshape(image2, newshape=image_shape).astype(np.uint8)
 
             # Locate and box the screws in both images
             output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
@@ -95,35 +103,48 @@ def find_and_move_to_screw(model):
             if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
                 # Given at least one screw is detected, find the center coordinate
                 _, center_coord1, dist_to_center1 = find_closest_box(nums1, img_boxes1, scores1)
-                _, center_coord1, dist_to_center2 = find_closest_box(nums2, img_boxes2, scores2)
+                _, center_coord2, dist_to_center2 = find_closest_box(nums2, img_boxes2, scores2)
 
                 # Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
-                d = 10 / (1 - (dist_to_center1/dist_to_center2))
+                d = 10 / (1 - (dist_to_center1 / dist_to_center2))
 
                 # Distance from the camera in the z axis. Down is negative for these coordinates
-                Zd = -d
+                Zd = d
 
                 # Hypotenuse h = Frame1Dist_to_Centre * d / f_len
                 h = dist_to_center1 * d / f_len
 
                 # Angle theta between h and vertical = tan-1((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1]))
-                theta = math.degrees(math.atan((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1])))
+                theta = math.degrees(
+                    math.atan((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1])))
 
                 # X distance (Xd) = hCos(theta)
                 Xd = h * math.cos(theta)
                 # Y distance (Yd) = hSin(theta)
                 Yd = h * math.sin(theta)
 
-                screw_vector_from_head = (Xd, Yd, Zd)
+                #requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(int(Xd), int(Yd), int(Zd)))
+                requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(0, 0, int(Zd)))
 
-                requests.get("http://192.168.0.116:80/get_images_for_depth")
+                cv2.imshow("Img1", output_img1)
+                cv2.waitKey(0)
+                cv2.imshow("Img2", output_img2)
+                cv2.waitKey(0)
+                return True
             else:
                 print("Error: No object was detected in one of the frames")
 
-            cv2.imshow("Laptop", output_img)
-            cv2.waitKey(1)
+            # cv2.imshow("Img1", output_img1)
+            # cv2.waitKey(0)
+            # cv2.imshow("Img2", output_img2)
+            # cv2.waitKey(0)
+
+            cv2.destroyAllWindows()
+
+            return False
         else:
             print("Error: {}".format(ImgRequest.status_code))
+            return False
     except Exception as e:
         print(str(e))
 
@@ -131,8 +152,10 @@ def find_and_move_to_screw(model):
 def main(_argv):
     Model = Classifier()
 
-    #detect_screws_in_stream(Model)
-    find_and_move_to_screw(Model)
+    # detect_screws_in_stream(Model)
+    while True:
+        if find_and_move_to_screw(Model):
+            break
 
 
 if __name__ == '__main__':
