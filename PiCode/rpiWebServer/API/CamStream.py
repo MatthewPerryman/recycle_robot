@@ -97,7 +97,7 @@ class ImageStream():
 		# Returns image in numpy array format.
 		return image_array, self.max_index
 		
-	def get_imgs_for_depth(self, arm_move_func):
+	def get_imgs_for_depth(self, arm_move_function):
 		self.cam_open()
 		
 		# Capture image 1
@@ -109,8 +109,15 @@ class ImageStream():
 		# Move the robot up 10mm
 		arm_move_function((0, 0, 10))
 		
+		# Refocus for new location
+		self.focus()
+		
 		# Capture image 2
 		img2 = self.capture_photo()
+		
+		#Reset focus for position 1
+		self.max_index = focal_len
+		arm_move_function((0, 0, -10))
 		
 		self.camera.close()
 		
