@@ -15,6 +15,13 @@ image_shape = (640, 480, 3)
 # Find the center pixel in the image
 center_pixel = (image_shape[1] / 2, image_shape[0] / 2)
 
+# Based upon datasheet https://cdn.sparkfun.com/datasheets/Dev/RaspberryPi/ov5647_full.pdf#:~:text=The%20OV5647%20is%20a%20low%20voltage%2C%20high%20performance%2C,the%20serial%20camera%20control%20bus%20or%20MIPI%20interface.
+pixel_size = 0.0014  # (mm) = 1.4 micrometers
+
+# (CMOS size - tot pixel size)/number of gaps (per axis)
+pixel_gap_size_x = (5.52 - (pixel_size * 2592)) / 2591
+pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
+
 
 # Find closest object to the center of the image
 def find_closest_box(nums, img_boxes, scores):
@@ -86,7 +93,7 @@ def find_and_move_to_screw(model):
             depth_dict = json.loads(ImgRequest.content)
 
             image1 = depth_dict['img1']
-            f_len = depth_dict['f_len']/100
+            f_len = depth_dict['f_len'] / 100
             image2 = depth_dict['img2']
 
             image1 = np.asarray(image1)
@@ -111,20 +118,19 @@ def find_and_move_to_screw(model):
                 # Distance from the camera in the z axis. Down is negative for these coordinates
                 Zd = d
 
-                # Hypotenuse h = Frame1Dist_to_Centre * d / f_len
-                h = dist_to_center1 * d / f_len
+                # Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
+                # y axis label to match real world y and x
+                pixel_diff = center_pixel - center_coord1
+                Px = (pixel_diff[1] * pixel_size) + ((pixel_diff[1] - 1) * pixel_gap_size_y)
+                # Pixel y (Py) same as above but with x axis distance
+                Py = (pixel_diff[0] * pixel_size) + ((pixel_diff[0] - 1) * pixel_gap_size_x)
 
-                # Angle theta between h and vertical = tan-1((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1]))
-                theta = math.degrees(
-                    math.atan((center_pixel[0] - center_coord1[0]) / (center_pixel[1] - center_coord1[1])))
+                # Ratio, divide x&y by focal length, multiply by real world distance
+                Xd = (Zd * Px) / f_len
+                Yd = (Zd * Py) / f_len
 
-                # X distance (Xd) = hCos(theta)
-                Xd = h * math.cos(theta)
-                # Y distance (Yd) = hSin(theta)
-                Yd = h * math.sin(theta)
-
-                #requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(int(Xd), int(Yd), int(Zd)))
-                requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(0, 0, int(Zd)))
+                # requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(int(Xd), int(Yd), int(Zd)))
+                requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(Xd, Yd, Zd))
 
                 cv2.imshow("Img1", output_img1)
                 cv2.waitKey(0)
