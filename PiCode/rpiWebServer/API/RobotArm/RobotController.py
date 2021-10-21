@@ -18,7 +18,9 @@ class RobotController:
 	## Move the robot arm to this vector
 	def move_to(self, relative_vector, speed=100000):
 		location = self.swift.get_position()
-		self.swift.set_position(location[0] + int(relative_vector[0]), location[1] + int(relative_vector[1]), location[2] + int(relative_vector[2]))
+		new_location = location[0] + int(relative_vector[0]), location[1] + int(relative_vector[1]), location[2] + int(relative_vector[2])
+		self.swift.set_position(x=new_location[0], y=new_location[1], z=new_location[2])
+		return location, new_location
 		
 	## Create the API context and put robot on standby
 	def __init__(self):

@@ -1,11 +1,10 @@
-from flask import Flask
-from flask import send_from_directory
+from flask import Flask, request, send_from_directory
 import cv2
-from CamStream import ImageStream
 import numpy as np
-from RobotArm import RobotController
 import json
 from json import JSONEncoder
+from CamStream import ImageStream
+from RobotArm import RobotController
 
 app = Flask(__name__)
 # The camera is focussed here, therefore set up lighting before starting the app
@@ -29,15 +28,23 @@ def increment_position():
 	else:
 		return "API Check Fail"
 		
-@app.route('/move_robot_to/<Xd>/<Yd>/<Zd>', methods=['POST'])
-def move_robot_to(Xd, Yd, Zd):
-	controller.move_to((Xd, Yd, Zd))
+@app.route('/move_robot_to/', methods=['POST'])
+def move_robot_to():
+	json_coord = json.loads(request.data)
+	Xd = json_coord['Xd']
+	Yd = json_coord['Yd']
+	Zd = json_coord['Zd']
+	
+	old, new = controller.move_to((Xd, Yd, Zd))
+	
+	print("old: {}, new: {}".format(old, new))
 	
 	return "Attempted"
 
 # Compact command get information for screw localising
 @app.route('/get_images_for_depth', methods=['GET'])
 def get_images_for_depth():
+	controller.swift.reset()
 	# Take a photo, move the camera 1 cm up, take another
 	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_increment)
 	
