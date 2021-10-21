@@ -120,7 +120,7 @@ def find_and_move_to_screw(model):
 
                 # Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
                 # y axis label to match real world y and x
-                pixel_diff = center_pixel - center_coord1
+                pixel_diff = (center_pixel[0] - center_coord1[0], center_pixel[1] - center_coord1[1])
                 Px = (pixel_diff[1] * pixel_size) + ((pixel_diff[1] - 1) * pixel_gap_size_y)
                 # Pixel y (Py) same as above but with x axis distance
                 Py = (pixel_diff[0] * pixel_size) + ((pixel_diff[0] - 1) * pixel_gap_size_x)
@@ -129,8 +129,8 @@ def find_and_move_to_screw(model):
                 Xd = (Zd * Px) / f_len
                 Yd = (Zd * Py) / f_len
 
-                # requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(int(Xd), int(Yd), int(Zd)))
-                requests.post("http://192.168.0.116:80/move_robot_to/{}/{}/{}".format(Xd, Yd, Zd))
+                json_coord = {'Xd': Xd, 'Yd': Yd, 'Zd': Zd}
+                requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(json_coord))
 
                 cv2.imshow("Img1", output_img1)
                 cv2.waitKey(0)
