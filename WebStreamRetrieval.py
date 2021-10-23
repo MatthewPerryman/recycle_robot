@@ -22,6 +22,9 @@ pixel_size = 0.0014  # (mm) = 1.4 micrometers
 pixel_gap_size_x = (5.52 - (pixel_size * 2592)) / 2591
 pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
 
+# Vector from motor tip to camera
+motor_to_camera = (-25, 0, 13)
+
 
 # Find closest object to the center of the image
 def find_closest_box(nums, img_boxes, scores):
@@ -139,8 +142,14 @@ def find_and_move_to_screw(model):
                 Xd = (Zd * Px) / f_len
                 Yd = (Zd * Py) / f_len
 
-                json_coord = {'Xd': Xd, 'Yd': Yd, 'Zd': Zd}
-                requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(json_coord))
+                camera_to_screw = (Xd, Yd, Zd)
+
+                # Vector arithmetic to get from a to c via b
+                motor_to_screw = {'Xd': camera_to_screw[0] + motor_to_camera[0],
+                                  'Yd': camera_to_screw[1] + motor_to_camera[1],
+                                  'Zd': camera_to_screw[2] + motor_to_camera[2]}
+
+                requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw))
 
                 return True
             else:
