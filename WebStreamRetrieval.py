@@ -108,6 +108,16 @@ def find_and_move_to_screw(model):
             output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
 
             if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
+                # Check if this is a valid test scenario
+                cv2.imshow("Img1", output_img1)
+                cv2.waitKey(0)
+                cv2.imshow("Img2", output_img2)
+                cv2.waitKey(0)
+
+                if input("Proceed?: ") == 'n':
+                    cv2.destroyAllWindows()
+                    return False
+
                 # Given at least one screw is detected, find the center coordinate
                 _, center_coord1, dist_to_center1 = find_closest_box(nums1, img_boxes1, scores1)
                 _, center_coord2, dist_to_center2 = find_closest_box(nums2, img_boxes2, scores2)
@@ -116,7 +126,7 @@ def find_and_move_to_screw(model):
                 d = 10 / (1 - (dist_to_center1 / dist_to_center2))
 
                 # Distance from the camera in the z axis. Down is negative for these coordinates
-                Zd = d
+                Zd = -d
 
                 # Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
                 # y axis label to match real world y and x
@@ -132,10 +142,6 @@ def find_and_move_to_screw(model):
                 json_coord = {'Xd': Xd, 'Yd': Yd, 'Zd': Zd}
                 requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(json_coord))
 
-                cv2.imshow("Img1", output_img1)
-                cv2.waitKey(0)
-                cv2.imshow("Img2", output_img2)
-                cv2.waitKey(0)
                 return True
             else:
                 print("Error: No object was detected in one of the frames")
