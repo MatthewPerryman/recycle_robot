@@ -18,6 +18,8 @@ class ImageStream():
 	camera = None
 	# Flipping resolution doesn't work
 	resolution = (640, 480, 3)
+	# second frame 10mm below first frame
+	m_frame_distance = (0, 0, -10)
 		
 	def adjust_lens(self, val):
 		self.arducam_vcm.vcm_write(val)
@@ -107,7 +109,7 @@ class ImageStream():
 		focal_len = self.max_index
 		
 		# Move the robot up 10mm
-		arm_move_function((0, 0, 10))
+		arm_move_function(m_frame_distance)
 		
 		# Refocus for new location
 		self.focus()
@@ -117,7 +119,7 @@ class ImageStream():
 		
 		#Reset focus for position 1
 		self.max_index = focal_len
-		arm_move_function((0, 0, -10))
+		arm_move_function(-m_frame_distance)
 		
 		self.camera.close()
 		
