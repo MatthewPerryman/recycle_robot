@@ -7,10 +7,10 @@ from absl import app, logging
 import time
 import math
 import json
-import base64
 
 # Note: all coordinates are x, y
 image_shape = (640, 480, 3)
+m_frame_distance = (0, 0, -10)
 
 # Find the center pixel in the image
 center_pixel = (image_shape[1] / 2, image_shape[0] / 2)
