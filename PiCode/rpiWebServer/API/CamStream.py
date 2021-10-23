@@ -116,7 +116,7 @@ class ImageStream():
 
         # Reset focus for position 1
         self.max_index = focal_len
-        arm_move_function(-self.m_frame_distance)
+        arm_move_function(self.m_frame_distance, reverse_vector = True)
 
         self.camera.close()
 

@@ -40,7 +40,7 @@ def move_robot_to():
     Yd = json_coord['Yd']
     Zd = json_coord['Zd']
 
-    old, new = controller.move_to((Xd, Yd, Zd))
+    old, new = controller.move_by_vector((Xd, Yd, Zd))
 
     print("old: {}, new: {}".format(old, new))
 
@@ -52,7 +52,7 @@ def move_robot_to():
 def get_images_for_depth():
     controller.swift.reset()
     # Take a photo, move the camera 1 cm up, take another
-    img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_increment)
+    img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector)
 
     return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
     encoded_dict_json = json.dumps(return_dict, cls=NumpyArrayEncoder)
