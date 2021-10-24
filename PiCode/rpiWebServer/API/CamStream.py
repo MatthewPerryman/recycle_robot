@@ -2,6 +2,7 @@ import cv2  # sudo apt-get install python-opencv
 import numpy as np
 from ctypes import *
 import sys
+from time import sleep
 
 try:
     import picamera
@@ -131,6 +132,9 @@ class ImageStream():
 
         # https://picamera.readthedocs.io/en/release-1.13/recipes1.html?highlight=shutter%20speed#capturing-consistent-images
         self.camera.iso = 100
+        # Wait for the automatic gain control to settle
+        sleep(2)
+
         self.camera.shutter_speed = self.camera.exposure_speed
         # To fix exposure gains, let analog_gain and digital_gain settle on reasonable values, then set exposure_mode to 'off'. (from doc)
         self.camera.exposure_mode = 'off'
