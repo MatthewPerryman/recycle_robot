@@ -3,7 +3,6 @@ import time
 
 swift = SwiftAPI()
 
-
 swift.waiting_ready()
 swift.flush_cmd()
 
@@ -46,5 +45,3 @@ swift.flush_cmd(wait_stop=True)
 print("Arm Position: ", swift.get_position())
 
 swift.disconnect()
-
-
