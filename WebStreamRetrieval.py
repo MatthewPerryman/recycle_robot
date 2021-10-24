@@ -126,7 +126,7 @@ def find_and_move_to_screw(model):
 				_, center_coord2, dist_to_center2 = find_closest_box(nums2, img_boxes2, scores2)
 
 				# Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
-				d = 10 / (1 - (dist_to_center1 / dist_to_center2))
+				d = 20 / (1 - (dist_to_center1 / dist_to_center2))
 
 				# Distance from the camera in the z axis. Down is negative for these coordinates
 				Zd = -d
@@ -149,7 +149,7 @@ def find_and_move_to_screw(model):
 								  'Yd': camera_to_screw[1] + motor_to_camera[1],
 								  'Zd': camera_to_screw[2] + motor_to_camera[2]}
 
-				print(requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw)))
+				print(requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw)).content)
 
 				return True
 			else:

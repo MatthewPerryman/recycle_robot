@@ -19,7 +19,7 @@ class ImageStream():
 	# Flipping resolution doesn't work
 	resolution = (640, 480, 3)
 	# second frame 10mm below first frame
-	m_frame_distance = (0, 0, -10)
+	m_frame_distance = (0, 0, -20)
 
 	def adjust_lens(self, val):
 		self.arducam_vcm.vcm_write(val)
