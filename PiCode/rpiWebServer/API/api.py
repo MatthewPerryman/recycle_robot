@@ -44,7 +44,7 @@ def move_robot_to():
 
 	print("old: {}, new: {}".format(old, new))
 
-	return old, new
+	return "old: {}, new: {}".format(old, new)
 
 
 # Compact command get information for screw localising

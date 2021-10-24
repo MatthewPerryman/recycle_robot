@@ -149,8 +149,7 @@ def find_and_move_to_screw(model):
 								  'Yd': camera_to_screw[1] + motor_to_camera[1],
 								  'Zd': camera_to_screw[2] + motor_to_camera[2]}
 
-				old_loc, new_loc = requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw))
-				print("old_location: {}, new_location: {}".format(old_loc, new_loc))
+				print(requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw)))
 
 				return True
 			else:
