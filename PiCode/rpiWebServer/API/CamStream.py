@@ -100,6 +100,7 @@ class ImageStream():
 	def get_imgs_for_depth(self, arm_move_function):
 		self.cam_open()
 
+		sleep(1)
 		# Capture image 1
 		img1 = self.capture_photo()
 
@@ -112,6 +113,7 @@ class ImageStream():
 		# Refocus for new location
 		self.focus()
 
+		sleep(1)
 		# Capture image 2
 		img2 = self.capture_photo()
 
