@@ -123,23 +123,22 @@ class ImageStream():
         return img1, focal_len, img2
 
     def cam_open(self):
-        # open camera
+        # Open camera - Set camera resolution to 480x640(Small resolution for faster speeds.)
+        # Camera needs a flipped resolution
         self.camera = picamera.PiCamera(resolution=(self.resolution[1], self.resolution[0]))
 
-        # set camera resolution to 480x640(Small resolution for faster speeds.)
-        # Camera needs a flipped resolution
-        # self.camera.resolution = (self.resolution[1], self.resolution[0])
-        # time.sleep(0.1)
-        self.camera.shutter_speed = 30000
+        #self.camera.shutter_speed = 30000
 
         # https://picamera.readthedocs.io/en/release-1.13/recipes1.html?highlight=shutter%20speed#capturing-consistent-images
-        # camera.iso = 100
-        # camera.shutter_speed = camera.exposure_speed
-        # camera.exposure_mode = 'off'
+        self.camera.iso = 100
+        self.camera.shutter_speed = self.camera.exposure_speed
+        # To fix exposure gains, let analog_gain and digital_gain settle on reasonable values, then set exposure_mode to 'off'. (from doc)
+        self.camera.exposure_mode = 'off'
 
-        # g = camera.awb_gains
-        # camera.awb_mode = 'off'
-        # camera.awb_gains = g
+        # To fix white balance, set the awb_mode to 'off', then set awb_gains to a (red, blue) tuple of gains.(from doc)
+        g = self.camera.awb_gains
+        self.camera.awb_mode = 'off'
+        self.camera.awb_gains = g
 
         # Adjust focus to the best
         self.adjust_lens(self.max_index)
