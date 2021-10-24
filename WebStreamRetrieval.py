@@ -110,13 +110,6 @@ def find_and_move_to_screw(model):
 			output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
 			output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
 
-			# Just to check image quality even if not detection occurs
-			cv2.imshow("Img1", output_img1)
-			cv2.waitKey(0)
-			cv2.imshow("Img2", output_img2)
-			cv2.waitKey(0)
-			cv2.destroyAllWindows()
-
 			if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
 				# Just to check image quality even if not detection occurs
 				cv2.imshow("Img1", output_img1)
