@@ -34,7 +34,6 @@ class RobotController:
 		self.swift.flush_cmd(wait_stop=True)
 
 		# Reset the arms location
-		self.swift.connect()
 		self.swift.reset()
 		self.swift.waiting_ready()
 
