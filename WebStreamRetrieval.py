@@ -110,15 +110,13 @@ def find_and_move_to_screw(model):
 			output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
 			output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
 
-			# Just to check image quality even if not detection occurs
-			cv2.imshow("Img1", output_img1)
-			cv2.waitKey(0)
-			cv2.imshow("Img2", output_img2)
-			cv2.waitKey(0)
-
-			cv2.destroyAllWindows()
-
 			if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
+				# Just to check image quality even if not detection occurs
+				cv2.imshow("Img1", output_img1)
+				cv2.waitKey(0)
+				cv2.imshow("Img2", output_img2)
+				cv2.waitKey(0)
+
 				if input("Proceed?: ") == 'n':
 					cv2.destroyAllWindows()
 					return False
@@ -151,8 +149,8 @@ def find_and_move_to_screw(model):
 								  'Yd': camera_to_screw[1] + motor_to_camera[1],
 								  'Zd': camera_to_screw[2] + motor_to_camera[2]}
 
-				print("old_location: {}, new_location: {}".format(
-					requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw))))
+				old_loc, new_loc = requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw))
+				print("old_location: {}, new_location: {}".format(old_loc, new_loc))
 
 				return True
 			else:
