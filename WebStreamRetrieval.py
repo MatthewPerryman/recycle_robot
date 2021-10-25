@@ -28,8 +28,8 @@ motor_to_camera = (-25, 0, 13)
 
 # Find closest object to the center of the image
 def find_closest_box(nums, img_boxes, scores):
-	# Store the index and distance of the closest box to the center
-	closest_to_center = [0, math.inf]
+	# Store the index and distance of the closest box to the center - last 2 are y errored values
+	closest_to_center = [0, (0, 0), math.inf, (0, 0), 0]
 	for i in range(nums[0]):
 		# Boxes: [[(x0, y0), (x3, y3)]]
 
@@ -40,14 +40,21 @@ def find_closest_box(nums, img_boxes, scores):
 		# Find the box center closest to the image center
 		dist_to_center = math.hypot((center_coordinate[0] - center_pixel[0]),
 									(center_coordinate[1] - center_pixel[1]))
-		if dist_to_center < closest_to_center[1]:
+
+		error_dist = dist_to_center
+
+		if dist_to_center < closest_to_center[2]:
 			closest_to_center[0] = i
-			closest_to_center[1] = dist_to_center
+			closest_to_center[1] = center_coordinate
+			closest_to_center[2] = dist_to_center
+
+			closest_to_center[3] = (center_coordinate[0], center_coordinate[1])
+			closest_to_center[4] = error_dist
 	# Outputs the box score and corner coordinates
 	logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
 														   np.array(img_boxes[closest_to_center[0]])))
 	# Return the closest box top left and right coordinates, and the hypot to centre
-	return closest_to_center, center_coordinate, dist_to_center
+	return closest_to_center
 
 
 def detect_screws_in_stream(model):
@@ -86,6 +93,34 @@ def detect_screws_in_stream(model):
 			print(str(e))
 
 
+def get_vector_to_screw(dist_to_center1, center_coord1, f_len, dist_to_center2):
+	# Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
+	d = 20 / (1 - (dist_to_center1 / dist_to_center2))
+
+	# Distance from the camera in the z axis. Down is negative for these coordinates
+	Zd = -d
+
+	# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
+	# y axis label to match real world y and x
+	pixel_diff = (center_pixel[0] - center_coord1[0], center_pixel[1] - center_coord1[1])
+	Px = (pixel_diff[1] * pixel_size) + ((pixel_diff[1] - 1) * pixel_gap_size_y)
+	# Pixel y (Py) same as above but with x axis distance
+	Py = (pixel_diff[0] * pixel_size) + ((pixel_diff[0] - 1) * pixel_gap_size_x)
+
+	# Ratio, divide x&y by focal length, multiply by real world distance
+	Xd = (Zd * Px) / f_len
+	Yd = (Zd * Py) / f_len
+
+	camera_to_screw = (Xd, Yd, Zd)
+
+	# Vector arithmetic to get from a to c via b
+	motor_to_screw = {'Xd': camera_to_screw[0] + motor_to_camera[0],
+					  'Yd': camera_to_screw[1] + motor_to_camera[1],
+					  'Zd': camera_to_screw[2] + motor_to_camera[2]}
+
+	return motor_to_screw
+
+
 def find_and_move_to_screw(model):
 	try:
 		# Creating an request object to store the response
@@ -122,32 +157,19 @@ def find_and_move_to_screw(model):
 					return False
 
 				# Given at least one screw is detected, find the center coordinate
-				_, center_coord1, dist_to_center1 = find_closest_box(nums1, img_boxes1, scores1)
-				_, center_coord2, dist_to_center2 = find_closest_box(nums2, img_boxes2, scores2)
+				selected_box1 = find_closest_box(nums1, img_boxes1, scores1)
+				selected_box2 = find_closest_box(nums2, img_boxes2, scores2)
 
-				# Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
-				d = 20 / (1 - (dist_to_center1 / dist_to_center2))
+				center_coord1, dist_to_center1, error_coord1, error_dist1 = selected_box1[1], selected_box1[2], selected_box1[3], selected_box1[4]
+				center_coord2, dist_to_center2, error_coord2, error_dist2 = selected_box2[1], selected_box2[2], selected_box2[3], selected_box2[4]
 
-				# Distance from the camera in the z axis. Down is negative for these coordinates
-				Zd = -d
+				error_coord2 = (error_coord2[0]-4, error_coord2[1]-4)
+				error_dist2 = math.hypot((error_coord2[0] - center_pixel[0]), (error_coord2[1] - center_pixel[1]))
 
-				# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
-				# y axis label to match real world y and x
-				pixel_diff = (center_pixel[0] - center_coord1[0], center_pixel[1] - center_coord1[1])
-				Px = (pixel_diff[1] * pixel_size) + ((pixel_diff[1] - 1) * pixel_gap_size_y)
-				# Pixel y (Py) same as above but with x axis distance
-				Py = (pixel_diff[0] * pixel_size) + ((pixel_diff[0] - 1) * pixel_gap_size_x)
+				motor_to_screw = get_vector_to_screw(dist_to_center1, center_coord1, f_len, dist_to_center2)
 
-				# Ratio, divide x&y by focal length, multiply by real world distance
-				Xd = (Zd * Px) / f_len
-				Yd = (Zd * Py) / f_len
-
-				camera_to_screw = (Xd, Yd, Zd)
-
-				# Vector arithmetic to get from a to c via b
-				motor_to_screw = {'Xd': camera_to_screw[0] + motor_to_camera[0],
-								  'Yd': camera_to_screw[1] + motor_to_camera[1],
-								  'Zd': camera_to_screw[2] + motor_to_camera[2]}
+				# What is the error with 1 pixel change in bbx
+				pixel_moved = get_vector_to_screw(error_dist1, error_coord1, f_len, error_dist2)
 
 				print(requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw)).content)
 
