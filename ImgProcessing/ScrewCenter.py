@@ -14,8 +14,8 @@ output_image.paste(input_image)
 draw_result = ImageDraw.Draw(output_image)
 
 # Find circles
-rmin = 18
-rmax = 20
+rmin = 20
+rmax = 50
 steps = 100
 threshold = 0.4
 
@@ -40,8 +40,10 @@ for k, v in sorted(acc.items(), key=lambda i: -i[1]):
 
 for x, y, r in circles:
 	draw_result.ellipse((x - r, y - r, x + r, y + r), outline=(255, 0, 0, 0))
-
-print(type(output_image))
+	draw_result.point([(x, y)], fill="blue")
+	draw_result.point([(x+1, y)], fill="blue")
+	draw_result.point([(x, y+1)], fill="blue")
+	draw_result.point([(x+1, y+1)], fill="blue")
 
 # Save output image
 output_image.show()

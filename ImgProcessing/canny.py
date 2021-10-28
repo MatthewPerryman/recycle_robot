@@ -113,9 +113,10 @@ def filter_strong_edges(gradient, width, height, low, high):
 
 if __name__ == "__main__":
     from PIL import Image, ImageDraw
-    input_image = Image.open("input.png")
+    input_image = Image.open("FirstImgScew.png")
     output_image = Image.new("RGB", input_image.size)
     draw = ImageDraw.Draw(output_image)
     for x, y in canny_edge_detector(input_image):
         draw.point((x, y), (255, 255, 255))
-    output_image.save("canny.png")
+    # Save output image
+    output_image.show()
