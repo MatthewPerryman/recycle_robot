@@ -19,7 +19,6 @@ class CannyScrewCenter:
 		return circled_n_centered
 
 	# Write circled_n_centered to file maybe
-
 	def find_center(self, patch, from_file=False):
 		# Output image:
 		output_patch = Image.new("RGB", patch.size)
