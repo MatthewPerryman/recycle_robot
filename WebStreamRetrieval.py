@@ -3,6 +3,7 @@ import cv2
 import requests
 import numpy as np
 from Model.detect import Classifier
+from ImgProcessing.ScrewCenter import CannyScrewCenter
 from absl import app, logging
 import time
 import math
@@ -25,38 +26,6 @@ pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
 # Vector from motor tip to camera
 motor_to_camera = (-25, 0, 13)
 
-
-# Find closest object to the center of the image
-def find_closest_box(nums, img_boxes, scores):
-	# Store the index and distance of the closest box to the center - last 2 are y errored values
-	closest_to_center = [0, (0, 0), math.inf, (0, 0), 0]
-	for i in range(nums[0]):
-		# Boxes: [[(x0, y0), (x3, y3)]]
-
-		# Find the center coordinate
-		center_coordinate = (img_boxes[i][0][0] + ((img_boxes[i][1][0] - img_boxes[i][0][0]) / 2),
-							 img_boxes[i][0][1] + ((img_boxes[i][1][1] - img_boxes[i][0][1]) / 2))
-
-		# Find the box center closest to the image center
-		dist_to_center = math.hypot((center_coordinate[0] - center_pixel[0]),
-									(center_coordinate[1] - center_pixel[1]))
-
-		error_dist = dist_to_center
-
-		if dist_to_center < closest_to_center[2]:
-			closest_to_center[0] = i
-			closest_to_center[1] = center_coordinate
-			closest_to_center[2] = dist_to_center
-
-			closest_to_center[3] = (center_coordinate[0], center_coordinate[1])
-			closest_to_center[4] = error_dist
-	# Outputs the box score and corner coordinates
-	logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
-														   np.array(img_boxes[closest_to_center[0]])))
-	# Return the closest box top left and right coordinates, and the hypot to centre
-	return closest_to_center
-
-
 def detect_screws_in_stream(model):
 	while True:
 		t1 = time.time()
@@ -77,10 +46,10 @@ def detect_screws_in_stream(model):
 				t2 = time.time()
 
 				# Display the labelled image with a delay of 1 millisecond (minimum delay)
-				output_img, img_boxes, scores, nums = model.detect(image)
+				output_img, bbxs, scores, nums = model.detect(image)
 
 				if int(nums[0]) is not 0:
-					closest_box, _, _ = find_closest_box(nums, img_boxes, scores)
+					closest_box, _, _ = find_closest_box(nums, bbxs, scores)
 
 				cv2.imshow("Laptop", output_img)
 				cv2.waitKey(1)
@@ -92,6 +61,55 @@ def detect_screws_in_stream(model):
 		except Exception as e:
 			print(str(e))
 
+# Returns the patch of the input image that contains the bounding box + extension
+def get_patch(image, bounding_box):
+	# Get each boxes height and width to build a patch twice as large
+	box_height_extension = (bounding_box[1][0] - bounding_box[0][0]) / 2
+	box_width_extension = (bounding_box[1][1] - bounding_box[0][1]) / 2
+
+	# Define the corners of the image patch, top left and bottom right corners
+	patch_top_left = (bounding_box[0][0] - box_height_extension, bounding_box[0][1] - box_width_extension) 
+	patch_bottom_right = (bounding_box[1][0] + box_height_extension, bounding_box[1][1] + box_width_extension)
+
+	patch = image[patch_top_left[0] : patch_bottom_right[0], 
+				  patch_top_left[1] : patch_bottom_right[1]]
+	return patch, (patch_top_left, patch_bottom_right)
+
+def patch_n_find_center(image, bbx):
+	patch, patch_coords = get_patch(image, bbx)
+
+	## Pass patches to a canny edge detector to find the center of the screws
+	patch_center = CannyScrewCenter.find_center(patch)
+
+	return patch_center, patch_coords
+
+# Find closest object to the center of the image
+def find_closest_box(image, nums, bbxs, scores):
+	# Store the index and distance of the closest box to the center - last 2 are y errored values
+	closest_to_center = [0, (0, 0), math.inf, (0, 0), 0]
+	for i in range(nums[0]):
+		# Boxes: [[(x0, y0), (x3, y3)]]
+
+		# Create a patch around the bounding box, use canny to find center
+		patch_center, patch_coords = patch_n_find_center(image, bbxs[i])
+
+		# Convert patch coordinate to image coordinate
+		bbx_center = (patch_coords[0][0] + patch_center[0], patch_coords[0][1] + patch_center[1])
+
+		# Find the box center closest to the image center
+		dist_to_center = math.hypot((bbx_center[0] - center_pixel[0]),
+									(bbx_center[1] - center_pixel[1]))
+
+		if dist_to_center < closest_to_center[2]:
+			closest_to_center[0] = i
+			closest_to_center[1] = bbx_center
+			closest_to_center[2] = dist_to_center
+
+	# Outputs the box score and corner coordinates
+	logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]), np.array(bbxs[closest_to_center[0]])))
+
+	# Return the closest boxes: index, top left and right coordinates, and hypot to centre
+	return closest_to_center
 
 def get_vector_to_screw(dist_to_center1, center_coord1, f_len, dist_to_center2):
 	# Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
@@ -156,20 +174,15 @@ def find_and_move_to_screw(model):
 					cv2.destroyAllWindows()
 					return False
 
-				# Given at least one screw is detected, find the center coordinate
-				selected_box1 = find_closest_box(nums1, img_boxes1, scores1)
-				selected_box2 = find_closest_box(nums2, img_boxes2, scores2)
+				# Given at least one screw is detected, find the closest to the image center
+				closest_box1 = find_closest_box(nums1, img_boxes1, scores1)
+				closest_box2 = find_closest_box(nums2, img_boxes2, scores2)
 
-				center_coord1, dist_to_center1, error_coord1, error_dist1 = selected_box1[1], selected_box1[2], selected_box1[3], selected_box1[4]
-				center_coord2, dist_to_center2, error_coord2, error_dist2 = selected_box2[1], selected_box2[2], selected_box2[3], selected_box2[4]
+				# Index, coords, dist_to_center
+				bbx_center_1, dist_to_center1 = closest_box1[2], closest_box1[3]
+				dist_to_center2 = closest_box2[3]
 
-				error_coord2 = (error_coord2[0]-4, error_coord2[1]-4)
-				error_dist2 = math.hypot((error_coord2[0] - center_pixel[0]), (error_coord2[1] - center_pixel[1]))
-
-				motor_to_screw = get_vector_to_screw(dist_to_center1, center_coord1, f_len, dist_to_center2)
-
-				# What is the error with 1 pixel change in bbx
-				pixel_moved = get_vector_to_screw(error_dist1, error_coord1, f_len, error_dist2)
+				motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
 
 				print(requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw)).content)
 
@@ -194,6 +207,7 @@ def find_and_move_to_screw(model):
 
 def main(_argv):
 	Model = Classifier()
+
 
 	# detect_screws_in_stream(Model)
 	while True:
