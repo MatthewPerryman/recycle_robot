@@ -9,6 +9,8 @@ import time
 import math
 import json
 
+Canny = CannyScrewCenter()
+
 # Note: all coordinates are x, y
 image_shape = (640, 480, 3)
 m_frame_distance = (0, 0, -10)
@@ -66,15 +68,14 @@ def detect_screws_in_stream(model):
 # Returns the patch of the input image that contains the bounding box + extension
 def get_patch(image, bounding_box):
 	# Get each boxes height and width to build a patch twice as large
-	box_height_extension = (bounding_box[1][0] - bounding_box[0][0]) / 2
-	box_width_extension = (bounding_box[1][1] - bounding_box[0][1]) / 2
+	box_height_extension = (bounding_box[1][0] - bounding_box[0][0]) // 2
+	box_width_extension = (bounding_box[1][1] - bounding_box[0][1]) // 2
 
 	# Define the corners of the image patch, top left and bottom right corners
 	patch_top_left = (bounding_box[0][0] - box_height_extension, bounding_box[0][1] - box_width_extension)
 	patch_bottom_right = (bounding_box[1][0] + box_height_extension, bounding_box[1][1] + box_width_extension)
 
-	patch = image[patch_top_left[0]: patch_bottom_right[0],
-			patch_top_left[1]: patch_bottom_right[1]]
+	patch = image[patch_top_left[0]: patch_bottom_right[0], patch_top_left[1]: patch_bottom_right[1]]
 	return patch, (patch_top_left, patch_bottom_right)
 
 
@@ -82,61 +83,7 @@ def patch_n_find_center(image, bbx):
 	patch, patch_coords = get_patch(image, bbx)
 
 	## Pass patches to a canny edge detector to find the center of the screws
-	patch_center = CannyScrewCenter.find_center(patch)
-
-	return patch_center, patch_coords
-
-
-# Find closest object to the center of the image
-def find_closest_box(image, nums, bbxs, scores):
-	# Store the index and distance of the closest box to the center - last 2 are y errored values
-	closest_to_center = [0, (0, 0), math.inf, (0, 0), 0]
-	for i in range(nums[0]):
-		# Boxes: [[(x0, y0), (x3, y3)]]
-
-		# Create a patch around the bounding box, use canny to find center
-		patch_center, patch_coords = patch_n_find_center(image, bbxs[i])
-
-		# Convert patch coordinate to image coordinate
-		bbx_center = (patch_coords[0][0] + patch_center[0], patch_coords[0][1] + patch_center[1])
-
-		# Find the box center closest to the image center
-		dist_to_center = math.hypot((bbx_center[0] - center_pixel[0]),
-									(bbx_center[1] - center_pixel[1]))
-
-		if dist_to_center < closest_to_center[2]:
-			closest_to_center[0] = i
-			closest_to_center[1] = bbx_center
-			closest_to_center[2] = dist_to_center
-
-	# Outputs the box score and corner coordinates
-	logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
-														   np.array(bbxs[closest_to_center[0]])))
-
-	# Return the closest boxes: index, top left and right coordinates, and hypot to centre
-	return closest_to_center
-
-
-# Returns the patch of the input image that contains the bounding box + extension
-def get_patch(image, bounding_box):
-	# Get each boxes height and width to build a patch twice as large
-	box_height_extension = (bounding_box[1][0] - bounding_box[0][0]) / 2
-	box_width_extension = (bounding_box[1][1] - bounding_box[0][1]) / 2
-
-	# Define the corners of the image patch, top left and bottom right corners
-	patch_top_left = (bounding_box[0][0] - box_height_extension, bounding_box[0][1] - box_width_extension)
-	patch_bottom_right = (bounding_box[1][0] + box_height_extension, bounding_box[1][1] + box_width_extension)
-
-	patch = image[patch_top_left[0]: patch_bottom_right[0],
-			patch_top_left[1]: patch_bottom_right[1]]
-	return patch, (patch_top_left, patch_bottom_right)
-
-
-def patch_n_find_center(image, bbx):
-	patch, patch_coords = get_patch(image, bbx)
-
-	## Pass patches to a canny edge detector to find the center of the screws
-	patch_center = CannyScrewCenter.find_center(patch)
+	patch_center = Canny.find_center(patch)
 
 	return patch_center, patch_coords
 
@@ -235,8 +182,8 @@ def find_and_move_to_screw(model):
 					return False
 
 				# Given at least one screw is detected, find the closest to the image center
-				closest_box1 = find_closest_box(nums1, img_boxes1, scores1)
-				closest_box2 = find_closest_box(nums2, img_boxes2, scores2)
+				closest_box1 = find_closest_box(image1, nums1, img_boxes1, scores1)
+				closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
 
 				# Index, coords, dist_to_center
 				bbx_center_1, dist_to_center1 = closest_box1[2], closest_box1[3]

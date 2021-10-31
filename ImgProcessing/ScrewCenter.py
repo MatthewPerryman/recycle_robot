@@ -2,7 +2,7 @@
 
 from PIL import Image, ImageDraw
 from math import pi, cos, sin
-from canny import canny_edge_detector
+from ImgProcessing.canny import canny_edge_detector
 from collections import defaultdict
 
 
@@ -21,8 +21,7 @@ class CannyScrewCenter:
 	# Write circled_n_centered to file maybe
 	def find_center(self, patch, from_file=False):
 		# Output image:
-		output_patch = Image.new("RGB", patch.size)
-		output_patch.paste(patch)
+		output_patch = Image.fromarray(patch)
 		draw_result = ImageDraw.Draw(output_patch)
 
 		points = []
@@ -34,7 +33,7 @@ class CannyScrewCenter:
 		acc = defaultdict(int)
 		# Obtains the strongest edges within the image
 		# Calculate the difference between edge points and circle points
-		for x, y in canny_edge_detector(patch):
+		for x, y in canny_edge_detector(Image.fromarray(patch)):
 			for r, dx, dy in points:
 				a = x - dx
 				b = y - dy
@@ -58,6 +57,8 @@ class CannyScrewCenter:
 			draw_result.point([(x, y + 1)], fill="blue")
 			draw_result.point([(x + 1, y + 1)], fill="blue")
 
+		# Debug
+		output_patch.show()
 		if from_file:
 			# Save output image
 			output_patch.show()
