@@ -1,17 +1,17 @@
 # Code from https://www.codingame.com/playgrounds/38470/how-to-detect-circles-in-images
 
 from PIL import Image, ImageDraw
-from math import pi, cos, sin
+from math import pi, cos, sin, inf
 from ImgProcessing.canny import canny_edge_detector
 from collections import defaultdict
 
 
 class CannyScrewCenter:
 	# Search parameters
-	rmin = 20
+	rmin = 10
 	rmax = 50
 	steps = 100
-	threshold = 0.4
+	threshold = 0.6
 
 	def load_from_png(self):
 		# Load image:
@@ -39,23 +39,26 @@ class CannyScrewCenter:
 				b = y - dy
 				acc[(a, b, r)] += 1
 
-		circles = []
+		# Circles centre x, y coordinates and radius
+		circles = [inf, inf, inf]
 		# Only keep circles with > 40% of points on the edge points of the screw
 		# AND Circles with centres within the radius of an existing circle.
 		for k, v in sorted(acc.items(), key=lambda i: -i[1]):
 			x, y, r = k
-			if v / self.steps >= self.threshold and all(
-					(x - xc) ** 2 + (y - yc) ** 2 > rc ** 2 for xc, yc, rc in circles):
+			# and (x - circles[1]) ** 2 + (y - circles[1]) ** 2 > circles[2] ** 2
+			# Keep the smallest radius circle
+			if v / self.steps >= self.threshold and r < circles[2]:
 				print(v / self.steps, x, y, r)
-				circles.append((x, y, r))
+				circles = [x, y, r]
 
 		# Draw the circle and centre coordinate on an image
-		for x, y, r in circles:
-			draw_result.ellipse((x - r, y - r, x + r, y + r), outline=(255, 0, 0, 0))
-			draw_result.point([(x, y)], fill="blue")
-			draw_result.point([(x + 1, y)], fill="blue")
-			draw_result.point([(x, y + 1)], fill="blue")
-			draw_result.point([(x + 1, y + 1)], fill="blue")
+		x, y, r = circles[0], circles[1], circles[2]
+
+		draw_result.ellipse((x - r, y - r, x + r, y + r), outline=(255, 0, 0, 0))
+		draw_result.point([(x, y)], fill="blue")
+		draw_result.point([(x + 1, y)], fill="blue")
+		draw_result.point([(x, y + 1)], fill="blue")
+		draw_result.point([(x + 1, y + 1)], fill="blue")
 
 		# Debug
 		output_patch.show()
@@ -66,4 +69,4 @@ class CannyScrewCenter:
 			return output_patch
 		else:
 			# In test, it's assumed only one screw is in the patch
-			return [circles[0][0], circles[0][1]]
+			return [circles[0], circles[1]]

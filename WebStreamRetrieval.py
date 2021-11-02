@@ -26,7 +26,7 @@ pixel_gap_size_x = (5.52 - (pixel_size * 2592)) / 2591
 pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
 
 # Vector from motor tip to camera
-motor_to_camera = (-25, 0, 13)
+motor_to_camera = (-25, -2, 23)
 
 
 def detect_screws_in_stream(model):
@@ -68,14 +68,15 @@ def detect_screws_in_stream(model):
 # Returns the patch of the input image that contains the bounding box + extension
 def get_patch(image, bounding_box):
 	# Get each boxes height and width to build a patch twice as large
-	box_height_extension = (bounding_box[1][0] - bounding_box[0][0]) // 2
-	box_width_extension = (bounding_box[1][1] - bounding_box[0][1]) // 2
+	box_height_extension = (bounding_box[1][1] - bounding_box[0][1]) // 2
+	box_width_extension = (bounding_box[1][0] - bounding_box[0][0]) // 2
 
 	# Define the corners of the image patch, top left and bottom right corners
-	patch_top_left = (bounding_box[0][0] - box_height_extension, bounding_box[0][1] - box_width_extension)
-	patch_bottom_right = (bounding_box[1][0] + box_height_extension, bounding_box[1][1] + box_width_extension)
+	patch_top_left = (bounding_box[0][0] - box_width_extension, bounding_box[0][1] - box_height_extension)
+	patch_bottom_right = (bounding_box[1][0] + box_width_extension, bounding_box[1][1] + box_height_extension)
 
-	patch = image[patch_top_left[0]: patch_bottom_right[0], patch_top_left[1]: patch_bottom_right[1]]
+	# Bbx (x,y), array lookup (y, x)
+	patch = image[patch_top_left[1]: patch_bottom_right[1], patch_top_left[0]: patch_bottom_right[0]]
 	return patch, (patch_top_left, patch_bottom_right)
 
 
@@ -186,8 +187,8 @@ def find_and_move_to_screw(model):
 				closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
 
 				# Index, coords, dist_to_center
-				bbx_center_1, dist_to_center1 = closest_box1[2], closest_box1[3]
-				dist_to_center2 = closest_box2[3]
+				bbx_center_1, dist_to_center1 = closest_box1[1], closest_box1[2]
+				dist_to_center2 = closest_box2[2]
 
 				motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
 
