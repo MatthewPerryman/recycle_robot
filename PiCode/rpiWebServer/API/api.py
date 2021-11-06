@@ -73,3 +73,4 @@ if __name__ == '__main__':
 	except KeyboardInterrupt:
 		image_stream.__del__
 		controller.__del__
+		exit()
