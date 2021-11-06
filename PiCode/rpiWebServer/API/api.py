@@ -7,11 +7,12 @@ import numpy as np
 from flask import Flask, request
 
 from CamStream import ImageStream
-from RobotArm import RobotController
-
 print("hi 1")
-app = Flask(__name__)
+from RobotArm import RobotController
 print("hi 2")
+
+app = Flask(__name__)
+
 # The camera is focussed here, therefore set up lighting before starting the app
 image_stream = ImageStream()
 controller = RobotController.RobotController()
