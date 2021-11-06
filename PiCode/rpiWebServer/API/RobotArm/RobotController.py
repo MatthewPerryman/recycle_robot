@@ -45,9 +45,7 @@ class RobotController:
 	## Create the API context and put robot on standby
 	def __init__(self):
 		if self.swift == None:
-			print("Hi 1")
 			self.swift = SwiftAPI()
-			print("Hi 2")
 
 		self.swift.flush_cmd(wait_stop=True)
 

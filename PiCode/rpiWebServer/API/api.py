@@ -9,10 +9,13 @@ from flask import Flask, request
 from CamStream import ImageStream
 from RobotArm import RobotController
 
+print("hi 1")
 app = Flask(__name__)
+print("hi 2")
 # The camera is focussed here, therefore set up lighting before starting the app
 image_stream = ImageStream()
 controller = RobotController.RobotController()
+print("hi 3")
 
 
 class NumpyArrayEncoder(JSONEncoder):
