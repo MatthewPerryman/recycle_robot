@@ -33,8 +33,8 @@ def increment_position():
 		return "API Check Fail"
 
 
-@app.route('/move_robot_to/', methods=['POST'])
-def move_robot_to():
+@app.route('/move_by_vector/', methods=['POST'])
+def move_by_vector():
 	json_coord = json.loads(request.data)
 	Xd = json_coord['Xd']
 	Yd = json_coord['Yd']
@@ -68,4 +68,8 @@ def live_photo():
 
 
 if __name__ == '__main__':
-	app.run(debug=True, port=80, host='0.0.0.0')
+	try:
+		app.run(debug=True, port=80, host='0.0.0.0')
+	except KeyboardInterrupt:
+		image_stream.__del__
+		controller.__del__

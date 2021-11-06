@@ -16,7 +16,7 @@ image_shape = (640, 480, 3)
 m_frame_distance = (0, 0, -10)
 
 # Find the center pixel in the image
-center_pixel = (image_shape[1] / 2, image_shape[0] / 2)
+image_center = (image_shape[1] / 2, image_shape[0] / 2)
 
 # Based upon datasheet https://cdn.sparkfun.com/datasheets/Dev/RaspberryPi/ov5647_full.pdf#:~:text=The%20OV5647%20is%20a%20low%20voltage%2C%20high%20performance%2C,the%20serial%20camera%20control%20bus%20or%20MIPI%20interface.
 pixel_size = 0.0014  # (mm) = 1.4 micrometers
@@ -103,8 +103,8 @@ def find_closest_box(image, nums, bbxs, scores):
 		bbx_center = (patch_coords[0][0] + patch_center[0], patch_coords[0][1] + patch_center[1])
 
 		# Find the box center closest to the image center
-		dist_to_center = math.hypot((bbx_center[0] - center_pixel[0]),
-									(bbx_center[1] - center_pixel[1]))
+		dist_to_center = math.hypot((bbx_center[0] - image_center[0]),
+									(bbx_center[1] - image_center[1]))
 
 		if dist_to_center < closest_to_center[2]:
 			closest_to_center[0] = i
@@ -119,7 +119,7 @@ def find_closest_box(image, nums, bbxs, scores):
 	return closest_to_center
 
 
-def get_vector_to_screw(dist_to_center1, center_coord1, f_len, dist_to_center2):
+def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2):
 	# Perpendicular Distance (d) from lens to laptop = distance moved (m (10mm)) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
 	d = 20 / (1 - (dist_to_center1 / dist_to_center2))
 
@@ -128,7 +128,7 @@ def get_vector_to_screw(dist_to_center1, center_coord1, f_len, dist_to_center2):
 
 	# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
 	# y axis label to match real world y and x
-	pixel_diff = (center_pixel[0] - center_coord1[0], center_pixel[1] - center_coord1[1])
+	pixel_diff = (image_center[0] - screw_center1[0], image_center[1] - screw_center1[1])
 	Px = (pixel_diff[1] * pixel_size) + ((pixel_diff[1] - 1) * pixel_gap_size_y)
 	# Pixel y (Py) same as above but with x axis distance
 	Py = (pixel_diff[0] * pixel_size) + ((pixel_diff[0] - 1) * pixel_gap_size_x)
@@ -192,7 +192,7 @@ def find_and_move_to_screw(model):
 
 				motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
 
-				print(requests.post("http://192.168.0.116:80/move_robot_to/", data=json.dumps(motor_to_screw)).content)
+				print(requests.post("http://192.168.0.116:80/move_by_vector/", data=json.dumps(motor_to_screw)).content)
 
 				return True
 			else:
@@ -227,3 +227,4 @@ if __name__ == '__main__':
 		app.run(main)
 	except SystemExit:
 		pass
+	
