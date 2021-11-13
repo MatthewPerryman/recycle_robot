@@ -6,12 +6,12 @@ class RobotController:
 
 	def start_transmission(self):
 		self.swift.flush_cmd(wait_stop=True)
-		self.swift.waiting_ready()
+		self.swift.waiting_ready(timeout=3)
 
 	## Clear cmd buffer and close connection
 	def end_transmission(self):
 		self.swift.flush_cmd(wait_stop=True)
-		self.swift.waiting_ready()
+		self.swift.waiting_ready(timeout=3)
 
 	## Move the robot arm by an increment value
 	def move_by_vector(self, vector, reverse_vector=False, speed=100000):
@@ -44,16 +44,15 @@ class RobotController:
 
 	## Create the API context and put robot on standby
 	def __init__(self):
-		print("Check 1")
 		if self.swift == None:
-			print("Check 2")
 			self.swift = SwiftAPI()
+			self.swift.waiting_ready(timeout=3)
 
 		self.swift.flush_cmd(wait_stop=True)
 
 		# Reset the arms location
 		self.swift.reset()
-		self.swift.waiting_ready()
+		self.swift.waiting_ready(timeout=3)
 
 		self.end_transmission()
 
