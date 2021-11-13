@@ -4,13 +4,15 @@ import numpy as np
 from flask import Flask, request
 from CamStream import ImageStream
 from RobotArm import RobotController
+from time import time
+from ....Utils.Logging import write_log
 
 app = Flask(__name__)
+
 
 # The camera is focussed here, therefore set up lighting before starting the app
 image_stream = ImageStream()
 controller = RobotController.RobotController()
-
 
 class NumpyArrayEncoder(JSONEncoder):
 	def default(self, obj):
@@ -47,13 +49,18 @@ def move_by_vector():
 # Compact command get information for screw localising
 @app.route('/get_images_for_depth', methods=['GET'])
 def get_images_for_depth():
+	write_log("Reset Location: {}".format(time()))
 	controller.swift.reset()
-	# Take a photo, move the camera 1 cm up, take another
-	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector)
 
+	write_log("Call image_stream get depth images")
+	# Take a photo, move the camera 1 cm up, take another
+	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector, write_log)
+
+	write_log("Jsonify images")
 	return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
 	encoded_dict_json = dumps(return_dict, cls=NumpyArrayEncoder)
 
+	write_log("Send Images")
 	# return json as dumps
 	return encoded_dict_json
 

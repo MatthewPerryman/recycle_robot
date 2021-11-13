@@ -3,11 +3,12 @@ import cv2
 import requests
 import numpy as np
 from Model.detect import Classifier
-from ImgProcessing.ScrewCenter import CannyScrewCenter
+from CannyScrewCenter.ScrewCenter import CannyScrewCenter
 from absl import app, logging
-import time
+from time import time
 import math
 import json
+from Utils.Logging import write_log
 
 Canny = CannyScrewCenter()
 
@@ -31,10 +32,10 @@ motor_to_camera = (-25, -2, 23)
 
 def detect_screws_in_stream(model):
 	while True:
-		t1 = time.time()
+		t1 = time()
 		# Exception Handling for invalid requests
 		try:
-			c1 = time.time()
+			c1 = time()
 			# Creating an request object to store the response
 			# The URL is referenced sys.argv[1]
 			ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
@@ -151,7 +152,10 @@ def find_and_move_to_screw(model):
 	try:
 		# Creating an request object to store the response
 		# The URL is referenced sys.argv[1]
+
 		ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
+		write_log("Received Images from Server")
+		
 		if ImgRequest.status_code == requests.codes.ok:
 			# Read numpy array bytes
 			depth_dict = json.loads(ImgRequest.content)
