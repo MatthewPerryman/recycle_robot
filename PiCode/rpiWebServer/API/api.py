@@ -1,11 +1,7 @@
 # This code is only run on rpi server
-
-import json
-from json import JSONEncoder
-
+from json import JSONEncoder, loads, dumps
 import numpy as np
 from flask import Flask, request
-
 from CamStream import ImageStream
 print("hi 1")
 from RobotArm import RobotController
@@ -39,7 +35,7 @@ def increment_position():
 
 @app.route('/move_by_vector/', methods=['POST'])
 def move_by_vector():
-	json_coord = json.loads(request.data)
+	json_coord = loads(request.data)
 	Xd = json_coord['Xd']
 	Yd = json_coord['Yd']
 	Zd = json_coord['Zd']
@@ -59,7 +55,7 @@ def get_images_for_depth():
 	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector)
 
 	return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
-	encoded_dict_json = json.dumps(return_dict, cls=NumpyArrayEncoder)
+	encoded_dict_json = dumps(return_dict, cls=NumpyArrayEncoder)
 
 	# return json as dumps
 	return encoded_dict_json
