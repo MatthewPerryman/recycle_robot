@@ -1,1 +1,1 @@
-import rpiWebServer
+from . import rpiWebServer

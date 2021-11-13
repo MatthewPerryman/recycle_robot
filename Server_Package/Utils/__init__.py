@@ -1,1 +1,1 @@
-import Logging
+from . import Logging
