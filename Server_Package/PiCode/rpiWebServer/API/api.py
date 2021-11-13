@@ -12,6 +12,8 @@ app = Flask(__name__)
 image_stream = ImageStream()
 controller = RobotController.RobotController()
 
+Logging.write_log("\nNew Run:\n")
+
 
 class NumpyArrayEncoder(JSONEncoder):
 	def default(self, obj):

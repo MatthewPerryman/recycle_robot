@@ -149,6 +149,7 @@ def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2):
 
 
 def find_and_move_to_screw(model):
+	Logging.write_log("\nNew Run:\n")
 	try:
 		# Creating an request object to store the response
 		# The URL is referenced sys.argv[1]
