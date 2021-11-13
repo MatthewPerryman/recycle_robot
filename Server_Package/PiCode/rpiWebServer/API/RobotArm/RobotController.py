@@ -55,6 +55,7 @@ class RobotController:
 		self.swift.waiting_ready(timeout=3)
 
 		self.end_transmission()
+		print("Robot Init")
 
 	def __del__(self):
 		self.swift.flush_cmd(wait_stop=True)

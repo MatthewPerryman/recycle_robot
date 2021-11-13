@@ -3,8 +3,8 @@ from json import JSONEncoder, loads, dumps
 import numpy as np
 from flask import Flask, request
 from ....Utils import Logging
-from CamStream import ImageStream
-from RobotArm import RobotController
+from .CamStream import ImageStream
+from .RobotArm import RobotController
 from time import time
 
 app = Flask(__name__)
@@ -49,7 +49,7 @@ def move_by_vector():
 # Compact command get information for screw localising
 @app.route('/get_images_for_depth', methods=['GET'])
 def get_images_for_depth():
-	Logging.write_log("Reset Location: {}".format(time()))
+	Logging.write_log("Reset Location")
 	controller.swift.reset()
 
 	Logging.write_log("Call image_stream get depth images")
@@ -70,10 +70,9 @@ def live_photo():
 	image = image_stream.take_photo()
 	return image
 
-
-if __name__ == '__main__':
+if __name__ == 'Server_Package.PiCode.rpiWebServer.API.api':
 	try:
-		app.run(debug=True, port=80, host='0.0.0.0')
+		app.run(port=80, host='0.0.0.0')
 	except KeyboardInterrupt:
 		image_stream.__del__
 		controller.__del__

@@ -15,7 +15,7 @@ except:
 # Stock functions except __init__, __del__, and updated take_photo
 class ImageStream():
 	# load arducam shared object file
-	arducam_vcm = CDLL('./lib/libarducam_vcm.so')
+	arducam_vcm = CDLL('./Server_Package/PiCode/rpiWebServer/API/lib/libarducam_vcm.so')
 	camera = None
 	# Flipping resolution doesn't work
 	resolution = (640, 480, 3)

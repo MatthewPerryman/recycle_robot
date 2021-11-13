@@ -1,0 +1,12 @@
+
+Reset Location: Sat Nov 13 22:17:50 2021
+Call image_stream get depth images: Sat Nov 13 22:17:51 2021
+Open camera: Sat Nov 13 22:17:53 2021
+First Photo: Sat Nov 13 22:17:54 2021
+Move Arm 1: Sat Nov 13 22:17:55 2021
+Focus Camera in New Location: Sat Nov 13 22:17:58 2021
+Second Photo: Sat Nov 13 22:18:00 2021
+Move Arm 2: Sat Nov 13 22:18:00 2021
+Return from image_stream get depth images: Sat Nov 13 22:18:00 2021
+Jsonify images: Sat Nov 13 22:18:00 2021
+Send Images: Sat Nov 13 22:18:08 2021
