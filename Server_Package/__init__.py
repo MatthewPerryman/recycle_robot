@@ -1,1 +1,1 @@
-import PiCode, Utils
+from . import PiCode, Utils
