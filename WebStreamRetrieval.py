@@ -8,7 +8,7 @@ from absl import app, logging
 from time import time
 import math
 import json
-from Utils.Logging import write_log
+from Utils import Logging
 
 Canny = CannyScrewCenter()
 
@@ -154,8 +154,8 @@ def find_and_move_to_screw(model):
 		# The URL is referenced sys.argv[1]
 
 		ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
-		write_log("Received Images from Server")
-		
+		Logging.write_log("Received Images from Server")
+
 		if ImgRequest.status_code == requests.codes.ok:
 			# Read numpy array bytes
 			depth_dict = json.loads(ImgRequest.content)

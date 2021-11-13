@@ -3,7 +3,7 @@ import numpy as np
 from ctypes import *
 import sys
 from time import sleep, time
-from ....Utils.Logging import write_log
+from ....Utils import Logging
 
 try:
 	import picamera
@@ -100,37 +100,37 @@ class ImageStream():
 
 	def get_imgs_for_depth(self, arm_move_function, write_log):
 		self.cam_open()
-		write_log("Open camera")
+		Logging.write_log("Open camera")
 
 		sleep(1)
 		# Capture image 1
 		img1 = self.capture_photo()
-		write_log("First Photo")
+		Logging.write_log("First Photo")
 
 		# Get the f_len of the first image
 		focal_len = self.max_index
 
 		# Move the robot up 10mm
 		arm_move_function(self.m_frame_distance)
-		write_log("Move Arm 1")
+		Logging.write_log("Move Arm 1")
 
 		# Refocus for new location
 		self.focus()
-		write_log("Focus Camera in New Location")
+		Logging.write_log("Focus Camera in New Location")
 
 		sleep(1)
 		# Capture image 2
 		img2 = self.capture_photo()
-		write_log("Second Photo")
+		Logging.write_log("Second Photo")
 
 		# Reset focus for position 1
 		self.max_index = focal_len
 		arm_move_function(self.m_frame_distance, reverse_vector=True)
-		write_log("Move Arm 2")
+		Logging.write_log("Move Arm 2")
 
 		self.camera.close()
 
-		write_log("Return from image_stream get depth images")
+		Logging.write_log("Return from image_stream get depth images")
 		return img1, focal_len, img2
 
 	def cam_open(self):
