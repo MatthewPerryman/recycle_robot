@@ -1,0 +1,23 @@
+
+Reset Location: Sat Nov 13 23:10:47 2021
+Call image_stream get depth images: Sat Nov 13 23:10:48 2021
+Open camera: Sat Nov 13 23:10:50 2021
+First Photo: Sat Nov 13 23:10:52 2021
+Move Arm 1: Sat Nov 13 23:10:52 2021
+Focus Camera in New Location: Sat Nov 13 23:10:55 2021
+Second Photo: Sat Nov 13 23:10:57 2021
+Move Arm 2: Sat Nov 13 23:10:57 2021
+Return from image_stream get depth images: Sat Nov 13 23:10:57 2021
+Jsonify images: Sat Nov 13 23:10:57 2021
+Send Images: Sat Nov 13 23:11:05 2021
+Reset Location: Sat Nov 13 23:11:10 2021
+Call image_stream get depth images: Sat Nov 13 23:11:11 2021
+Open camera: Sat Nov 13 23:11:13 2021
+First Photo: Sat Nov 13 23:11:14 2021
+Move Arm 1: Sat Nov 13 23:11:15 2021
+Focus Camera in New Location: Sat Nov 13 23:11:18 2021
+Second Photo: Sat Nov 13 23:11:20 2021
+Move Arm 2: Sat Nov 13 23:11:20 2021
+Return from image_stream get depth images: Sat Nov 13 23:11:20 2021
+Jsonify images: Sat Nov 13 23:11:20 2021
+Send Images: Sat Nov 13 23:11:28 2021
