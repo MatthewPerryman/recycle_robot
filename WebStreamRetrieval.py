@@ -8,7 +8,7 @@ from absl import app, logging
 from time import time
 import math
 import json
-from Utils import Logging
+from .Utils import Logging
 
 Canny = CannyScrewCenter()
 
