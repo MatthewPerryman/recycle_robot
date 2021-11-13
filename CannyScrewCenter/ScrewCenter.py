@@ -2,7 +2,7 @@
 
 from PIL import Image, ImageDraw
 from math import pi, cos, sin, inf
-from ImgProcessing.canny import canny_edge_detector
+from CannyScrewCenter.canny import canny_edge_detector
 from collections import defaultdict
 
 
