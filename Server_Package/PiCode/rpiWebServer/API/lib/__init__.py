@@ -1,1 +1,1 @@
-from . import arducam_key_detect.c, libarducam_keyboard.so, libarducam_vcm.so
+from . import arducam_key_detect, libarducam_keyboard, libarducam_vcm
