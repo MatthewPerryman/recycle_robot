@@ -2,7 +2,7 @@
 from json import JSONEncoder, loads, dumps
 import numpy as np
 from flask import Flask, request
-from ....Utils.Logging import write_log
+from ....Utils import Logging
 from CamStream import ImageStream
 from RobotArm import RobotController
 from time import time
@@ -49,18 +49,18 @@ def move_by_vector():
 # Compact command get information for screw localising
 @app.route('/get_images_for_depth', methods=['GET'])
 def get_images_for_depth():
-	write_log("Reset Location: {}".format(time()))
+	Logging.write_log("Reset Location: {}".format(time()))
 	controller.swift.reset()
 
-	write_log("Call image_stream get depth images")
+	Logging.write_log("Call image_stream get depth images")
 	# Take a photo, move the camera 1 cm up, take another
-	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector, write_log)
+	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector, Logging.write_log)
 
-	write_log("Jsonify images")
+	Logging.write_log("Jsonify images")
 	return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
 	encoded_dict_json = dumps(return_dict, cls=NumpyArrayEncoder)
 
-	write_log("Send Images")
+	Logging.write_log("Send Images")
 	# return json as dumps
 	return encoded_dict_json
 
