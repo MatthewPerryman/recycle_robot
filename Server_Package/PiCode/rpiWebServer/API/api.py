@@ -5,14 +5,13 @@ from flask import Flask, request
 from ....Utils import Logging
 from .CamStream import ImageStream
 from .RobotArm import RobotController
-from time import time
 
 app = Flask(__name__)
-
 
 # The camera is focussed here, therefore set up lighting before starting the app
 image_stream = ImageStream()
 controller = RobotController.RobotController()
+
 
 class NumpyArrayEncoder(JSONEncoder):
 	def default(self, obj):
@@ -69,6 +68,7 @@ def get_images_for_depth():
 def live_photo():
 	image = image_stream.take_photo()
 	return image
+
 
 if __name__ == 'Server_Package.PiCode.rpiWebServer.API.api':
 	try:

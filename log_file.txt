@@ -10,3 +10,4 @@ Move Arm 2: Sat Nov 13 22:18:00 2021
 Return from image_stream get depth images: Sat Nov 13 22:18:00 2021
 Jsonify images: Sat Nov 13 22:18:00 2021
 Send Images: Sat Nov 13 22:18:08 2021
+Received Images from Server: Sat Nov 13 22:59:35 2021
