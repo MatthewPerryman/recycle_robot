@@ -1,7 +1,7 @@
 # This code is only run on rpi server
 from json import JSONEncoder, loads, dumps
 import numpy as np
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from Utils import Logging
 from .CamStream import ImageStream
 from .RobotArm import RobotController
@@ -57,14 +57,14 @@ def get_images_for_depth():
 	# Take a photo, move the camera 1 cm up, take another
 	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector, Logging.write_log)
 
-	Logging.write_log("Jsonify images")
-	return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
-	encoded_dict_json = dumps(return_dict, cls=NumpyArrayEncoder)
+	#TODO: Replace json with faster method for sending mixed data
+	#Logging.write_log("Jsonify images")
+	#return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
+	#encoded_dict_json = dumps(return_dict, cls=NumpyArrayEncoder)
 
 	Logging.write_log("Send Images")
 	# return json as dumps
-	return encoded_dict_json
-
+	return jsonify(img1=img1.tolist(), f_len=f_len, img2=img2.tolist())
 
 @app.route('/get_photo', methods=['GET'])
 def live_photo():
