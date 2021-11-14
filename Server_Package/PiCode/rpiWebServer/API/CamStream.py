@@ -3,7 +3,7 @@ import numpy as np
 from ctypes import *
 import sys
 from time import sleep, time
-from ....Utils import Logging
+from Utils import Logging
 
 try:
 	import picamera

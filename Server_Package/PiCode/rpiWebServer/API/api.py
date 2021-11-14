@@ -2,7 +2,7 @@
 from json import JSONEncoder, loads, dumps
 import numpy as np
 from flask import Flask, request
-from ....Utils import Logging
+from Utils import Logging
 from .CamStream import ImageStream
 from .RobotArm import RobotController
 
