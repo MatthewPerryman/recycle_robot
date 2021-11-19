@@ -149,13 +149,13 @@ def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2):
 
 
 def find_and_move_to_screw(model):
-	Logging.write_log("\nNew Run:\n")
+	Logging.write_log("client", "\nNew Run:\n")
 	try:
 		# Creating an request object to store the response
 		# The URL is referenced sys.argv[1]
 
 		ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
-		Logging.write_log("Received Images from Server")
+		Logging.write_log("client", "Received Images from Server")
 
 		if ImgRequest.status_code == requests.codes.ok:
 			# Read numpy array bytes
