@@ -8,3 +8,36 @@ Fri Nov 19 22:48:36 2021Open camera:
 Fri Nov 19 22:48:39 2021First Photo: 
 Fri Nov 19 22:48:40 2021Move Arm 1: 
 Fri Nov 19 22:48:40 2021Focus Camera in New Location: 
+Fri Nov 19 22:50:24 2021
+New Run:
+: 
+Fri Nov 19 22:50:34 2021Reset Location: 
+Fri Nov 19 22:50:35 2021Call image_stream get depth images: 
+Fri Nov 19 22:50:35 2021Open camera: 
+Fri Nov 19 22:50:38 2021First Photo: 
+Fri Nov 19 22:50:39 2021Move Arm 1: 
+Fri Nov 19 22:50:39 2021Focus Camera in New Location: 
+Fri Nov 19 22:50:49 2021Second Photo: 
+Fri Nov 19 22:50:49 2021Move Arm 2: 
+Fri Nov 19 22:50:50 2021Return from image_stream get depth images: 
+Fri Nov 19 22:50:50 2021Send Images: 
+Fri Nov 19 22:51:01 2021Reset Location: 
+Fri Nov 19 22:51:02 2021Call image_stream get depth images: 
+Fri Nov 19 22:51:02 2021Open camera: 
+Fri Nov 19 22:51:07 2021First Photo: 
+Fri Nov 19 22:51:07 2021Move Arm 1: 
+Fri Nov 19 22:51:08 2021Focus Camera in New Location: 
+Fri Nov 19 22:51:17 2021Second Photo: 
+Fri Nov 19 22:51:17 2021Move Arm 2: 
+Fri Nov 19 22:51:18 2021Return from image_stream get depth images: 
+Fri Nov 19 22:51:18 2021Send Images: 
+Fri Nov 19 22:51:25 2021Reset Location: 
+Fri Nov 19 22:51:26 2021Call image_stream get depth images: 
+Fri Nov 19 22:51:26 2021Open camera: 
+Fri Nov 19 22:51:29 2021First Photo: 
+Fri Nov 19 22:51:29 2021Move Arm 1: 
+Fri Nov 19 22:51:30 2021Focus Camera in New Location: 
+Fri Nov 19 22:51:39 2021Second Photo: 
+Fri Nov 19 22:51:40 2021Move Arm 2: 
+Fri Nov 19 22:51:40 2021Return from image_stream get depth images: 
+Fri Nov 19 22:51:40 2021Send Images: 

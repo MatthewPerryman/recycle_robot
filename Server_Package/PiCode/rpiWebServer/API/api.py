@@ -12,8 +12,6 @@ app = Flask(__name__)
 image_stream = ImageStream()
 controller = RobotController.RobotController()
 
-Logging.write_log("server", "\nNew Run:\n")
-
 
 class NumpyArrayEncoder(JSONEncoder):
 	def default(self, obj):
@@ -50,6 +48,8 @@ def move_by_vector():
 # Compact command get information for screw localising
 @app.route('/get_images_for_depth', methods=['GET'])
 def get_images_for_depth():
+	Logging.write_log("server", "\nNew Run:\n")
+
 	Logging.write_log("server", "Reset Location")
 	controller.swift.reset()
 
