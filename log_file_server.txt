@@ -1,0 +1,10 @@
+
+Fri Nov 19 22:48:28 2021
+New Run:
+: 
+Fri Nov 19 22:48:35 2021Reset Location: 
+Fri Nov 19 22:48:36 2021Call image_stream get depth images: 
+Fri Nov 19 22:48:36 2021Open camera: 
+Fri Nov 19 22:48:39 2021First Photo: 
+Fri Nov 19 22:48:40 2021Move Arm 1: 
+Fri Nov 19 22:48:40 2021Focus Camera in New Location: 
