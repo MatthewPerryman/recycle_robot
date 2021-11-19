@@ -1,9 +1,13 @@
 from time import time, ctime
 
-log_file_name = "log_file_client.txt"
+log_name = "log_file_"
+log_extension = ".txt"
 
 
-def write_log(write_msg):
-	f = open(log_file_name, "a")
+def write_log(writer, write_msg):
+	if writer is not "client" or writer is not "server":
+		print("Please state: client or server")
+		return
+	f = open(log_name + writer + log_extension, "a")
 	f.write("\n" + "{}: ".format(ctime(time()) + write_msg))
 	f.close()

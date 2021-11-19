@@ -99,38 +99,38 @@ class ImageStream():
 		return image_array, self.max_index
 
 	def get_imgs_for_depth(self, arm_move_function, write_log):
+		Logging.write_log("server", "Open camera")
 		self.cam_open()
-		Logging.write_log("Open camera")
 
 		sleep(1)
 		# Capture image 1
+		Logging.write_log("server", "First Photo")
 		img1 = self.capture_photo()
-		Logging.write_log("First Photo")
 
 		# Get the f_len of the first image
 		focal_len = self.max_index
 
 		# Move the robot up 10mm
+		Logging.write_log("server", "Move Arm 1")
 		arm_move_function(self.m_frame_distance)
-		Logging.write_log("Move Arm 1")
 
 		# Refocus for new location
+		Logging.write_log("server", "Focus Camera in New Location")
 		self.focus()
-		Logging.write_log("Focus Camera in New Location")
 
 		sleep(1)
 		# Capture image 2
+		Logging.write_log("server", "Second Photo")
 		img2 = self.capture_photo()
-		Logging.write_log("Second Photo")
 
 		# Reset focus for position 1
+		Logging.write_log("server", "Move Arm 2")
 		self.max_index = focal_len
 		arm_move_function(self.m_frame_distance, reverse_vector=True)
-		Logging.write_log("Move Arm 2")
 
 		self.camera.close()
 
-		Logging.write_log("Return from image_stream get depth images")
+		Logging.write_log("server", "Return from image_stream get depth images")
 		return img1, focal_len, img2
 
 	def cam_open(self):
