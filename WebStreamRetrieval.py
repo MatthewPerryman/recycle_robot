@@ -159,18 +159,19 @@ def find_and_move_to_screw(model):
 
 		if ImgRequest.status_code == requests.codes.ok:
 			# Read numpy array bytes
-			depth_dict = json.loads(ImgRequest.content)
+			npzfile = np.load(ImgRequest.content)
 
-			image1 = depth_dict['img1']
-			f_len = depth_dict['f_len'] / 100
-			image2 = depth_dict['img2']
+			# TODO: Breakpoint to get object forms. Do we need to format output
+			image1 = npzfile['arr_0']
+			f_len = npzfile['arr_1'] / 100 # To mm
+			image2 = npzfile['arr_2']
 
-			image1 = np.asarray(image1)
-			image2 = np.asarray(image2)
+			# image1 = np.asarray(image1)
+			# image2 = np.asarray(image2)
 
-			# Reshape image values into 640 x 480 x 3 image as needed
-			image1 = np.reshape(image1, newshape=image_shape).astype(np.uint8)
-			image2 = np.reshape(image2, newshape=image_shape).astype(np.uint8)
+			# # Reshape image values into 640 x 480 x 3 image as needed
+			# image1 = np.reshape(image1, newshape=image_shape).astype(np.uint8)
+			# image2 = np.reshape(image2, newshape=image_shape).astype(np.uint8)
 
 			# Locate and box the screws in both images
 			output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
