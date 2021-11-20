@@ -1,23 +1,17 @@
 # This code is only run on rpi server
-from json import JSONEncoder, loads, dumps
-import numpy as np
-from flask import Flask, request, jsonify
+from json import loads
+from flask import Flask, request, send_file
 from Utils import Logging
 from .CamStream import ImageStream
 from .RobotArm import RobotController
+import io
+import numpy as np
 
 app = Flask(__name__)
 
 # The camera is focussed here, therefore set up lighting before starting the app
 image_stream = ImageStream()
 controller = RobotController.RobotController()
-
-
-class NumpyArrayEncoder(JSONEncoder):
-	def default(self, obj):
-		if isinstance(obj, np.ndarray):
-			return obj.tolist()
-		return JSONEncoder.default(self, obj)
 
 
 # API Control of Robot Arm
@@ -57,15 +51,13 @@ def get_images_for_depth():
 	# Take a photo, move the camera 1 cm up, take another
 	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector, Logging.write_log)
 
-	#TODO: Replace json with faster method for sending mixed data
-	#Logging.write_log("Jsonify images")
-	#return_dict = {'img1': img1, 'f_len': f_len, 'img2': img2}
-	#encoded_dict_json = dumps(return_dict, cls=NumpyArrayEncoder)
+	Logging.write_log("server", "Compress Image")
+	buffer = io.BytesIO()
+	np.savez_compressed(buffer, img1, np.array([f_len]), img2)
+	buffer.seek(0)
 
 	Logging.write_log("server", "Send Images")
-	# return json as dumps
-	#return jsonify(img1=img1.tolist(), f_len=f_len, img2=img2.tolist())
-	return "img1: {}, f_len: {}, img2: {}".format(img1.tolist(), f_len, img2.tolist())
+	return send_file(buffer, attachment_filename = "images.txt")
 
 @app.route('/get_photo', methods=['GET'])
 def live_photo():
