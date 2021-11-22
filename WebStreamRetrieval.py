@@ -2,12 +2,14 @@
 import cv2
 import requests
 import numpy as np
-from Model.detect import Classifier
-from CannyScrewCenter.ScrewCenter import CannyScrewCenter
 from absl import app, logging
 from time import time
 import math
+import io
 import json
+
+from Model.detect import Classifier
+from CannyScrewCenter.ScrewCenter import CannyScrewCenter
 from Utils import Logging
 
 Canny = CannyScrewCenter()
@@ -159,12 +161,12 @@ def find_and_move_to_screw(model):
 
 		if ImgRequest.status_code == requests.codes.ok:
 			# Read numpy array bytes
-			npzfile = np.load(ImgRequest.content)
+			np_zfile = np.load(io.BytesIO(ImgRequest.content))
 
 			# TODO: Breakpoint to get object forms. Do we need to format output
-			image1 = npzfile['arr_0']
-			f_len = npzfile['arr_1'] / 100 # To mm
-			image2 = npzfile['arr_2']
+			image1 = np_zfile['arr_0']
+			f_len = np_zfile['arr_1'] / 100 # To mm
+			image2 = np_zfile['arr_2']
 
 			# image1 = np.asarray(image1)
 			# image2 = np.asarray(image2)
