@@ -245,7 +245,7 @@ def main(_argv):
 	# detect_screws_in_stream(Model)
 	#find_and_move_to_screw(Model)
 
-	MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/{'Xd':300,'Yd':400,'Zd':500}")
+	MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/", data=bytes(json.dumps({'Xd':300,'Yd':400,'Zd':500})))
 	print(MoveRequest)
 
 
