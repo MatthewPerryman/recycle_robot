@@ -151,75 +151,102 @@ def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2):
 
 
 def find_and_move_to_screw(model):
-	Logging.write_log("client", "\nNew Run:\n")
-	try:
-		# Creating an request object to store the response
-		# The URL is referenced sys.argv[1]
+	moving_to_screw = False
+	while (not moving_to_screw):
+		Logging.write_log("client", "\nNew Run:\n")
+		try:
+			# Creating an request object to store the response
+			# The URL is referenced sys.argv[1]
 
-		ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
-		Logging.write_log("client", "Received Images from Server")
+			ImgRequest = requests.get("http://192.168.0.116:80/get_images_for_depth")
+			Logging.write_log("client", "Received Images from Server")
+
+			if ImgRequest.status_code == requests.codes.ok:
+				# Read numpy array bytes
+				np_zfile = np.load(io.BytesIO(ImgRequest.content))
+
+				image1 = np_zfile['arr_0']
+				f_len = np_zfile['arr_1'] / 100  # To mm
+				image2 = np_zfile['arr_2']
+
+				# Locate and box the screws in both images
+				output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
+				output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
+
+				if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
+					# Just to check image quality
+					cv2.imshow("Img1", output_img1)
+					cv2.waitKey(0)
+					cv2.imshow("Img2", output_img2)
+					cv2.waitKey(0)
+
+					if input("Proceed?: ") == 'y':
+						# Given at least one screw is detected, find the closest to the image center
+						closest_box1 = find_closest_box(image1, nums1, img_boxes1, scores1)
+						closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
+
+						# Index, coords, dist_to_center
+						bbx_center_1, dist_to_center1 = closest_box1[1], closest_box1[2]
+						dist_to_center2 = closest_box2[2]
+
+						motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
+
+						print(requests.post("http://192.168.0.116:80/move_by_vector/", data=json.dumps(motor_to_screw)).content)
+						moving_to_screw = True
+					else:
+						cv2.destroyAllWindows()
+				else:
+					print("Error: No object was detected in one of the frames")
+
+				cv2.destroyAllWindows()
+			else:
+				print("Error: {}".format(ImgRequest.status_code))
+		except Exception as e:
+			print(str(e))
+
+
+def fetch_label_store():
+	# TODO: Run test on robot movement function: What response given when move to out of bounds?
+	# Move to x_min, y_pos_max, z_reset
+	# Direction = -1
+	# Move robot:
+	#	(direction * 10mm) y axis - repeat
+	#	if out of bounds
+	#		direction *= -1
+	#		+10mm x axis
+	#			if out of bounds:
+	#				(direction * 10mm) y axis
+	#	(direction * 10mm) y axis -repeat
+	try:
+		MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector")
+		Logging.write_log("client", "Attempt Move Robot")
+		# Validate move
+
+		ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
+		Logging.write_log("client", "Recieved Image from Server")
 
 		if ImgRequest.status_code == requests.codes.ok:
 			# Read numpy array bytes
 			np_zfile = np.load(io.BytesIO(ImgRequest.content))
 
-			image1 = np_zfile['arr_0']
-			f_len = np_zfile['arr_1'] / 100  # To mm
-			image2 = np_zfile['arr_2']
+			image = np_zfile['arr_0']
 
-			# Locate and box the screws in both images
-			output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
-			output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
+			# Try to detect object in image
+			# Try to find bounds of screw
+			# Write image to file
+			# Try to store screw bounds to document with relation to image
 
-			if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
-				# Just to check image quality even if not detection occurs
-				cv2.imshow("Img1", output_img1)
-				cv2.waitKey(0)
-				cv2.imshow("Img2", output_img2)
-				cv2.waitKey(0)
-
-				if input("Proceed?: ") == 'n':
-					cv2.destroyAllWindows()
-					return False
-
-				# Given at least one screw is detected, find the closest to the image center
-				closest_box1 = find_closest_box(image1, nums1, img_boxes1, scores1)
-				closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
-
-				# Index, coords, dist_to_center
-				bbx_center_1, dist_to_center1 = closest_box1[1], closest_box1[2]
-				dist_to_center2 = closest_box2[2]
-
-				motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
-
-				print(requests.post("http://192.168.0.116:80/move_by_vector/", data=json.dumps(motor_to_screw)).content)
-
-				return True
-			else:
-				print("Error: No object was detected in one of the frames")
-
-			# cv2.imshow("Img1", output_img1)
-			# cv2.waitKey(0)
-			# cv2.imshow("Img2", output_img2)
-			# cv2.waitKey(0)
-
-			cv2.destroyAllWindows()
-
-			return False
-		else:
-			print("Error: {}".format(ImgRequest.status_code))
-			return False
 	except Exception as e:
 		print(str(e))
-
 
 def main(_argv):
 	Model = Classifier()
 
 	# detect_screws_in_stream(Model)
-	while True:
-		if find_and_move_to_screw(Model):
-			break
+	#find_and_move_to_screw(Model)
+
+	MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/{'Xd':300,'Yd':400,'Zd':500}")
+	print(MoveRequest)
 
 
 if __name__ == '__main__':
