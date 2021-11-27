@@ -218,7 +218,8 @@ def fetch_label_store():
 	#				(direction * 10mm) y axis
 	#	(direction * 10mm) y axis -repeat
 	try:
-		MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector")
+		MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/", data=bytes(json.dumps({'Xd': 300, 'Yd': 400, 'Zd': 500}), 'utf-8'))
+		print(MoveRequest.content)
 		Logging.write_log("client", "Attempt Move Robot")
 		# Validate move
 
@@ -240,13 +241,10 @@ def fetch_label_store():
 		print(str(e))
 
 def main(_argv):
-	#Model = Classifier()
+	Model = Classifier()
 
 	# detect_screws_in_stream(Model)
-	#find_and_move_to_screw(Model)
-
-	MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/", data=bytes(json.dumps({'Xd': 300, 'Yd': 400, 'Zd': 500}), 'utf-8'))
-	print(MoveRequest.content)
+	find_and_move_to_screw(Model)
 
 
 if __name__ == '__main__':
