@@ -230,3 +230,269 @@ Sat Nov 20 00:36:32 2021: Call image_stream get depth images
 Sat Nov 20 00:36:32 2021: Open camera
 Sat Nov 20 00:36:35 2021: First Photo
 Sat Nov 20 00:36:36 2021: Move Arm 1
+Sat Nov 20 15:56:48 2021: 
+New Run:
+
+Sat Nov 20 15:56:48 2021: Reset Location
+Sat Nov 20 15:56:49 2021: Call image_stream get depth images
+Sat Nov 20 15:56:49 2021: Open camera
+Sat Nov 20 15:56:52 2021: First Photo
+Sat Nov 20 15:56:53 2021: Move Arm 1
+Sat Nov 20 15:56:54 2021: Focus Camera in New Location
+Sat Nov 20 15:56:58 2021: Second Photo
+Sat Nov 20 15:56:58 2021: Move Arm 2
+Sat Nov 20 15:56:59 2021: Return from image_stream get depth images
+Sat Nov 20 15:56:59 2021: Compress Image
+Sat Nov 20 15:57:00 2021: Send Images
+Sat Nov 20 15:57:00 2021: 
+New Run:
+
+Sat Nov 20 15:57:00 2021: Reset Location
+Sat Nov 20 15:57:01 2021: Call image_stream get depth images
+Sat Nov 20 15:57:01 2021: Open camera
+Sat Nov 20 15:57:04 2021: First Photo
+Sat Nov 20 15:57:05 2021: Move Arm 1
+Sat Nov 20 15:57:05 2021: Focus Camera in New Location
+Sat Nov 20 15:57:09 2021: Second Photo
+Sat Nov 20 15:57:10 2021: Move Arm 2
+Sat Nov 20 15:57:10 2021: Return from image_stream get depth images
+Sat Nov 20 15:57:10 2021: Compress Image
+Sat Nov 20 15:57:11 2021: Send Images
+Sat Nov 20 15:57:11 2021: 
+New Run:
+
+Sat Nov 20 15:57:11 2021: Reset Location
+Sat Nov 20 15:57:13 2021: Call image_stream get depth images
+Sat Nov 20 15:57:13 2021: Open camera
+Sat Nov 20 15:57:16 2021: First Photo
+Sat Nov 20 15:57:16 2021: Move Arm 1
+Sat Nov 20 15:57:17 2021: Focus Camera in New Location
+Sat Nov 20 15:57:21 2021: Second Photo
+Sat Nov 20 15:57:21 2021: Move Arm 2
+Sat Nov 20 15:57:22 2021: Return from image_stream get depth images
+Sat Nov 20 15:57:22 2021: Compress Image
+Sat Nov 20 15:57:23 2021: Send Images
+Sat Nov 20 15:57:23 2021: 
+New Run:
+
+Sat Nov 20 15:57:23 2021: Reset Location
+Sat Nov 20 15:57:24 2021: Call image_stream get depth images
+Sat Nov 20 15:57:24 2021: Open camera
+Sat Nov 20 15:57:28 2021: First Photo
+Sat Nov 20 15:57:29 2021: Move Arm 1
+Sat Nov 20 15:57:29 2021: Focus Camera in New Location
+Sat Nov 20 15:57:34 2021: Second Photo
+Sat Nov 20 15:57:34 2021: Move Arm 2
+Sat Nov 20 15:57:35 2021: Return from image_stream get depth images
+Sat Nov 20 15:57:35 2021: Compress Image
+Sat Nov 20 15:57:36 2021: Send Images
+Sat Nov 20 16:26:40 2021: 
+New Run:
+
+Sat Nov 20 16:26:40 2021: Reset Location
+Sat Nov 20 16:26:41 2021: Call image_stream get depth images
+Sat Nov 20 16:26:41 2021: Open camera
+Sat Nov 20 16:26:44 2021: First Photo
+Sat Nov 20 16:26:44 2021: Move Arm 1
+Sat Nov 20 16:26:45 2021: Focus Camera in New Location
+Sat Nov 20 16:26:49 2021: Second Photo
+Sat Nov 20 16:26:50 2021: Move Arm 2
+Sat Nov 20 16:26:51 2021: Return from image_stream get depth images
+Sat Nov 20 16:26:51 2021: Compress Image
+Sat Nov 20 16:26:51 2021: Send Images
+Sat Nov 20 16:26:52 2021: 
+New Run:
+
+Sat Nov 20 16:26:52 2021: Reset Location
+Sat Nov 20 16:26:53 2021: Call image_stream get depth images
+Sat Nov 20 16:26:53 2021: Open camera
+Sat Nov 20 16:26:56 2021: First Photo
+Sat Nov 20 16:26:56 2021: Move Arm 1
+Sat Nov 20 16:26:57 2021: Focus Camera in New Location
+Sat Nov 20 16:27:01 2021: Second Photo
+Sat Nov 20 16:27:02 2021: Move Arm 2
+Sat Nov 20 16:27:02 2021: Return from image_stream get depth images
+Sat Nov 20 16:27:02 2021: Compress Image
+Sat Nov 20 16:27:03 2021: Send Images
+Sat Nov 20 16:27:03 2021: 
+New Run:
+
+Sat Nov 20 16:27:03 2021: Reset Location
+Sat Nov 20 16:27:04 2021: Call image_stream get depth images
+Sat Nov 20 16:27:04 2021: Open camera
+Sat Nov 20 16:27:07 2021: First Photo
+Sat Nov 20 16:27:08 2021: Move Arm 1
+Sat Nov 20 16:27:08 2021: Focus Camera in New Location
+Sat Nov 20 16:27:13 2021: Second Photo
+Sat Nov 20 16:27:13 2021: Move Arm 2
+Sat Nov 20 16:27:14 2021: Return from image_stream get depth images
+Sat Nov 20 16:27:14 2021: Compress Image
+Sat Nov 20 16:27:15 2021: Send Images
+Sat Nov 20 16:27:15 2021: 
+New Run:
+
+Sat Nov 20 16:27:15 2021: Reset Location
+Sat Nov 20 16:27:16 2021: Call image_stream get depth images
+Sat Nov 20 16:27:16 2021: Open camera
+Sat Nov 20 16:27:19 2021: First Photo
+Sat Nov 20 16:27:19 2021: Move Arm 1
+Sat Nov 20 16:27:20 2021: Focus Camera in New Location
+Sat Nov 20 16:27:24 2021: Second Photo
+Sat Nov 20 16:27:25 2021: Move Arm 2
+Sat Nov 20 16:27:25 2021: Return from image_stream get depth images
+Sat Nov 20 16:27:25 2021: Compress Image
+Sat Nov 20 16:27:26 2021: Send Images
+Sat Nov 20 17:48:13 2021: 
+New Run:
+
+Sat Nov 20 17:48:13 2021: Reset Location
+Sat Nov 20 17:48:14 2021: Call image_stream get depth images
+Sat Nov 20 17:48:14 2021: Open camera
+Sat Nov 20 17:48:18 2021: First Photo
+Sat Nov 20 17:48:18 2021: Move Arm 1
+Sat Nov 20 17:48:19 2021: Focus Camera in New Location
+Sat Nov 20 17:48:23 2021: Second Photo
+Sat Nov 20 17:48:24 2021: Move Arm 2
+Sat Nov 20 17:48:24 2021: Return from image_stream get depth images
+Sat Nov 20 17:48:24 2021: Compress Image
+Sat Nov 20 17:48:25 2021: Send Images
+Sat Nov 20 17:54:25 2021: 
+New Run:
+
+Sat Nov 20 17:54:25 2021: Reset Location
+Sat Nov 20 17:54:26 2021: Call image_stream get depth images
+Sat Nov 20 17:54:26 2021: Open camera
+Sat Nov 20 17:54:29 2021: First Photo
+Sat Nov 20 17:54:30 2021: Move Arm 1
+Sat Nov 20 17:54:30 2021: Focus Camera in New Location
+Sat Nov 20 17:54:34 2021: Second Photo
+Sat Nov 20 17:54:35 2021: Move Arm 2
+Sat Nov 20 17:54:35 2021: Return from image_stream get depth images
+Sat Nov 20 17:54:35 2021: Compress Image
+Sat Nov 20 17:54:36 2021: Send Images
+Sat Nov 20 18:07:46 2021: 
+New Run:
+
+Sat Nov 20 18:07:46 2021: Reset Location
+Sat Nov 20 18:07:47 2021: Call image_stream get depth images
+Sat Nov 20 18:07:47 2021: Open camera
+Sat Nov 20 18:07:50 2021: First Photo
+Sat Nov 20 18:07:50 2021: Move Arm 1
+Sat Nov 20 18:07:51 2021: Focus Camera in New Location
+Sat Nov 20 18:07:55 2021: Second Photo
+Sat Nov 20 18:07:55 2021: Move Arm 2
+Sat Nov 20 18:07:56 2021: Return from image_stream get depth images
+Sat Nov 20 18:07:56 2021: Compress Image
+Sat Nov 20 18:07:57 2021: Send Images
+Sat Nov 20 18:10:30 2021: 
+New Run:
+
+Sat Nov 20 18:10:30 2021: Reset Location
+Sat Nov 20 18:10:31 2021: Call image_stream get depth images
+Sat Nov 20 18:10:31 2021: Open camera
+Sat Nov 20 18:10:34 2021: First Photo
+Sat Nov 20 18:10:35 2021: Move Arm 1
+Sat Nov 20 18:10:35 2021: Focus Camera in New Location
+Sat Nov 20 18:10:39 2021: Second Photo
+Sat Nov 20 18:10:40 2021: Move Arm 2
+Sat Nov 20 18:10:41 2021: Return from image_stream get depth images
+Sat Nov 20 18:10:41 2021: Compress Image
+Sat Nov 20 18:10:41 2021: Send Images
+Sat Nov 20 18:18:27 2021: 
+New Run:
+
+Sat Nov 20 18:18:27 2021: Reset Location
+Sat Nov 20 18:18:28 2021: Call image_stream get depth images
+Sat Nov 20 18:18:28 2021: Open camera
+Sat Nov 20 18:18:31 2021: First Photo
+Sat Nov 20 18:18:32 2021: Move Arm 1
+Sat Nov 20 18:18:32 2021: Focus Camera in New Location
+Sat Nov 20 18:18:36 2021: Second Photo
+Sat Nov 20 18:18:37 2021: Move Arm 2
+Sat Nov 20 18:18:37 2021: Return from image_stream get depth images
+Sat Nov 20 18:18:37 2021: Compress Image
+Sat Nov 20 18:18:38 2021: Send Images
+Mon Nov 22 19:34:10 2021: 
+New Run:
+
+Mon Nov 22 19:34:10 2021: Reset Location
+Mon Nov 22 19:34:11 2021: Call image_stream get depth images
+Mon Nov 22 19:34:11 2021: Open camera
+Mon Nov 22 19:34:14 2021: First Photo
+Mon Nov 22 19:34:14 2021: Move Arm 1
+Mon Nov 22 19:34:15 2021: Focus Camera in New Location
+Mon Nov 22 19:34:24 2021: Second Photo
+Mon Nov 22 19:34:25 2021: Move Arm 2
+Mon Nov 22 19:34:25 2021: Return from image_stream get depth images
+Mon Nov 22 19:34:25 2021: Compress Image
+Mon Nov 22 19:34:26 2021: Send Images
+Mon Nov 22 19:54:31 2021: 
+New Run:
+
+Mon Nov 22 19:54:31 2021: Reset Location
+Mon Nov 22 19:54:32 2021: Call image_stream get depth images
+Mon Nov 22 19:54:32 2021: Open camera
+Mon Nov 22 19:54:35 2021: First Photo
+Mon Nov 22 19:54:36 2021: Move Arm 1
+Mon Nov 22 19:54:37 2021: Focus Camera in New Location
+Mon Nov 22 19:54:46 2021: Second Photo
+Mon Nov 22 19:54:46 2021: Move Arm 2
+Mon Nov 22 19:54:47 2021: Return from image_stream get depth images
+Mon Nov 22 19:54:47 2021: Compress Image
+Mon Nov 22 19:54:47 2021: Send Images
+Mon Nov 22 19:55:15 2021: 
+New Run:
+
+Mon Nov 22 19:55:15 2021: Reset Location
+Mon Nov 22 19:55:16 2021: Call image_stream get depth images
+Mon Nov 22 19:55:16 2021: Open camera
+Mon Nov 22 19:55:20 2021: First Photo
+Mon Nov 22 19:55:20 2021: Move Arm 1
+Mon Nov 22 19:55:21 2021: Focus Camera in New Location
+Mon Nov 22 19:55:30 2021: Second Photo
+Mon Nov 22 19:55:30 2021: Move Arm 2
+Mon Nov 22 19:55:31 2021: Return from image_stream get depth images
+Mon Nov 22 19:55:31 2021: Compress Image
+Mon Nov 22 19:55:31 2021: Send Images
+Mon Nov 22 19:55:32 2021: 
+New Run:
+
+Mon Nov 22 19:55:32 2021: Reset Location
+Mon Nov 22 19:55:33 2021: Call image_stream get depth images
+Mon Nov 22 19:55:33 2021: Open camera
+Mon Nov 22 19:55:36 2021: First Photo
+Mon Nov 22 19:55:36 2021: Move Arm 1
+Mon Nov 22 19:55:37 2021: Focus Camera in New Location
+Mon Nov 22 19:55:46 2021: Second Photo
+Mon Nov 22 19:55:47 2021: Move Arm 2
+Mon Nov 22 19:55:47 2021: Return from image_stream get depth images
+Mon Nov 22 19:55:47 2021: Compress Image
+Mon Nov 22 19:55:48 2021: Send Images
+Mon Nov 22 21:57:36 2021: 
+New Run:
+
+Mon Nov 22 21:57:36 2021: Reset Location
+Mon Nov 22 21:57:37 2021: Call image_stream get depth images
+Mon Nov 22 21:57:37 2021: Open camera
+Mon Nov 22 21:57:40 2021: First Photo
+Mon Nov 22 21:57:41 2021: Move Arm 1
+Mon Nov 22 21:57:42 2021: Focus Camera in New Location
+Mon Nov 22 21:57:45 2021: Second Photo
+Mon Nov 22 21:57:46 2021: Move Arm 2
+Mon Nov 22 21:57:46 2021: Return from image_stream get depth images
+Mon Nov 22 21:57:46 2021: Compress Image
+Mon Nov 22 21:57:47 2021: Send Images
+Mon Nov 22 21:58:02 2021: 
+New Run:
+
+Mon Nov 22 21:58:02 2021: Reset Location
+Mon Nov 22 21:58:03 2021: Call image_stream get depth images
+Mon Nov 22 21:58:03 2021: Open camera
+Mon Nov 22 21:58:06 2021: First Photo
+Mon Nov 22 21:58:06 2021: Move Arm 1
+Mon Nov 22 21:58:07 2021: Focus Camera in New Location
+Mon Nov 22 21:58:11 2021: Second Photo
+Mon Nov 22 21:58:12 2021: Move Arm 2
+Mon Nov 22 21:58:12 2021: Return from image_stream get depth images
+Mon Nov 22 21:58:12 2021: Compress Image
+Mon Nov 22 21:58:13 2021: Send Images
