@@ -32,11 +32,11 @@ def move_by_vector():
 	Yd = json_coord['Yd']
 	Zd = json_coord['Zd']
 
-	old, new = controller.move_by_vector((Xd, Yd, Zd))
+	response, new = controller.move_by_vector((Xd, Yd, Zd))
 
-	print("old: {}, new: {}".format(old, new))
+	print("response: {}, new: {}".format(response, new))
 
-	return "old: {}, new: {}".format(old, new)
+	return "response: {}, new: {}".format(response, new)
 
 
 # Compact command get information for screw localising
@@ -57,7 +57,8 @@ def get_images_for_depth():
 	buffer.seek(0)
 
 	Logging.write_log("server", "Send Images")
-	return send_file(buffer, attachment_filename = "images.txt")
+	print(buffer)
+	return send_file(buffer, as_attachment = True, attachment_filename='depth_imgs.csv', mimetype = "image/csv")
 
 @app.route('/get_photo', methods=['GET'])
 def live_photo():
