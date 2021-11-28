@@ -240,11 +240,44 @@ def fetch_label_store():
 	except Exception as e:
 		print(str(e))
 
+def find_robot_limit():
+	cmd_success = True
+	axis = 'y'
+	direction = 1
+	increment = 1
+	y_limit = 110
+
+	requests.post("http://192.168.0.116:80/set_position/",
+				  data=bytes(json.dumps({'Xd': 150, 'Yd': 0, 'Zd': 150}), 'utf-8'))
+
+	while cmd_success:
+		# @z=150 Closest x=150
+		if axis == 'x':
+			MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/",
+										data=bytes(json.dumps({'Xd': direction * 1, 'Yd': 0, 'Zd': 0}), 'utf-8'))
+		# @z=150 Left most y =
+		elif axis == 'y':
+			MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/",
+										data=bytes(json.dumps({'Xd': 0, 'Yd': direction * 1, 'Zd': 0}), 'utf-8'))
+		elif axis == 'z':
+			MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/",
+										data=bytes(json.dumps({'Xd': 0, 'Yd': 0, 'Zd': direction * 1}), 'utf-8'))
+		increment += 1
+
+		if MoveRequest.content != bytes('Move Successful: False', 'utf-8') and increment <= y_limit:
+			cmd_success = True
+		else:
+			cmd_success = False
+
+			MoveRequest = requests.get("http://192.168.0.116:80/get_position/")
+			print("Last Successful Move: {}".format(MoveRequest.content))
+
 def main(_argv):
-	Model = Classifier()
+	#Model = Classifier()
 
 	# detect_screws_in_stream(Model)
-	find_and_move_to_screw(Model)
+	#find_and_move_to_screw(Model)
+	find_robot_limit()
 
 
 if __name__ == '__main__':
