@@ -32,11 +32,9 @@ def move_by_vector():
 	Yd = json_coord['Yd']
 	Zd = json_coord['Zd']
 
-	response, new = controller.move_by_vector((Xd, Yd, Zd))
+	response = controller.move_by_vector((Xd, Yd, Zd))
 
-	print("response: {}, new: {}".format(response, new))
-
-	return "response: {}, new: {}".format(response, new)
+	return "Move Successful: {}".format(response)
 
 
 # Compact command get information for screw localising
@@ -59,6 +57,18 @@ def get_images_for_depth():
 	Logging.write_log("server", "Send Images")
 	print(buffer)
 	return send_file(buffer, as_attachment = True, attachment_filename='depth_imgs.csv', mimetype = "image/csv")
+
+# Set robot position
+@app.route('/set_position/', methods=['POST'])
+def set_position():
+	new_json = loads(request.data)
+	new_location = [new_json['Xd'], new_json['Yd'], new_json['Zd']]
+	return controller.move_to(new_location)
+
+# Retrieve robot position
+@app.route('/get_position/', methods=['GET'])
+def get_position():
+	return "Position: {}".format(controller.swift.get_position())
 
 @app.route('/get_photo', methods=['GET'])
 def live_photo():

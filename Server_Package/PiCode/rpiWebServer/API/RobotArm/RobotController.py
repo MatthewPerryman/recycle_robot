@@ -30,21 +30,22 @@ class RobotController:
 		
 		self.end_transmission()
 
-		return response, new_location
+		return response
 
 	## Move the robot arm to this vector
-	# TODO: Return boolean of success
 	def move_to(self, new_location, speed=100000):
 		self.start_transmission()
-
-		response = self.swift.set_position(x=new_location[0], y=new_location[1], z=new_location[2])
+		
+		# Wait = true to ensure response on move success or failure
+		response = self.swift.set_position(x=new_location[0], y=new_location[1], z=new_location[2], wait=True)
 
 		self.end_transmission()
-
-		if response == None:
-			response = "Failed to move"
+		
+		if self.swift.get_position() == new_location:
+			response = True
 		else:
-			response = "Move Completed"
+			response = False
+
 		return response
 
 	## Create the API context and put robot on standby
