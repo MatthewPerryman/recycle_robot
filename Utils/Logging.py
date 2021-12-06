@@ -1,6 +1,6 @@
 from time import time, ctime
 
-log_name = "/Utils/log_file_"
+log_name = "log_file_"
 log_extension = ".txt"
 
 

@@ -31,6 +31,9 @@ pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
 # Vector from motor tip to camera
 motor_to_camera = (-25, -2, 23)
 
+sign = lambda a: (a > 0) - (a < 0)
+mag = lambda a: a * sign(a)
+
 
 def detect_screws_in_stream(model):
 	while True:
@@ -191,7 +194,8 @@ def find_and_move_to_screw(model):
 
 						motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
 
-						print(requests.post("http://192.168.0.116:80/move_by_vector/", data=json.dumps(motor_to_screw)).content)
+						print(requests.post("http://192.168.0.116:80/move_by_vector/",
+											data=json.dumps(motor_to_screw)).content)
 						moving_to_screw = True
 					else:
 						cv2.destroyAllWindows()
@@ -206,7 +210,6 @@ def find_and_move_to_screw(model):
 
 
 def fetch_label_store():
-	# TODO: Run test on robot movement function: What response given when move to out of bounds?
 	# Move to x_min, y_pos_max, z_reset
 	# Direction = -1
 	# Move robot:
@@ -217,35 +220,74 @@ def fetch_label_store():
 	#			if out of bounds:
 	#				(direction * 10mm) y axis
 	#	(direction * 10mm) y axis -repeat
-	try:
-		MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/", data=bytes(json.dumps({'Xd': 300, 'Yd': 400, 'Zd': 500}), 'utf-8'))
-		print(MoveRequest.content)
-		Logging.write_log("client", "Attempt Move Robot")
-		# Validate move
+	direction = -1
+	photo_gap = 10
 
-		ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
-		Logging.write_log("client", "Recieved Image from Server")
+	x_value = 150
+	y_value = 120
+	y_limit = 120
 
-		if ImgRequest.status_code == requests.codes.ok:
-			# Read numpy array bytes
-			np_zfile = np.load(io.BytesIO(ImgRequest.content))
+	requests.post("http://192.168.0.116:80/set_position/",
+				  data=bytes(json.dumps({'Xd': x_value, 'Yd': y_value, 'Zd': 150}), 'utf-8'))
 
-			image = np_zfile['arr_0']
+	# Take photo
+	complete = False
+	while not complete:
+		x_delta = 0
+		y_delta = 0
+		try:
+			# Keep moving along the line
+			if mag(y_value + (direction * photo_gap)) <= y_limit:
+				y_value += direction * photo_gap
+				y_delta = direction * photo_gap
+			else:  # Move up x-axis, change direction
+				x_value += photo_gap
+				x_delta = photo_gap
+				direction = -direction
 
-			# Try to detect object in image
-			# Try to find bounds of screw
-			# Write image to file
-			# Try to store screw bounds to document with relation to image
+			moved = False
+			while not moved:
+				Logging.write_log("client", "Attempt Move Robot")
+				MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
+											 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
+				if MoveResponse.content != bytes('Move Successful: False', 'utf-8'):
+					moved = True
+				else:
+					# If not passed y center, move further towards center
+					if sign(direction) is not sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
+						y_value += direction * photo_gap
+						y_delta = direction * photo_gap
+						x_delta = 0
+					else:
+						moved = True
+						complete = True
 
-	except Exception as e:
-		print(str(e))
+			ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
+			Logging.write_log("client", "Received Image from Server")
+
+			if ImgRequest.status_code == requests.codes.ok:
+				# Read numpy array bytes
+				np_zfile = np.load(io.BytesIO(ImgRequest.content))
+
+				image = np_zfile['arr_0']
+
+		# Try to detect object in image
+		# Try to find bounds of screw
+		# Write image to file
+		# Try to store screw bounds to document with relation to image
+
+		except Exception as e:
+			print(str(e))
+
 
 def find_robot_limit():
 	cmd_success = True
-	axis = 'y'
-	direction = 1
+	axis = 'x'
+	direction = -1
 	increment = 1
-	y_limit = 110
+	y_limit = 120
+	# Not necessary
+	x_limit = 150
 
 	requests.post("http://192.168.0.116:80/set_position/",
 				  data=bytes(json.dumps({'Xd': 150, 'Yd': 0, 'Zd': 150}), 'utf-8'))
@@ -253,31 +295,33 @@ def find_robot_limit():
 	while cmd_success:
 		# @z=150 Closest x=150
 		if axis == 'x':
-			MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/",
-										data=bytes(json.dumps({'Xd': direction * 1, 'Yd': 0, 'Zd': 0}), 'utf-8'))
+			MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
+										 data=bytes(json.dumps({'Xd': direction * 1, 'Yd': 0, 'Zd': 0}), 'utf-8'))
 		# @z=150 Left most y =
 		elif axis == 'y':
-			MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/",
-										data=bytes(json.dumps({'Xd': 0, 'Yd': direction * 1, 'Zd': 0}), 'utf-8'))
+			MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
+										 data=bytes(json.dumps({'Xd': 0, 'Yd': direction * 1, 'Zd': 0}), 'utf-8'))
 		elif axis == 'z':
-			MoveRequest = requests.post("http://192.168.0.116:80/move_by_vector/",
-										data=bytes(json.dumps({'Xd': 0, 'Yd': 0, 'Zd': direction * 1}), 'utf-8'))
+			MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
+										 data=bytes(json.dumps({'Xd': 0, 'Yd': 0, 'Zd': direction * 1}), 'utf-8'))
 		increment += 1
 
-		if MoveRequest.content != bytes('Move Successful: False', 'utf-8') and increment <= y_limit:
+		if MoveResponse.content != bytes('Move Successful: False', 'utf-8') and increment <= y_limit:
 			cmd_success = True
 		else:
 			cmd_success = False
 
-			MoveRequest = requests.get("http://192.168.0.116:80/get_position/")
-			print("Last Successful Move: {}".format(MoveRequest.content))
+			MoveResponse = requests.get("http://192.168.0.116:80/get_position/")
+			print("Last Successful Move: {}".format(MoveResponse.content))
+
 
 def main(_argv):
-	#Model = Classifier()
+	# Model = Classifier()
 
 	# detect_screws_in_stream(Model)
-	#find_and_move_to_screw(Model)
-	find_robot_limit()
+	# find_and_move_to_screw(Model)
+	# find_robot_limit()
+	fetch_label_store()
 
 
 if __name__ == '__main__':
