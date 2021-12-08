@@ -224,6 +224,7 @@ def fetch_label_store():
 	photo_gap = 10
 
 	x_value = 150
+	x_move_complete = True
 	y_value = 120
 	y_limit = 120
 
@@ -240,27 +241,32 @@ def fetch_label_store():
 			if mag(y_value + (direction * photo_gap)) <= y_limit:
 				y_value += direction * photo_gap
 				y_delta = direction * photo_gap
+
+				MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
+											 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
+				if MoveResponse.content != bytes('Move Successful: False', 'utf-8'):
+					print("Successful Move")
 			else:  # Move up x-axis, change direction
 				x_value += photo_gap
 				x_delta = photo_gap
 				direction = -direction
 
-			moved = False
-			while not moved:
-				Logging.write_log("client", "Attempt Move Robot")
-				MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
-											 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
-				if MoveResponse.content != bytes('Move Successful: False', 'utf-8'):
-					moved = True
-				else:
-					# If not passed y center, move further towards center
-					if sign(direction) is not sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
-						y_value += direction * photo_gap
-						y_delta = direction * photo_gap
-						x_delta = 0
+				while True:
+					Logging.write_log("client", "Attempt Move Robot")
+
+					MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
+												 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
+					if MoveResponse.content != bytes('Move Successful: False', 'utf-8'):
+						break
 					else:
-						moved = True
-						complete = True
+						# If not passed y center, move further towards center
+						if sign(direction) is not sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
+							y_value += direction * photo_gap
+							y_delta = direction * photo_gap
+						# Crossed y=0 and cannot move forward in x means reached far side
+						elif sign(direction) == sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
+							complete = True
+							break
 
 			ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
 			Logging.write_log("client", "Received Image from Server")
