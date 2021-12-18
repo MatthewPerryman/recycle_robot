@@ -208,8 +208,19 @@ def find_and_move_to_screw(model):
 		except Exception as e:
 			print(str(e))
 
+def get_photo():
+	ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
+	Logging.write_log("client", "Received Image from Server")
 
-def fetch_label_store():
+	if ImgRequest.status_code == requests.codes.ok:
+		# Read numpy array bytes
+		np_zfile = np.load(io.BytesIO(ImgRequest.content))
+
+		image = np_zfile['arr_0']
+
+		return image
+
+def fetch_label_store(model):
 	# Move to x_min, y_pos_max, z_reset
 	# Direction = -1
 	# Move robot:
@@ -232,8 +243,10 @@ def fetch_label_store():
 				  data=bytes(json.dumps({'Xd': x_value, 'Yd': y_value, 'Zd': 150}), 'utf-8'))
 
 	# Take photo
-	complete = False
-	while not complete:
+	image = get_photo()
+
+	scan_complete = False
+	while not scan_complete:
 		x_delta = 0
 		y_delta = 0
 		try:
@@ -244,20 +257,21 @@ def fetch_label_store():
 
 				MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
 											 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
-				if MoveResponse.content != bytes('Move Successful: False', 'utf-8'):
+				if MoveResponse.content:
 					print("Successful Move")
 			else:  # Move up x-axis, change direction
 				x_value += photo_gap
 				x_delta = photo_gap
 				direction = -direction
 
-				while True:
+				moved_in_x = False
+				while not moved_in_x:
 					Logging.write_log("client", "Attempt Move Robot")
 
 					MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
 												 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
-					if MoveResponse.content != bytes('Move Successful: False', 'utf-8'):
-						break
+					if MoveResponse.content:
+						moved_in_x = True
 					else:
 						# If not passed y center, move further towards center
 						if sign(direction) is not sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
@@ -265,17 +279,25 @@ def fetch_label_store():
 							y_delta = direction * photo_gap
 						# Crossed y=0 and cannot move forward in x means reached far side
 						elif sign(direction) == sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
-							complete = True
-							break
+							scan_complete = True
+							moved_in_x = True
 
-			ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
-			Logging.write_log("client", "Received Image from Server")
+			# Take photo
+			image = get_photo()
 
-			if ImgRequest.status_code == requests.codes.ok:
-				# Read numpy array bytes
-				np_zfile = np.load(io.BytesIO(ImgRequest.content))
+			# If any objects are detected, save the boudning box numbers in a file associated with the image
+			output_img, img_boxes, scores, nums = model.detect(image)
 
-				image = np_zfile['arr_0']
+			if int(nums[0]) is not 0:
+				# Open output json file
+				# Append bbx coords to file in 2 element array
+			else:
+				# Open output json file
+				# Append empty array 
+			
+			# Write image to Autogathered_Dataset
+
+
 
 		# Try to detect object in image
 		# Try to find bounds of screw
@@ -322,12 +344,12 @@ def find_robot_limit():
 
 
 def main(_argv):
-	# Model = Classifier()
+	Model = Classifier()
 
 	# detect_screws_in_stream(Model)
 	# find_and_move_to_screw(Model)
 	# find_robot_limit()
-	fetch_label_store()
+	fetch_label_store(Model)
 
 
 if __name__ == '__main__':

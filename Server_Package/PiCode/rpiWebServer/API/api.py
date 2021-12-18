@@ -34,7 +34,7 @@ def move_by_vector():
 
 	response = controller.move_by_vector((Xd, Yd, Zd))
 
-	return "Move Successful: {}".format(response)
+	return response
 
 
 # Compact command get information for screw localising
@@ -73,7 +73,14 @@ def get_position():
 @app.route('/get_photo', methods=['GET'])
 def live_photo():
 	image = image_stream.take_photo()
-	return image
+	Logging.write_log("server", "Compress Image")
+
+	buffer = io.BytesIO()
+	np.savez_compressed(buffer, image)
+	buffer.seek(0)
+
+	Logging.write_log("server", "Send Image")
+	return send_file(buffer, as_attachment = True, attachment_filename='singe_image.csv', mimetype = "image/csv")
 
 
 if __name__ == 'Server_Package.PiCode.rpiWebServer.API.api':
