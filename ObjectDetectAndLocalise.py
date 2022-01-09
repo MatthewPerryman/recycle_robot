@@ -7,10 +7,14 @@ from time import time
 import math
 import io
 import json
+from string import Template
+from PIL import Image as im
 
 from Model.detect import Classifier
 from CannyScrewCenter.ScrewCenter import CannyScrewCenter
 from Utils import Logging
+
+IMG_LABELS_FILE = "Autogathered_Dataset/img_labels.json"
 
 Canny = CannyScrewCenter()
 
@@ -220,17 +224,96 @@ def get_photo():
 
 		return image
 
+def try_annotate_and_save_image(model, image, image_id):
+	annotation_id = image_id
+	image_name = str(image_id) + ".png"
+
+	Img_Json_Entry = Template('''{
+									"id": $img_id,
+									"license": 1,
+									"file_name": $img_name,
+									"height": $img_height,
+									"width": $img_width,
+									"date_captured": ""
+								}''')
+
+	Annotations_Json_Entry = Template('''{
+											"id": $annot_id,
+											"image_id": $img_id,
+											"category_id": 1,
+											"bbox": $bbx,
+											"area": $bbx_area,
+											"segmentation": [],
+											"iscrowd": 0
+										}''')
+
+	# Save image
+	img_data = im.fromarray(image)
+	img_data.save(image_name)
+
+	# If any objects are detected, save the boudning box numbers in a file associated with the image
+	output_img, img_boxes, scores, nums = model.detect(image)
+
+	if int(nums[0]) is not 0:
+		# Read in from output file
+		with open(IMG_LABELS_FILE, "r") as labels_file:
+			labels_data = json.load(labels_file)
+		
+		for i in range(nums[0]):
+			# Prepare values for populating entry
+			box_area = abs(img_boxes[i][1][0]-img_boxes[i][0][0]) * abs(img_boxes[i][1][1]-img_boxes[i][0][1])
+
+			detected_values = dict(img_id = image_id,
+									img_name = image_name,
+									img_height = image_shape[1],
+									img_width = image_shape[0],
+									annot_id = annotation_id,
+									bbx = img_boxes[i],
+									bbx_area = box_area)
+
+			# Add entry to list, followed by comma unless last entry
+			box_entry = Annotations_Json_Entry.substitute(detected_values)
+			box_entry = box_entry + ", \n" if i is not range(nums[0])[-1] else box_entry
+
+		# Prepare values for populating entry
+		image_values = dict(img_id = image_id,
+							img_name = image_name,
+							img_height = image_shape[1],
+							img_width = image_shape[0])
+
+		image_entry = Img_Json_Entry.substitute(image_values)
+
+		# Add image json
+		labels_data["images"].append(image_entry)
+		# Add bbx json
+		labels_data["annotations"].append(box_entry)
+
+		# Write to output file
+		with open(IMG_LABELS_FILE, "w") as labels_file:
+			json.dump(labels_data, labels_file)
+	else:
+		# Read in from output file
+		with open(IMG_LABELS_FILE, "r") as labels_file:
+			labels_data = json.load(labels_file)
+		
+		# Prepare values for populating entry
+		image_values = dict(img_id = image_id,
+							img_name = image_name,
+							img_height = image_shape[1],
+							img_width = image_shape[0])
+
+		image_entry = Img_Json_Entry.substitute(image_values)
+
+		# Add image json
+		labels_data["images"].append(image_entry)
+
+		# Write to output file
+		with open(IMG_LABELS_FILE, "w") as labels_file:
+			json.dump(labels_data, labels_file)
+
 def fetch_label_store(model):
-	# Move to x_min, y_pos_max, z_reset
-	# Direction = -1
-	# Move robot:
-	#	(direction * 10mm) y axis - repeat
-	#	if out of bounds
-	#		direction *= -1
-	#		+10mm x axis
-	#			if out of bounds:
-	#				(direction * 10mm) y axis
-	#	(direction * 10mm) y axis -repeat
+	image_id = 0
+
 	direction = -1
 	photo_gap = 10
 
@@ -245,10 +328,14 @@ def fetch_label_store(model):
 	# Take photo
 	image = get_photo()
 
+	try_annotate_and_save_image(model, image, image_id)
+
 	scan_complete = False
 	while not scan_complete:
+		image_id += 1
 		x_delta = 0
 		y_delta = 0
+
 		try:
 			# Keep moving along the line
 			if mag(y_value + (direction * photo_gap)) <= y_limit:
@@ -285,24 +372,7 @@ def fetch_label_store(model):
 			# Take photo
 			image = get_photo()
 
-			# If any objects are detected, save the boudning box numbers in a file associated with the image
-			output_img, img_boxes, scores, nums = model.detect(image)
-
-			if int(nums[0]) is not 0:
-				# Open output json file
-				# Append bbx coords to file in 2 element array
-			else:
-				# Open output json file
-				# Append empty array 
-			
-			# Write image to Autogathered_Dataset
-
-
-
-		# Try to detect object in image
-		# Try to find bounds of screw
-		# Write image to file
-		# Try to store screw bounds to document with relation to image
+			try_annotate_and_save_image(model, image, image_id)
 
 		except Exception as e:
 			print(str(e))

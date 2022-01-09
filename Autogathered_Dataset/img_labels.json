@@ -1,0 +1,28 @@
+{
+    "info": {
+        "year": "2022",
+        "version": "1",
+        "description": "Suggested labels of for new dataset, not all items have labels",
+        "contributor": "Matthew",
+        "url": "https://app.roboflow.ai/datasets/hard-hat-sample/1",
+        "date_created": "2022-01-08T16:56:00+00:00"
+    },
+    "licenses": [
+        {
+            "id": 1,
+            "url": "",
+            "name": "Public Domain"
+        }
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "phillips",
+            "supercategory": "none"
+        }
+    ],
+    "images": [
+    ],
+    "annotations": [
+    ]
+}
