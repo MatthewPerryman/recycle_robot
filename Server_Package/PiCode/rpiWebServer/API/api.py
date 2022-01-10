@@ -1,5 +1,5 @@
 # This code is only run on rpi server
-from json import loads
+from json import loads, dumps
 from flask import Flask, request, send_file
 from Utils import Logging
 from .CamStream import ImageStream
@@ -63,7 +63,7 @@ def get_images_for_depth():
 def set_position():
 	new_json = loads(request.data)
 	new_location = [new_json['Xd'], new_json['Yd'], new_json['Zd']]
-	return controller.move_to(new_location)
+	return app.response_class(dumps(response = controller.move_to(new_location)), content_type='application/json')
 
 # Retrieve robot position
 @app.route('/get_position/', methods=['GET'])
