@@ -47,7 +47,7 @@ def detect_screws_in_stream(model):
 			c1 = time()
 			# Creating an request object to store the response
 			# The URL is referenced sys.argv[1]
-			ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
+			ImgRequest = requests.get("http://192.168.0.116:80/get_photo")
 			# Verifying whether the specified URL exist or not
 			if ImgRequest.status_code == requests.codes.ok:
 				# Read numpy array bytes
@@ -213,7 +213,7 @@ def find_and_move_to_screw(model):
 			print(str(e))
 
 def get_photo():
-	ImgRequest = requests.get("http://192.168.0.116:80/live_photo")
+	ImgRequest = requests.get("http://192.168.0.116:80/get_photo")
 	Logging.write_log("client", "Received Image from Server")
 
 	if ImgRequest.status_code == requests.codes.ok:
