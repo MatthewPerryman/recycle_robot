@@ -228,7 +228,7 @@ def get_photo():
 
 def try_annotate_and_save_image(model, image, image_id):
 	annotation_id = image_id
-	image_name = str(image_id) + ".png"
+	image_name = "Autogathered_Dataset/" + str(image_id) + ".png"
 
 	Img_Json_Entry = Template('''{
 									"id": $img_id,
