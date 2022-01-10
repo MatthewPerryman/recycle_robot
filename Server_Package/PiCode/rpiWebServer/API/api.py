@@ -73,7 +73,7 @@ def get_position():
 	return "Position: {}".format(controller.swift.get_position())
 
 @app.route('/get_photo', methods=['GET'])
-def live_photo():
+def get_photo():
 	image = image_stream.take_photo()
 	Logging.write_log("server", "Compress Image")
 
@@ -82,7 +82,6 @@ def live_photo():
 	buffer.seek(0)
 
 	Logging.write_log("server", "Send Image")
-	print("Sending Image")
 	return send_file(buffer, as_attachment = True, attachment_filename='singe_image.csv', mimetype = "image/csv")
 
 
