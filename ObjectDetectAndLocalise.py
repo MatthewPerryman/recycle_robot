@@ -344,7 +344,7 @@ def fetch_label_store(model):
 
 				MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
 											 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
-				if MoveResponse.content:
+				if json.loads(MoveResponse.content)['response']:
 					print("Successful Move")
 			else:  # Move up x-axis, change direction
 				x_value += photo_gap
@@ -357,7 +357,7 @@ def fetch_label_store(model):
 
 					MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
 												 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
-					if MoveResponse.content:
+					if json.loads(MoveResponse.content)['response']:
 						moved_in_x = True
 					else:
 						# If not passed y center, move further towards center

@@ -1,5 +1,5 @@
 # This code is only run on rpi server
-from json import loads, dumps
+import json
 from flask import Flask, request, send_file
 from Utils import Logging
 from .CamStream import ImageStream
@@ -27,14 +27,14 @@ def increment_position():
 
 @app.route('/move_by_vector/', methods=['POST'])
 def move_by_vector():
-	json_coord = loads(request.data)
+	json_coord = json.loads(request.data)
 	Xd = json_coord['Xd']
 	Yd = json_coord['Yd']
 	Zd = json_coord['Zd']
 
 	response = controller.move_by_vector((Xd, Yd, Zd))
 
-	return response
+	return app.response_class(json.dumps(response = response, content_type='application/json'))
 
 
 # Compact command get information for screw localising
@@ -61,9 +61,11 @@ def get_images_for_depth():
 # Set robot position
 @app.route('/set_position/', methods=['POST'])
 def set_position():
-	new_json = loads(request.data)
+	new_json = json.loads(request.data)
 	new_location = [new_json['Xd'], new_json['Yd'], new_json['Zd']]
-	return app.response_class(dumps(response = controller.move_to(new_location)), content_type='application/json')
+
+	response = controller.move_to(new_location)
+	return app.response_class(json.dumps(response = response), content_type='application/json')
 
 # Retrieve robot position
 @app.route('/get_position/', methods=['GET'])
