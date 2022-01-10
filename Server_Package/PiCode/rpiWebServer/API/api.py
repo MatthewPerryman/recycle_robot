@@ -77,6 +77,7 @@ def get_photo():
 	image = image_stream.take_photo()
 	Logging.write_log("server", "Compress Image")
 
+	print(image.shape())
 	buffer = io.BytesIO()
 	np.savez_compressed(buffer, image)
 	buffer.seek(0)

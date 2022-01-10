@@ -212,17 +212,19 @@ def find_and_move_to_screw(model):
 		except Exception as e:
 			print(str(e))
 
+
 def get_photo():
 	ImgRequest = requests.get("http://192.168.0.116:80/get_photo")
 	Logging.write_log("client", "Received Image from Server")
 
 	if ImgRequest.status_code == requests.codes.ok:
 		# Read numpy array bytes
-		np_zfile = np.load(io.BytesIO(ImgRequest.content))
+		np_zfile = np.load(io.BytesIO(ImgRequest.content), allow_pickle=True)
 
 		image = np_zfile['arr_0']
 
 		return image
+
 
 def try_annotate_and_save_image(model, image, image_id):
 	annotation_id = image_id
@@ -258,28 +260,28 @@ def try_annotate_and_save_image(model, image, image_id):
 		# Read in from output file
 		with open(IMG_LABELS_FILE, "r") as labels_file:
 			labels_data = json.load(labels_file)
-		
+
 		for i in range(nums[0]):
 			# Prepare values for populating entry
-			box_area = abs(img_boxes[i][1][0]-img_boxes[i][0][0]) * abs(img_boxes[i][1][1]-img_boxes[i][0][1])
+			box_area = abs(img_boxes[i][1][0] - img_boxes[i][0][0]) * abs(img_boxes[i][1][1] - img_boxes[i][0][1])
 
-			detected_values = dict(img_id = image_id,
-									img_name = image_name,
-									img_height = image_shape[1],
-									img_width = image_shape[0],
-									annot_id = annotation_id,
-									bbx = img_boxes[i],
-									bbx_area = box_area)
+			detected_values = dict(img_id=image_id,
+								   img_name=image_name,
+								   img_height=image_shape[1],
+								   img_width=image_shape[0],
+								   annot_id=annotation_id,
+								   bbx=img_boxes[i],
+								   bbx_area=box_area)
 
 			# Add entry to list, followed by comma unless last entry
 			box_entry = Annotations_Json_Entry.substitute(detected_values)
 			box_entry = box_entry + ", \n" if i is not range(nums[0])[-1] else box_entry
 
 		# Prepare values for populating entry
-		image_values = dict(img_id = image_id,
-							img_name = image_name,
-							img_height = image_shape[1],
-							img_width = image_shape[0])
+		image_values = dict(img_id=image_id,
+							img_name=image_name,
+							img_height=image_shape[1],
+							img_width=image_shape[0])
 
 		image_entry = Img_Json_Entry.substitute(image_values)
 
@@ -295,12 +297,12 @@ def try_annotate_and_save_image(model, image, image_id):
 		# Read in from output file
 		with open(IMG_LABELS_FILE, "r") as labels_file:
 			labels_data = json.load(labels_file)
-		
+
 		# Prepare values for populating entry
-		image_values = dict(img_id = image_id,
-							img_name = image_name,
-							img_height = image_shape[1],
-							img_width = image_shape[0])
+		image_values = dict(img_id=image_id,
+							img_name=image_name,
+							img_height=image_shape[1],
+							img_width=image_shape[0])
 
 		image_entry = Img_Json_Entry.substitute(image_values)
 
@@ -310,6 +312,7 @@ def try_annotate_and_save_image(model, image, image_id):
 		# Write to output file
 		with open(IMG_LABELS_FILE, "w") as labels_file:
 			json.dump(labels_data, labels_file)
+
 
 def fetch_label_store(model):
 	image_id = 0
@@ -356,7 +359,8 @@ def fetch_label_store(model):
 					Logging.write_log("client", "Attempt Move Robot")
 
 					MoveResponse = requests.post("http://192.168.0.116:80/move_by_vector/",
-												 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}), 'utf-8'))
+												 data=bytes(json.dumps({'Xd': x_delta, 'Yd': y_delta, 'Zd': 0}),
+															'utf-8'))
 					if json.loads(MoveResponse.content)['response']:
 						moved_in_x = True
 					else:
