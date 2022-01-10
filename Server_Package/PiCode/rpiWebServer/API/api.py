@@ -82,6 +82,7 @@ def live_photo():
 	buffer.seek(0)
 
 	Logging.write_log("server", "Send Image")
+	print("Sending Image")
 	return send_file(buffer, as_attachment = True, attachment_filename='singe_image.csv', mimetype = "image/csv")
 
 
