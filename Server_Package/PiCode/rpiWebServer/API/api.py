@@ -1,6 +1,6 @@
 # This code is only run on rpi server
 import json
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from Utils import Logging
 from .CamStream import ImageStream
 from .RobotArm import RobotController
@@ -34,7 +34,7 @@ def move_by_vector():
 
 	response = controller.move_by_vector((Xd, Yd, Zd))
 
-	return app.response_class(json.dumps(response = response, content_type='application/json'))
+	return jsonify(response = response)
 
 
 # Compact command get information for screw localising
@@ -65,7 +65,7 @@ def set_position():
 	new_location = [new_json['Xd'], new_json['Yd'], new_json['Zd']]
 
 	response = controller.move_to(new_location)
-	return app.response_class(json.dumps(response = response), content_type='application/json')
+	return jsonify(response = response)
 
 # Retrieve robot position
 @app.route('/get_position/', methods=['GET'])
