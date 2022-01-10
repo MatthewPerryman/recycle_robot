@@ -96,7 +96,7 @@ class ImageStream():
 		self.camera.close()
 
 		# Returns image in numpy array format.
-		return image_array, self.max_index
+		return image_array
 
 	def get_imgs_for_depth(self, arm_move_function, write_log):
 		Logging.write_log("server", "Open camera")

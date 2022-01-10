@@ -219,7 +219,7 @@ def get_photo():
 
 	if ImgRequest.status_code == requests.codes.ok:
 		# Read numpy array bytes
-		np_zfile = np.load(io.BytesIO(ImgRequest.content), allow_pickle=True)
+		np_zfile = np.load(io.BytesIO(ImgRequest.content))
 
 		image = np_zfile['arr_0']
 
