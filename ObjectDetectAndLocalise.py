@@ -226,14 +226,9 @@ def get_photo():
 		return image
 
 
-def try_annotate_and_save_image(model, image, image_id):
+def try_annotate_and_save_image(model, image, laptop_id, image_id):
 	annotation_id = image_id
-	image_name = "Autogathered_Dataset/" + str(image_id) + ".png"
-
-	Img_Json_Entry = Template('{\"id\": $img_id, \"license\": 1, \"file_name\": $img_name, \"height\": $img_height, \"width\": $img_width, \"date_captured\": \"\"}')
-
-	Annotations_Json_Entry = Template('{\"id\": $annot_id, \"image_id\": $img_id, \"category_id\": 1, \"bbox\": $bbx, \"area\": $bbx_area, \"segmentation\": [], \"iscrowd\": 0}')
-
+	image_name = "Autogathered_Dataset/" + str((laptop_id * 1000) + image_id) + ".png"
 	# Save image
 	img_data = im.fromarray(image)
 	img_data.save(image_name)
@@ -250,16 +245,17 @@ def try_annotate_and_save_image(model, image, image_id):
 			# Prepare values for populating entry
 			box_area = int(abs(img_boxes[i][1][0] - img_boxes[i][0][0]) * abs(img_boxes[i][1][1] - img_boxes[i][0][1]))
 
-			detected_values = {"id": annotation_id,
-								"image_id": image_id,
+			detected_values = {	"id": annotation_id,
+								"image_id": (laptop_id * 1000) + image_id,
 								"category_id": 1,
-								"bbox": [[int(img_boxes[i][0][0]), int(img_boxes[i][0][1])], [int(img_boxes[i][1][0]), int(img_boxes[i][1][1])]],
+								"bbox": [[int(img_boxes[i][0][0]), int(img_boxes[i][0][1])],
+										[int(img_boxes[i][1][0]), int(img_boxes[i][1][1])]],
 								"bbox_area": box_area}
 
 			labels_data["annotations"].append(detected_values)
 
 		# Prepare values for populating entry
-		image_values = {"id": image_id,
+		image_values = {"id": (laptop_id * 1000) + image_id,
 						"filename": image_name,
 						"img_height": image_shape[1],
 						"img_width": image_shape[0]}
@@ -289,7 +285,7 @@ def try_annotate_and_save_image(model, image, image_id):
 			json.dump(labels_data, labels_file)
 
 
-def fetch_label_store(model):
+def fetch_label_store(model, laptop_id):
 	image_id = 0
 
 	direction = -1
@@ -306,7 +302,7 @@ def fetch_label_store(model):
 	# Take photo
 	image = get_photo()
 
-	try_annotate_and_save_image(model, image, image_id)
+	try_annotate_and_save_image(model, image, laptop_id, image_id)
 
 	scan_complete = False
 	while not scan_complete:
@@ -346,12 +342,12 @@ def fetch_label_store(model):
 						# Crossed y=0 and cannot move forward in x means reached far side
 						elif sign(direction) == sign(y_value) and mag(y_value + (direction * photo_gap)) <= y_limit:
 							scan_complete = True
-							moved_in_x = True
+							break
+			if not scan_complete:
+				# Take photo
+				image = get_photo()
 
-			# Take photo
-			image = get_photo()
-
-			try_annotate_and_save_image(model, image, image_id)
+				try_annotate_and_save_image(model, image, laptop_id, image_id)
 
 		except Exception as e:
 			print(str(e))
@@ -394,11 +390,19 @@ def find_robot_limit():
 
 def main(_argv):
 	Model = Classifier()
+	laptop_id = 1
+	another_laptop = True
 
 	# detect_screws_in_stream(Model)
 	# find_and_move_to_screw(Model)
 	# find_robot_limit()
-	fetch_label_store(Model)
+	while another_laptop:
+		fetch_label_store(Model, laptop_id)
+		if input("Scan Another Laptop?: ") == 'Y' or input("Scan Another Laptop?: ") == 'y':
+			laptop_id += 1
+			another_laptop = True
+		else:
+			another_laptop = False
 
 
 if __name__ == '__main__':
