@@ -230,24 +230,9 @@ def try_annotate_and_save_image(model, image, image_id):
 	annotation_id = image_id
 	image_name = "Autogathered_Dataset/" + str(image_id) + ".png"
 
-	Img_Json_Entry = Template('''{
-									"id": $img_id,
-									"license": 1,
-									"file_name": $img_name,
-									"height": $img_height,
-									"width": $img_width,
-									"date_captured": ""
-								}''')
+	Img_Json_Entry = Template('{\"id\": $img_id, \"license\": 1, \"file_name\": $img_name, \"height\": $img_height, \"width\": $img_width, \"date_captured\": \"\"}')
 
-	Annotations_Json_Entry = Template('''{
-											"id": $annot_id,
-											"image_id": $img_id,
-											"category_id": 1,
-											"bbox": $bbx,
-											"area": $bbx_area,
-											"segmentation": [],
-											"iscrowd": 0
-										}''')
+	Annotations_Json_Entry = Template('{\"id\": $annot_id, \"image_id\": $img_id, \"category_id\": 1, \"bbox\": $bbx, \"area\": $bbx_area, \"segmentation\": [], \"iscrowd\": 0}')
 
 	# Save image
 	img_data = im.fromarray(image)
@@ -263,32 +248,24 @@ def try_annotate_and_save_image(model, image, image_id):
 
 		for i in range(nums[0]):
 			# Prepare values for populating entry
-			box_area = abs(img_boxes[i][1][0] - img_boxes[i][0][0]) * abs(img_boxes[i][1][1] - img_boxes[i][0][1])
+			box_area = int(abs(img_boxes[i][1][0] - img_boxes[i][0][0]) * abs(img_boxes[i][1][1] - img_boxes[i][0][1]))
 
-			detected_values = dict(img_id=image_id,
-								   img_name=image_name,
-								   img_height=image_shape[1],
-								   img_width=image_shape[0],
-								   annot_id=annotation_id,
-								   bbx=img_boxes[i],
-								   bbx_area=box_area)
+			detected_values = {"id": annotation_id,
+								"image_id": image_id,
+								"category_id": 1,
+								"bbox": [[int(img_boxes[i][0][0]), int(img_boxes[i][0][1])], [int(img_boxes[i][1][0]), int(img_boxes[i][1][1])]],
+								"bbox_area": box_area}
 
-			# Add entry to list, followed by comma unless last entry
-			box_entry = Annotations_Json_Entry.substitute(detected_values)
-			box_entry = box_entry + ", \n" if i is not range(nums[0])[-1] else box_entry
+			labels_data["annotations"].append(detected_values)
 
 		# Prepare values for populating entry
-		image_values = dict(img_id=image_id,
-							img_name=image_name,
-							img_height=image_shape[1],
-							img_width=image_shape[0])
-
-		image_entry = Img_Json_Entry.substitute(image_values)
+		image_values = {"id": image_id,
+						"filename": image_name,
+						"img_height": image_shape[1],
+						"img_width": image_shape[0]}
 
 		# Add image json
-		labels_data["images"].append(image_entry)
-		# Add bbx json
-		labels_data["annotations"].append(box_entry)
+		labels_data["images"].append(image_values)
 
 		# Write to output file
 		with open(IMG_LABELS_FILE, "w") as labels_file:
@@ -298,16 +275,14 @@ def try_annotate_and_save_image(model, image, image_id):
 		with open(IMG_LABELS_FILE, "r") as labels_file:
 			labels_data = json.load(labels_file)
 
-		# Prepare values for populating entry
-		image_values = dict(img_id=image_id,
-							img_name=image_name,
-							img_height=image_shape[1],
-							img_width=image_shape[0])
-
-		image_entry = Img_Json_Entry.substitute(image_values)
+			# Prepare values for populating entry
+			image_values = {"id": image_id,
+							"filename": image_name,
+							"img_height": image_shape[1],
+							"img_width": image_shape[0]}
 
 		# Add image json
-		labels_data["images"].append(image_entry)
+		labels_data["images"].append(image_values)
 
 		# Write to output file
 		with open(IMG_LABELS_FILE, "w") as labels_file:
