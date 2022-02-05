@@ -390,7 +390,8 @@ def find_robot_limit():
 
 def main(_argv):
 	Model = Classifier()
-	laptop_id = 1
+	# Prepared id for next laptop (remove with more progress)
+	laptop_id = 2
 	another_laptop = True
 
 	# detect_screws_in_stream(Model)
