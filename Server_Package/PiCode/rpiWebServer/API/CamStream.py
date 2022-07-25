@@ -98,7 +98,6 @@ class ImageStream:
 	def take_focused_photo(self):
 		self.cam_open()
 		self.focus()
-		self.cam_open()
 		image_array = self.capture_photo()
 		self.camera.close()
 

@@ -157,7 +157,7 @@ def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2=N
 		# distance moved (mm) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
 		Zd = 20 / (1 - (dist_to_center1 / dist_to_center2))
 	else:
-		Zd = 200
+		Zd = 149
 
 	# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
 	# y axis label to match real world y and x
