@@ -39,7 +39,7 @@ pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
 
 # Vector from motor tip to camera
 # At 0,0,-10, offset is 1 cm below camera
-motor_to_camera = (0, 0, -10)
+motor_to_camera = (0, 0, 10)
 
 sign = lambda a: (a > 0) - (a < 0)
 mag = lambda a: a * sign(a)
@@ -100,8 +100,8 @@ def move_robot():
 # Returns the patch of the input image that contains the bounding box + extension
 def get_patch(image, bounding_box):
 	# Get each boxes height and width to build a patch twice as large
-	box_height_extension = (bounding_box[1][1] - bounding_box[0][1]) // 2
-	box_width_extension = (bounding_box[1][0] - bounding_box[0][0]) // 2
+	box_height_extension = (bounding_box[1][1] - bounding_box[0][1]) // 4
+	box_width_extension = (bounding_box[1][0] - bounding_box[0][0]) // 4
 
 	# Define the corners of the image patch, top left and bottom right corners
 	patch_top_left = (bounding_box[0][0] - 2 * box_width_extension, bounding_box[0][1] - 2 * box_height_extension)
@@ -157,7 +157,7 @@ def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2=N
 		# distance moved (mm) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
 		Zd = 20 / (1 - (dist_to_center1 / dist_to_center2))
 	else:
-		Zd = 149
+		Zd = -149
 
 	# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
 	# y axis label to match real world y and x

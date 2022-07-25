@@ -37,6 +37,12 @@ def move_by_vector():
 	return jsonify(response=response)
 
 
+# Method to reset robot location
+@app.route('/reset_robot', methods=['POST'])
+def reset_robot():
+	controller.reset()
+
+
 # Compact command get information for screw localising
 @app.route('/get_images_for_depth', methods=['GET'])
 def get_images_for_depth():

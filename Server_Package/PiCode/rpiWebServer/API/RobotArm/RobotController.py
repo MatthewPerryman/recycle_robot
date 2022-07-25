@@ -50,6 +50,13 @@ class RobotController:
 
 		return response
 
+	# Reset robot location
+	def reset(self):
+		self.start_transmission()
+		# Wait = true to ensure response on move success or failure
+		self.swift.reset()
+		self.end_transmission()
+
 	## Create the API context and put robot on standby
 	def __init__(self):
 		if self.swift == None:
