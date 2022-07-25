@@ -110,7 +110,7 @@ class ImageStream():
 		# Get the f_len of the first image
 		focal_len = self.max_index
 
-		# Move the robot up 10mm
+		# Move the robot down 20mm
 		Logging.write_log("server", "Move Arm 1")
 		arm_move_function(self.m_frame_distance)
 

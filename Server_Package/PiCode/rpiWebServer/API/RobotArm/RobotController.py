@@ -42,6 +42,8 @@ class RobotController:
 		self.end_transmission()
 		
 		if self.swift.get_position() == new_location:
+			print(self.swift.get_position())
+			print(new_location)
 			response = True
 		else:
 			response = False

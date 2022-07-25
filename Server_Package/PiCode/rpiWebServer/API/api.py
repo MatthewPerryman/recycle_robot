@@ -65,6 +65,7 @@ def set_position():
 	new_location = [new_json['Xd'], new_json['Yd'], new_json['Zd']]
 
 	response = controller.move_to(new_location)
+
 	return jsonify(response = response)
 
 # Retrieve robot position
@@ -76,7 +77,8 @@ def get_position():
 def get_photo():
 	image = image_stream.take_photo()
 	Logging.write_log("server", "Compress Image")
-
+	
+	print(image.shape)
 	buffer = io.BytesIO()
 	np.savez_compressed(buffer, image)
 	buffer.seek(0)
@@ -87,7 +89,7 @@ def get_photo():
 
 if __name__ == 'Server_Package.PiCode.rpiWebServer.API.api':
 	try:
-		app.run(port=80, host='0.0.0.0')
+		app.run(port=1024, host='0.0.0.0')
 	except KeyboardInterrupt:
 		image_stream.__del__
 		controller.__del__
