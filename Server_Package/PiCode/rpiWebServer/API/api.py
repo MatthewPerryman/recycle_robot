@@ -34,7 +34,7 @@ def move_by_vector():
 
 	response = controller.move_by_vector((Xd, Yd, Zd))
 
-	return jsonify(response = response)
+	return jsonify(response=response)
 
 
 # Compact command get information for screw localising
@@ -56,7 +56,8 @@ def get_images_for_depth():
 
 	Logging.write_log("server", "Send Images")
 	print(buffer)
-	return send_file(buffer, as_attachment = True, attachment_filename='depth_imgs.csv', mimetype = "image/csv")
+	return send_file(buffer, as_attachment=True, attachment_filename='depth_imgs.csv', mimetype="image/csv")
+
 
 # Set robot position
 @app.route('/set_position/', methods=['POST'])
@@ -66,25 +67,27 @@ def set_position():
 
 	response = controller.move_to(new_location)
 
-	return jsonify(response = response)
+	return jsonify(response=response)
+
 
 # Retrieve robot position
 @app.route('/get_position/', methods=['GET'])
 def get_position():
 	return "Position: {}".format(controller.swift.get_position())
 
+
 @app.route('/get_photo', methods=['GET'])
 def get_photo():
-	image = image_stream.take_photo()
+	image, f_len = image_stream.take_focused_photo()
 	Logging.write_log("server", "Compress Image")
-	
+
 	print(image.shape)
 	buffer = io.BytesIO()
-	np.savez_compressed(buffer, image)
+	np.savez_compressed(buffer, image, np.array([f_len]))
 	buffer.seek(0)
 
 	Logging.write_log("server", "Send Image")
-	return send_file(buffer, as_attachment = True, attachment_filename='singe_image.csv', mimetype = "image/csv")
+	return send_file(buffer, as_attachment=True, attachment_filename='singe_image.csv', mimetype="image/csv")
 
 
 if __name__ == 'Server_Package.PiCode.rpiWebServer.API.api':

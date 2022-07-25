@@ -104,8 +104,8 @@ def get_patch(image, bounding_box):
 	box_width_extension = (bounding_box[1][0] - bounding_box[0][0]) // 2
 
 	# Define the corners of the image patch, top left and bottom right corners
-	patch_top_left = (bounding_box[0][0] - 2*box_width_extension, bounding_box[0][1] - 2*box_height_extension)
-	patch_bottom_right = (bounding_box[1][0] + 2*box_width_extension, bounding_box[1][1] + 2*box_height_extension)
+	patch_top_left = (bounding_box[0][0] - 2 * box_width_extension, bounding_box[0][1] - 2 * box_height_extension)
+	patch_bottom_right = (bounding_box[1][0] + 2 * box_width_extension, bounding_box[1][1] + 2 * box_height_extension)
 
 	# Bbx (x,y), array lookup (y, x)
 	patch = image[patch_top_left[1]: patch_bottom_right[1], patch_top_left[0]: patch_bottom_right[0]]
@@ -151,10 +151,13 @@ def find_closest_box(image, nums, bbxs, scores):
 	return closest_to_center
 
 
-def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2):
-	# Perpendicular Distance (d) from lens to laptop =
-	# distance moved (m) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
-	Zd = 20 / (1 - (dist_to_center1 / dist_to_center2))
+def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2=None):
+	if dist_to_center2 is not None:
+		# Perpendicular Distance (d) from lens to laptop =
+		# distance moved (mm) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
+		Zd = 20 / (1 - (dist_to_center1 / dist_to_center2))
+	else:
+		Zd = 200
 
 	# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
 	# y axis label to match real world y and x
@@ -189,8 +192,9 @@ def find_and_move_to_screw(model):
 			# Creating an request object to store the response
 			# The URL is referenced sys.argv[1]
 
-			ImgRequest = requests.get(server_address + "/get_images_for_depth")
-			Logging.write_log("client", "Received Images from Server")
+			# ImgRequest = requests.get(server_address + "/get_images_for_depth")
+			ImgRequest = requests.get(server_address + "/get_photo")
+			Logging.write_log("client", "Received Image from Server")
 
 			if ImgRequest.status_code == requests.codes.ok:
 				# Read numpy array bytes
@@ -198,45 +202,48 @@ def find_and_move_to_screw(model):
 
 				image1 = np_zfile['arr_0']
 				f_len = np_zfile['arr_1'] / 100  # To mm
-				image2 = np_zfile['arr_2']
+				# image2 = np_zfile['arr_2']
 
 				# Locate and box the screws in both images
 				output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
-				output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
+				# output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
 
-				if (int(nums1[0]) is not 0) and (int(nums2[0]) is not 0):
+				#  and (int(nums2[0]) is not 0)
+				if int(nums1[0]) is not 0:
 					# Just to check image quality
 					cv2.imshow("Img1", output_img1)
 					cv2.waitKey(0)
-					cv2.imshow("Img2", output_img2)
-					cv2.waitKey(0)
+					# cv2.imshow("Img2", output_img2)
+					# cv2.waitKey(0)
 
 					if input("Proceed?: ") == 'y':
 						# Given at least one screw is detected, find the closest to the image center
 						closest_box1 = find_closest_box(image1, nums1, img_boxes1, scores1)
-						closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
+						# closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
 
 						# Index, coords, dist_to_center
 						bbx_center_1, dist_to_center1 = closest_box1[1], closest_box1[2]
-						bbx_center_2, dist_to_center2 = closest_box2[1], closest_box2[2]
+						# bbx_center_2, dist_to_center2 = closest_box2[1], closest_box2[2]
 
 						print("distance1: {}".format(dist_to_center1))
-						print("distance2: {}".format(dist_to_center2))
+						# print("distance2: {}".format(dist_to_center2))
 
-						# Output image 1 with line to center:
+						# DEBUG: Output image 1 with line to center:
 						image_1 = Image.fromarray(output_img1)
 						draw_result_1 = ImageDraw.Draw(image_1)
 						draw_result_1.line([image_center, bbx_center_1], fill="blue")
 						image_1.show()
 
-						# Output image 2 with line to center:
-						image_2 = Image.fromarray(output_img2)
-						draw_result_2 = ImageDraw.Draw(image_2)
-						draw_result_2.line([image_center, bbx_center_2], fill="red")
-						image_2.show()
+						# DEBUG: Output image 2 with line to center:
+						# image_2 = Image.fromarray(output_img2)
+						# draw_result_2 = ImageDraw.Draw(image_2)
+						# draw_result_2.line([image_center, bbx_center_2], fill="red")
+						# image_2.show()
 
-						if (dist_to_center1 != math.inf) and (dist_to_center2 != math.inf):
-							motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
+						#  and (dist_to_center2 != math.inf)
+						if dist_to_center1 != math.inf:
+							# motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
+							motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len)
 
 							print(motor_to_screw)
 							print(requests.post(server_address + "/move_by_vector/",
