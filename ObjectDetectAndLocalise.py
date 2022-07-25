@@ -203,6 +203,8 @@ def find_and_move_to_screw(model):
 				image1 = np_zfile['arr_0']
 				f_len = np_zfile['arr_1'] / 100  # To mm
 				# image2 = np_zfile['arr_2']
+				cv2.imshow("Img1", image1)
+				cv2.waitKey(0)
 
 				# Locate and box the screws in both images
 				output_img1, img_boxes1, scores1, nums1 = model.detect(image1)

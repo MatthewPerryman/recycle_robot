@@ -70,6 +70,7 @@ class ImageStream:
 			# Increase the focal distance
 			self.focal_length += 15
 			if self.focal_length > 1000:
+				self.focal_length = self.best_index
 				break
 
 		# Adjust focus to the best
