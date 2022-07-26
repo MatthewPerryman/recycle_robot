@@ -24,13 +24,11 @@ class CannyScrewCenter:
 		output = patch.copy()
 		grey = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
 
-		hist = cv2.equalizeHist(grey)
-		blur = cv2.GaussianBlur(hist, (1, 1), cv2.BORDER_DEFAULT)
-		cv2.imshow("blur", blur)
-		cv2.waitKey(0)
+		# hist = cv2.equalizeHist(grey)
+		# blur = cv2.GaussianBlur(hist, (3, 3), cv2.BORDER_DEFAULT)
 
 		# Find circles (hacky values)
-		circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, 200,
+		circles = cv2.HoughCircles(grey, cv2.HOUGH_GRADIENT, 1, 200,
 								   param1=40, param2=20, minRadius=5, maxRadius=30)
 		# If some circle is found
 		if circles is not None:
