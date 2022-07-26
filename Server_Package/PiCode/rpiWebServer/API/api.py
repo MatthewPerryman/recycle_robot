@@ -41,6 +41,7 @@ def move_by_vector():
 @app.route('/reset_robot', methods=['POST'])
 def reset_robot():
 	controller.reset()
+	return 0
 
 
 # Compact command get information for screw localising

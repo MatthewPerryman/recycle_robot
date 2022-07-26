@@ -1,7 +1,7 @@
 from time import time, ctime
 
 log_name = "log_file_"
-log_extension = ".txt"
+log_extension = ".log"
 
 
 def write_log(writer, write_msg):

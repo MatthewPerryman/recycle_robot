@@ -27,7 +27,7 @@ class RobotController:
 			new_location = [old[0] + vector[0], old[1] + vector[1], old[2] + vector[2]]
 
 		response = self.move_to(new_location)
-		
+
 		self.end_transmission()
 
 		return response
@@ -35,18 +35,19 @@ class RobotController:
 	## Move the robot arm to this vector
 	def move_to(self, new_location, speed=100000):
 		self.start_transmission()
-		
+
 		# Wait = true to ensure response on move success or failure
 		response = self.swift.set_position(x=new_location[0], y=new_location[1], z=new_location[2], wait=True)
 
 		self.end_transmission()
-		
+
 		if self.swift.get_position() == new_location:
-			print(self.swift.get_position())
-			print(new_location)
 			response = True
 		else:
 			response = False
+
+		print("Desired Location: {}".format(new_location))
+		print("Actual Location: {}".format(self.swift.get_position()))
 
 		return response
 

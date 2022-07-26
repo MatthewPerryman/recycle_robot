@@ -458,9 +458,15 @@ def find_robot_limit():
 			print("Last Successful Move: {}".format(status.content))
 
 
+def reset_robotic_arm():
+	status = requests.post(server_address + "/reset_robot/")
+
+	print(status.content)
+
+
 def main(_argv):
 	task = None
-	while (task is None) or (int(task) < 0) or (int(task) > 4):
+	while task == None:
 		print("Using the standard model...\n"
 			  "Options, you can return to this page:\n"
 			  "1 - Live stream image from robot and detect screws (Unknown is this works)\n"
@@ -468,13 +474,14 @@ def main(_argv):
 			  "3 - Locate a screw and move to it's location (Needs generalising)\n"
 			  "4 - Scan a laptop, autodetect screws and save to dataset (Needs functionalising)\n"
 			  "5 - Find the robots boundaries (Only extends in x axis)\n"
+			  "6 - Reset the robots location\n"
 			  "0 - Exit\n")
 		task = input("Task: ")
 
 		if task.isdigit():
 			task = int(task)
 
-		if (task < 0) or (task > 4):
+		if (task < 0) or (task > 6):
 			print("Please enter a valid task number")
 			task = None
 		elif task == 1:
@@ -495,9 +502,13 @@ def main(_argv):
 		elif task == 5:
 			print("Find Robot Limit")
 			find_robot_limit()
+		elif task == 6:
+			print("Resetting Robotic Arm")
+			find_robot_limit()
 		elif task == 0:
 			print("Exiting")
 			exit(0)
+		task = None
 
 
 if __name__ == '__main__':
