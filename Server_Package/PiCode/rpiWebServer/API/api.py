@@ -97,6 +97,20 @@ def get_photo():
 	return send_file(buffer, as_attachment=True, attachment_filename='singe_image.csv', mimetype="image/csv")
 
 
+@app.route('/get_simple_photo', methods=['GET'])
+def get_simple_photo():
+	image = image_stream.take_simple_photo()
+	Logging.write_log("server", "Compress Image")
+
+	print(image.shape)
+	buffer = io.BytesIO()
+	np.savez_compressed(buffer, image)
+	buffer.seek(0)
+
+	Logging.write_log("server", "Send Image")
+	return send_file(buffer, as_attachment=True, attachment_filename='singe_image.csv', mimetype="image/csv")
+
+
 if __name__ == 'Server_Package.PiCode.rpiWebServer.API.api':
 	try:
 		app.run(port=1024, host='0.0.0.0')

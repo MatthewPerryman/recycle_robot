@@ -54,7 +54,7 @@ def detect_screws_in_stream(model):
 			c1 = time()
 
 			# Verifying whether the specified URL exist or not
-			image = get_photo()
+			image = get_simple_photo()
 
 			# If no error from getting function
 			if type(image) is np.ndarray:
@@ -263,6 +263,22 @@ def find_and_move_to_screw(model):
 				print("Error: {}".format(ImgRequest.status_code))
 		except Exception as e:
 			print(str(e))
+
+
+def get_simple_photo():
+	ImgRequest = requests.get(server_address + "/get_simple_photo")
+	Logging.write_log("client", "Received Image from Server")
+
+	if ImgRequest.status_code == requests.codes.ok:
+		# Read numpy array bytes
+		np_zfile = np.load(io.BytesIO(ImgRequest.content))
+
+		image = np_zfile['arr_0']
+
+		return image
+	else:
+		print("Error: {}".format(ImgRequest.status_code))
+		return 1
 
 
 def get_photo():

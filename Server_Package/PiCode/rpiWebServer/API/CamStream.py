@@ -88,7 +88,7 @@ class ImageStream:
 
 	# Returns a captured photo
 	# Does not refocus before shot
-	def take_unfocused_photo(self):
+	def take_simple_photo(self):
 		self.cam_open()
 		image_array = self.capture_photo()
 		self.camera.close()
