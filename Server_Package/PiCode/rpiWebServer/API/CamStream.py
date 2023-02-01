@@ -13,7 +13,13 @@ except:
 
 
 # Stock functions except __init__, __del__, and updated take_photo
-class ImageStream():
+def laplacian(img):
+	img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+	img_sobel = cv2.Laplacian(img_gray, cv2.CV_16U)
+	return cv2.mean(img_sobel)[0]
+
+
+class ImageStream:
 	# load arducam shared object file
 	arducam_vcm = CDLL('./Server_Package/PiCode/rpiWebServer/API/lib/libarducam_vcm.so')
 	camera = None
@@ -25,56 +31,51 @@ class ImageStream():
 	def adjust_lens(self, val):
 		self.arducam_vcm.vcm_write(val)
 
-	def laplacian(self, img):
-		img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-		img_sobel = cv2.Laplacian(img_gray, cv2.CV_16U)
-		return cv2.mean(img_sobel)[0]
-
 	def calculation(self, camera):
 		rawCapture = PiRGBArray(camera)
 		self.camera.capture(rawCapture, format="bgr", use_video_port=True)
 		image = rawCapture.array
 		rawCapture.truncate(0)
-		return self.laplacian(image)
+		return laplacian(image)
 
 	# Runs through all lense focal lengths until clarity reduces, then sets length to best length
 	def focus(self):
 		print("Start focusing")
 
-		self.max_index = 10
-		self.max_value = 0.0
+		self.best_index = 10
+		self.best_clarity = 0.0
 		self.last_value = 0.0
-		self.dec_count = 0
-		self.focal_distance = 10
+		self.poor_f_len_count = 0
+		self.focal_length = 10
 
 		while True:
 			# Adjust focus
-			self.adjust_lens(self.focal_distance)
+			self.adjust_lens(self.focal_length)
 			# Take image and calculate image clarity
 			val = self.calculation(self.camera)
 			# Find the maximum image clarity
-			if val > self.max_value:
-				self.max_index = self.focal_distance
-				self.max_value = val
+			if val > self.best_clarity:
+				self.best_index = self.focal_length
+				self.best_clarity = val
+				self.poor_f_len_count = 0
+			elif val < self.last_value:  # If the image clarity starts to decrease
+				self.poor_f_len_count += 1
+				# Image clarity is reduced by six consecutive frames
+				if self.poor_f_len_count > 6:
+					self.focal_length = self.best_index
+					break
 
-			# If the image clarity starts to decrease
-			if val < self.last_value:
-				self.dec_count += 1
-			else:
-				self.dec_count = 0
-			# Image clarity is reduced by six consecutive frames
-			if self.dec_count > 6:
-				break
-			self.last_value = val
+				self.last_value = val
 
 			# Increase the focal distance
-			self.focal_distance += 15
-			if self.focal_distance > 1000:
+			self.focal_length += 15
+			if self.focal_length > 1000:
+				self.focal_length = self.best_index
 				break
 
 		# Adjust focus to the best
-		self.adjust_lens(self.max_index)
-		print('Focussed')
+		self.adjust_lens(self.focal_length)
+		print('Focused')
 
 	def capture_photo(self):
 		# Create image array
@@ -87,16 +88,21 @@ class ImageStream():
 
 	# Returns a captured photo
 	# Does not refocus before shot
-	# TODO: (This needs updating when camera motorised in the Z axis!)
-	def take_photo(self):
+	def take_simple_photo(self):
 		self.cam_open()
-
 		image_array = self.capture_photo()
-
 		self.camera.close()
 
 		# Returns image in numpy array format.
 		return image_array
+
+	def take_focused_photo(self):
+		self.cam_open()
+		self.focus()
+		image_array = self.capture_photo()
+		self.camera.close()
+
+		return image_array, self.focal_length
 
 	def get_imgs_for_depth(self, arm_move_function, write_log):
 		Logging.write_log("server", "Open camera")
@@ -108,9 +114,9 @@ class ImageStream():
 		img1 = self.capture_photo()
 
 		# Get the f_len of the first image
-		focal_len = self.max_index
+		focal_len = self.focal_length
 
-		# Move the robot up 10mm
+		# Move the robot down 20mm
 		Logging.write_log("server", "Move Arm 1")
 		arm_move_function(self.m_frame_distance)
 
@@ -125,13 +131,13 @@ class ImageStream():
 
 		# Reset focus for position 1
 		Logging.write_log("server", "Move Arm 2")
-		self.max_index = focal_len
+		self.focal_length = focal_len
 		arm_move_function(self.m_frame_distance, reverse_vector=True)
 
 		self.camera.close()
 
 		Logging.write_log("server", "Return from image_stream get depth images")
-		return img1, focal_len, img2
+		return img1, self.focal_length, img2
 
 	def cam_open(self):
 		# Open camera - Set camera resolution to 480x640(Small resolution for faster speeds.)
@@ -146,7 +152,8 @@ class ImageStream():
 		sleep(2)
 
 		self.camera.shutter_speed = self.camera.exposure_speed
-		# To fix exposure gains, let analog_gain and digital_gain settle on reasonable values, then set exposure_mode to 'off'. (from doc)
+		# To fix exposure gains, let analog_gain and digital_gain settle on reasonable values, then set exposure_mode
+		# to 'off'. (from doc)
 		self.camera.exposure_mode = 'off'
 
 		# To fix white balance, set the awb_mode to 'off', then set awb_gains to a (red, blue) tuple of gains.(from doc)
@@ -155,12 +162,17 @@ class ImageStream():
 		self.camera.awb_gains = g
 
 		# Adjust focus to the best
-		self.adjust_lens(self.max_index)
+		self.adjust_lens(self.focal_length)
 
 	# Close camera after use in next function
 
 	def __init__(self):
 		# vcm init
+		self.last_value = None
+		self.best_clarity = None
+		self.poor_f_len_count = None
+		self.best_index = None
+		self.focal_length = None
 		self.arducam_vcm.vcm_init()
 
 		# open camera

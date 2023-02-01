@@ -1,1 +1,4 @@
 *.png
+Model/*
+Autogathered_Dataset/*
+*.log
