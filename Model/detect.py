@@ -4,11 +4,11 @@ from absl.flags import FLAGS
 import cv2
 import numpy as np
 import tensorflow as tf
-from Model.yolov3_tf2_detection_requirements.models import (
+from Model.yolov3_tf2.models import (
 	YoloV3, YoloV3Tiny
 )
-from Model.yolov3_tf2_detection_requirements.dataset import transform_images, load_tfrecord_dataset
-from Model.yolov3_tf2_detection_requirements.utils import draw_outputs
+from Model.yolov3_tf2.dataset import transform_images, load_tfrecord_dataset
+from Model.yolov3_tf2.utils import draw_outputs
 
 flags.DEFINE_string('classes', "./Model/JustLaptopData/screws.names", 'path to classes file')
 flags.DEFINE_string('weights', './Model/checkpoint/yolov3_train_82.tf', 'path to weights file')
