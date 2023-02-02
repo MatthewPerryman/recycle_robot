@@ -1,13 +1,13 @@
 import time
-from absl import flags, logging
-from absl.flags import FLAGS
+
 import cv2
 import numpy as np
 import tensorflow as tf
-from Model.yolov3_tf2.models import (
-	YoloV3, YoloV3Tiny
-)
-from Model.yolov3_tf2.dataset import transform_images, load_tfrecord_dataset
+from absl import flags, logging
+from absl.flags import FLAGS
+
+from Model.yolov3_tf2.dataset import load_tfrecord_dataset, transform_images
+from Model.yolov3_tf2.models import YoloV3, YoloV3Tiny
 from Model.yolov3_tf2.utils import draw_outputs
 
 flags.DEFINE_string('classes', "./Model/JustLaptopData/screws.names", 'path to classes file')
@@ -39,11 +39,14 @@ class Classifier:
 		logging.info('classes loaded')
 
 	def detect(self, _argv=None):
+		img_raw = np.ndarray
 		# Check an image was passed in
 		if _argv is not None:
 			img_raw = _argv
+			if type(img_raw) is not np.ndarray or img_raw.shape != (FLAGS.size, FLAGS.size):
+				raise ValueError("The input image array must be of type np.ndarray of shape ({}, {})".format(FLAGS.size, FLAGS.size))
 		else:
-			logging.info("Error: No image Inputted")
+			raise ValueError("Error: No image Inputted")
 
 		img = tf.expand_dims(img_raw, 0)
 		img = transform_images(img, FLAGS.size)
@@ -62,10 +65,7 @@ class Classifier:
 		#                                        np.array(boxes[0][i])))
 
 		# Highlight the screws within the image
-		if _argv is None:
-			img = cv2.cvtColor(img_raw.numpy(), cv2.COLOR_RGB2BGR)
-		else:
-			img = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
+		img = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
 		img, img_adjusted_coords = draw_outputs(img, (boxes, scores, classes, nums), self.class_names)
 
 		# Display location of each detected screw

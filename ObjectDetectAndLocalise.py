@@ -301,7 +301,7 @@ def try_annotate_and_save_image(model, image, laptop_id, image_id):
 	annotation_id = (laptop_id * 1000) + image_id
 	image_name = base_directory + str((laptop_id * 1000) + image_id) + ".png"
 	# Save image
-	img_data = im.fromarray(image)
+	img_data = Image.fromarray(image)
 	img_data.save(image_name)
 
 	# If any objects are detected, save the bounding box numbers in a file associated with the image
@@ -446,12 +446,13 @@ def find_robot_limit():
 	increment = 1
 	y_limit = 120
 	# x_limit = 150
-	status = None
 
 	requests.post(server_address + "/set_position/",
 				  data=bytes(json.dumps({'Xd': 150, 'Yd': 0, 'Zd': 150}), 'utf-8'))
 
 	while cmd_success:
+		status = requests.Response
+
 		# @z=150 Closest x=150
 		if axis == 'x':
 			status = requests.post(server_address + "/move_by_vector/",
@@ -465,7 +466,7 @@ def find_robot_limit():
 								   data=bytes(json.dumps({'Xd': 0, 'Yd': 0, 'Zd': direction * 1}), 'utf-8'))
 		increment += 1
 
-		if status.content != bytes('Move Successful: False', 'utf-8') and increment <= y_limit:
+		if status.content != bytes('Move Successful: False', 'utf-8') :
 			cmd_success = True
 		else:
 			cmd_success = False
@@ -494,8 +495,10 @@ def main(_argv):
 			  "0 - Exit\n")
 		task = input("Task: ")
 
-		if task.isdigit():
-			task = int(task)
+		if not task.isdigit():
+			raise ValueError("Task should be a digit!?")
+		
+		task = int(task)
 
 		if (task < 0) or (task > 6):
 			print("Please enter a valid task number")
