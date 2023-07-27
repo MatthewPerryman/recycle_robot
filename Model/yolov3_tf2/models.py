@@ -204,7 +204,7 @@ def yolo_nms(outputs, anchors, masks, classes):
 	if classes == 1:
 		scores = confidence
 	else:
-		scores = confidence * class_probs
+		scores = tf.matmul(confidence, class_probs)
 
 	dscores = tf.squeeze(scores, axis=0)
 	scores = tf.reduce_max(dscores, [1])
