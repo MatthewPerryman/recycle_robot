@@ -10,7 +10,7 @@ import json
 from PIL import Image as Image, ImageDraw
 
 from Model.detect import Classifier
-from CannyScrewCenter.ScrewCenter import CannyScrewCenter
+from FindCenterwithCanny.ScrewCenter import FindCenterwithCanny
 from Utils import Logging
 
 server_address = "http://192.168.0.116:1024"
@@ -20,7 +20,7 @@ base_directory = "Autogathered_Dataset/" + str(auto_dataset_version) + "/"
 IMG_LABELS_FILE = base_directory + "img_labels.json"
 Zd_height = 150
 
-Canny = CannyScrewCenter()
+Canny = FindCenterwithCanny()
 
 # Note: all coordinates are x, y
 image_shape = (640, 480, 3)
