@@ -1,3 +1,4 @@
 *.png
 Autogathered_Dataset/1/Original_images/*
 *.log
+venv/*
