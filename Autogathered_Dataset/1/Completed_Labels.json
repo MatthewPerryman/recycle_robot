@@ -145,15 +145,6 @@
       "date_captured": "2023-03-23T14:56:35.6906945Z"
     },
     {
-      "id": 17,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/1229.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/1229.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1229.png",
-      "date_captured": "2023-03-23T14:56:35.6915481Z"
-    },
-    {
       "id": 18,
       "width": 480,
       "height": 640,
@@ -784,15 +775,6 @@
       "date_captured": "2023-03-23T14:56:35.6914413Z"
     },
     {
-      "id": 88,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/2303.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/2303.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2303.png",
-      "date_captured": "2023-03-23T14:56:35.6908093Z"
-    },
-    {
       "id": 89,
       "width": 480,
       "height": 640,
@@ -926,15 +908,6 @@
       "coco_url": "AmlDatastore://workspaceblobstore/data/2207.png",
       "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2207.png",
       "date_captured": "2023-03-23T14:56:35.691288Z"
-    },
-    {
-      "id": 104,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/1101.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/1101.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1101.png",
-      "date_captured": "2023-03-23T14:56:35.6916586Z"
     },
     {
       "id": 105,
@@ -1765,15 +1738,6 @@
       "date_captured": "2023-03-23T14:56:35.6905172Z"
     },
     {
-      "id": 197,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/2235.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/2235.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2235.png",
-      "date_captured": "2023-03-23T14:56:35.6905827Z"
-    },
-    {
       "id": 198,
       "width": 480,
       "height": 640,
@@ -1970,15 +1934,6 @@
       "coco_url": "AmlDatastore://workspaceblobstore/data/173.png",
       "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/173.png",
       "date_captured": "2023-03-23T14:56:35.6911982Z"
-    },
-    {
-      "id": 220,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/2062.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/2062.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2062.png",
-      "date_captured": "2023-03-23T14:56:35.6913665Z"
     },
     {
       "id": 221,
@@ -2267,15 +2222,6 @@
       "coco_url": "AmlDatastore://workspaceblobstore/data/1093.png",
       "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1093.png",
       "date_captured": "2023-03-23T14:56:35.6908773Z"
-    },
-    {
-      "id": 253,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/1301.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/1301.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1301.png",
-      "date_captured": "2023-03-23T14:56:35.6912764Z"
     },
     {
       "id": 254,
@@ -4177,15 +4123,6 @@
       "date_captured": "2023-03-23T14:56:35.6918011Z"
     },
     {
-      "id": 465,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/2328.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/2328.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2328.png",
-      "date_captured": "2023-03-23T14:56:40.1896249Z"
-    },
-    {
       "id": 466,
       "width": 480,
       "height": 640,
@@ -5230,15 +5167,6 @@
       "date_captured": "2023-03-23T14:56:35.6907299Z"
     },
     {
-      "id": 582,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/1055.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/1055.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1055.png",
-      "date_captured": "2023-03-23T14:56:35.6917108Z"
-    },
-    {
       "id": 583,
       "width": 480,
       "height": 640,
@@ -5518,15 +5446,6 @@
       "date_captured": "2023-03-23T14:56:35.691333Z"
     },
     {
-      "id": 614,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/2312.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/2312.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2312.png",
-      "date_captured": "2023-03-23T14:56:35.6908076Z"
-    },
-    {
       "id": 615,
       "width": 480,
       "height": 640,
@@ -5561,15 +5480,6 @@
       "coco_url": "AmlDatastore://workspaceblobstore/data/1076.png",
       "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1076.png",
       "date_captured": "2023-03-23T14:56:35.6918159Z"
-    },
-    {
-      "id": 619,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/5.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/5.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/5.png",
-      "date_captured": "2023-03-23T14:56:35.6909509Z"
     },
     {
       "id": 620,
@@ -5615,15 +5525,6 @@
       "coco_url": "AmlDatastore://workspaceblobstore/data/1037.png",
       "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1037.png",
       "date_captured": "2023-03-23T14:56:35.6900548Z"
-    },
-    {
-      "id": 625,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/1108.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/1108.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1108.png",
-      "date_captured": "2023-03-23T14:56:35.6913814Z"
     },
     {
       "id": 626,
@@ -5750,15 +5651,6 @@
       "coco_url": "AmlDatastore://workspaceblobstore/data/2339.png",
       "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/2339.png",
       "date_captured": "2023-03-23T14:56:35.6913084Z"
-    },
-    {
-      "id": 640,
-      "width": 480,
-      "height": 640,
-      "file_name": "data/1215.png",
-      "coco_url": "AmlDatastore://workspaceblobstore/data/1215.png",
-      "absolute_url": "https://screwdetection0128451330.blob.core.windows.net/azureml-blobstore-2ea81e62-5375-4262-a0c7-d3ee6bf9aadf/data/1215.png",
-      "date_captured": "2023-03-23T14:56:35.6913832Z"
     },
     {
       "id": 641,
@@ -6843,30 +6735,6 @@
         467.0,
         31.0,
         31.0
-      ]
-    },
-    {
-      "id": 47,
-      "category_id": 2,
-      "image_id": 17,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 48,
-      "category_id": 4,
-      "image_id": 17,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
       ]
     },
     {
@@ -8898,30 +8766,6 @@
       ]
     },
     {
-      "id": 218,
-      "category_id": 2,
-      "image_id": 88,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 219,
-      "category_id": 4,
-      "image_id": 88,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
       "id": 220,
       "category_id": 2,
       "image_id": 89,
@@ -9315,30 +9159,6 @@
         474.0,
         21.0,
         22.0
-      ]
-    },
-    {
-      "id": 253,
-      "category_id": 2,
-      "image_id": 104,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 254,
-      "category_id": 4,
-      "image_id": 104,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
       ]
     },
     {
@@ -12126,18 +11946,6 @@
       ]
     },
     {
-      "id": 487,
-      "category_id": 4,
-      "image_id": 197,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
       "id": 488,
       "category_id": 2,
       "image_id": 198,
@@ -12723,30 +12531,6 @@
         222.0,
         33.0,
         34.0
-      ]
-    },
-    {
-      "id": 537,
-      "category_id": 2,
-      "image_id": 220,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 538,
-      "category_id": 4,
-      "image_id": 220,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
       ]
     },
     {
@@ -13587,30 +13371,6 @@
         335.0,
         25.0,
         25.0
-      ]
-    },
-    {
-      "id": 609,
-      "category_id": 2,
-      "image_id": 253,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 610,
-      "category_id": 4,
-      "image_id": 253,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
       ]
     },
     {
@@ -20142,42 +19902,6 @@
       ]
     },
     {
-      "id": 1155,
-      "category_id": 2,
-      "image_id": 465,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 1156,
-      "category_id": 4,
-      "image_id": 465,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 1157,
-      "category_id": 4,
-      "image_id": 465,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
       "id": 1158,
       "category_id": 2,
       "image_id": 466,
@@ -23682,18 +23406,6 @@
       ]
     },
     {
-      "id": 1450,
-      "category_id": 4,
-      "image_id": 582,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
       "id": 1451,
       "category_id": 2,
       "image_id": 583,
@@ -24690,18 +24402,6 @@
       ]
     },
     {
-      "id": 1534,
-      "category_id": 4,
-      "image_id": 614,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
       "id": 1535,
       "category_id": 4,
       "image_id": 615,
@@ -24834,30 +24534,6 @@
       ]
     },
     {
-      "id": 1546,
-      "category_id": 2,
-      "image_id": 619,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 1547,
-      "category_id": 4,
-      "image_id": 619,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
       "id": 1548,
       "category_id": 2,
       "image_id": 620,
@@ -24975,18 +24651,6 @@
         328.0,
         24.0,
         24.0
-      ]
-    },
-    {
-      "id": 1558,
-      "category_id": 4,
-      "image_id": 625,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
       ]
     },
     {
@@ -25467,54 +25131,6 @@
         238.0,
         20.0,
         21.0
-      ]
-    },
-    {
-      "id": 1599,
-      "category_id": 2,
-      "image_id": 640,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 1600,
-      "category_id": 2,
-      "image_id": 640,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 1601,
-      "category_id": 4,
-      "image_id": 640,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "id": 1602,
-      "category_id": 4,
-      "image_id": 640,
-      "area": 0.0,
-      "bbox": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
       ]
     },
     {
