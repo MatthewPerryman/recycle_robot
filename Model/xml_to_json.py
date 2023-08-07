@@ -54,7 +54,6 @@ for xml_file in os.listdir(xml_training_annots):
         ymin = int(obj.find("bndbox/ymin").text)
         xmax = int(obj.find("bndbox/xmax").text)
         ymax = int(obj.find("bndbox/ymax").text)
-        segmentation = [xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin]
 
         # Calculate the area and width and height of the bounding box
         area = (xmax - xmin) * (ymax - ymin)
@@ -66,10 +65,8 @@ for xml_file in os.listdir(xml_training_annots):
             "id": len(coco_dict["annotations"]) + 1,
             "image_id": image_id,
             "category_id": category_id,
-            "segmentation": [segmentation],
             "area": area,
-            "bbox": [xmin, ymin, bbox_width, bbox_height],
-            "iscrowd": 0
+            "bbox": [xmin, ymin, bbox_width, bbox_height]
         })
 
         # Append the category information to the coco dictionary if not already present
