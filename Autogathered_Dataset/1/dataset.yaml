@@ -1,0 +1,7 @@
+names:
+- Screw/Phillips
+- Hole
+nc: 2
+path: ..
+train: Autogathered_Dataset\1\images
+val: Autogathered_Dataset\1\images
