@@ -8,12 +8,14 @@ import math
 import io
 import json
 from PIL import Image as Image, ImageDraw
+import subprocess
+import re
 
 #from Model.detect import Classifier
 from FindCentrewithCanny.ScrewCentre import CannyScrewCentre
 from Utils import Logging
 
-server_address = "http://192.168.137.174:1024"
+server_address = "http://192.168.137.28:1024"
 
 auto_dataset_version = 1
 base_directory = "Autogathered_Dataset/" + str(auto_dataset_version) + "/"
@@ -44,6 +46,19 @@ motor_to_camera = (0, 0, 10)
 sign = lambda a: (a > 0) - (a < 0)
 mag = lambda a: a * sign(a)
 
+def ping_raspberrypi():
+	try:
+		output = subprocess.check_output(["ping", "raspberrypi.local"])
+		output = output.decode("utf-8")
+		match = re.search(r"\[([^\]]+)\]", output)
+		print(match.group(1))
+		if match:
+			ip_address = match.group(1)
+			return ip_address
+		else:
+			return None
+	except subprocess.CalledProcessError:
+		return None
 
 def detect_screws_in_stream(model):
 	t1, t2, c1, c2 = 0, 0, 0, 0
@@ -202,7 +217,7 @@ def find_and_move_to_screw(model=None):
 				image1 = np_zfile['arr_0']
 				print(f"image 1 shape: {image1.shape}")
 				#f_len = np_zfile['arr_1'] / 100  # To mm
-				cv2.imshow("Img1", image1)
+				cv2.imshow("Img1", cv2.cvtColor(image1, cv2.COLOR_YUV420p2RGB))
 				if cv2.waitKey(0) == 27:
 					cv2.destroyAllWindows()
 					exit()
@@ -210,7 +225,7 @@ def find_and_move_to_screw(model=None):
 				image2 = np_zfile['arr_1']
 				print(f"image 2 shape: {image2.shape}")
 				#f_len = np_zfile['arr_1'] / 100  # To mm
-				cv2.imshow("Img1", image2)
+				cv2.imshow("Img2", cv2.cvtColor(image2, cv2.COLOR_YUV420p2RGB))
 				if cv2.waitKey(0) == 27:
 					cv2.destroyAllWindows()
 					exit()
@@ -493,6 +508,15 @@ def reset_robotic_arm():
 
 
 def main(_argv):
+	ip_address = ping_raspberrypi()
+	if ip_address:
+		print(f"Raspberry Pi found at IP address: {ip_address}")
+		server_address = f"http://{ip_address}:1024"
+	else:
+		print("Raspberry Pi not found")
+		exit()
+
+
 	task = None
 	while task == None:
 		print("Using the standard model...\n"
