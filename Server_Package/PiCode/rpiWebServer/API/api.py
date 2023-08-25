@@ -53,7 +53,7 @@ def get_images_for_depth():
 	controller.swift.reset()
 
 	Logging.write_log("server", "Call image_stream get depth images")
-	# Take a photo, move the camera 1 cm up, take another
+	# Take a photo, move the camera 1 cm to the right, take another
 	img1, f_len, img2 = image_stream.get_imgs_for_depth(controller.move_by_vector, Logging.write_log)
 
 	Logging.write_log("server", "Compress Image")

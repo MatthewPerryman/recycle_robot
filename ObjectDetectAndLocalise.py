@@ -9,18 +9,18 @@ import io
 import json
 from PIL import Image as Image, ImageDraw
 
-from Model.detect import Classifier
-from FindCenterwithCanny.ScrewCenter import FindCenterwithCanny
+#from Model.detect import Classifier
+from FindCentrewithCanny.ScrewCentre import CannyScrewCentre
 from Utils import Logging
 
-server_address = "http://192.168.0.116:1024"
+server_address = "http://192.168.137.174:1024"
 
 auto_dataset_version = 1
 base_directory = "Autogathered_Dataset/" + str(auto_dataset_version) + "/"
 IMG_LABELS_FILE = base_directory + "img_labels.json"
 Zd_height = 150
 
-Canny = FindCenterwithCanny()
+Canny = CannyScrewCentre()
 
 # Note: all coordinates are x, y
 image_shape = (640, 480, 3)
@@ -184,7 +184,7 @@ def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2=N
 	return motor_to_screw
 
 
-def find_and_move_to_screw(model):
+def find_and_move_to_screw(model=None):
 	moving_to_screw = False
 	while not moving_to_screw:
 		Logging.write_log("client", "\nNew Run:\n")
@@ -192,8 +192,7 @@ def find_and_move_to_screw(model):
 			# Creating an request object to store the response
 			# The URL is referenced sys.argv[1]
 
-			# ImgRequest = requests.get(server_address + "/get_images_for_depth")
-			ImgRequest = requests.get(server_address + "/get_photo")
+			ImgRequest = requests.get(server_address + "/get_images_for_depth")
 			Logging.write_log("client", "Received Image from Server")
 
 			if ImgRequest.status_code == requests.codes.ok:
@@ -201,22 +200,34 @@ def find_and_move_to_screw(model):
 				np_zfile = np.load(io.BytesIO(ImgRequest.content))
 
 				image1 = np_zfile['arr_0']
-				f_len = np_zfile['arr_1'] / 100  # To mm
-				# image2 = np_zfile['arr_2']
+				print(f"image 1 shape: {image1.shape}")
+				#f_len = np_zfile['arr_1'] / 100  # To mm
 				cv2.imshow("Img1", image1)
-				cv2.waitKey(0)
+				if cv2.waitKey(0) == 27:
+					cv2.destroyAllWindows()
+					exit()
+				
+				image2 = np_zfile['arr_1']
+				print(f"image 2 shape: {image2.shape}")
+				#f_len = np_zfile['arr_1'] / 100  # To mm
+				cv2.imshow("Img1", image2)
+				if cv2.waitKey(0) == 27:
+					cv2.destroyAllWindows()
+					exit()
+
+
 
 				# Locate and box the screws in both images
-				output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
-				# output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
+				#output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
+				#output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
 
 				#  and (int(nums2[0]) is not 0)
-				if int(nums1[0]) is not 0:
+				if int(nums1[0]) != 0:
 					# Just to check image quality
 					cv2.imshow("Img1", output_img1)
 					cv2.waitKey(0)
-					# cv2.imshow("Img2", output_img2)
-					# cv2.waitKey(0)
+					cv2.imshow("Img2", output_img2)
+					cv2.waitKey(0)
 
 					if input("Proceed?: ") == 'y':
 						# Given at least one screw is detected, find the closest to the image center
@@ -307,7 +318,7 @@ def try_annotate_and_save_image(model, image, laptop_id, image_id):
 	# If any objects are detected, save the bounding box numbers in a file associated with the image
 	output_img, img_boxes, scores, nums = model.detect(image)
 
-	if int(nums[0]) is not 0:
+	if int(nums[0]) != 0:
 		# Read in from output file
 		with open(IMG_LABELS_FILE, "r") as labels_file:
 			labels_data = json.load(labels_file)
@@ -512,8 +523,8 @@ def main(_argv):
 			move_robot()
 		elif task == 3:
 			print("Locating a Screw")
-			model = Classifier()
-			find_and_move_to_screw(model)
+			#model = Classifier()
+			find_and_move_to_screw()
 		elif task == 4:
 			print("Laptop Scan")
 			model = Classifier()
