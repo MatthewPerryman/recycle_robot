@@ -10,12 +10,17 @@ import json
 from PIL import Image as Image, ImageDraw
 import subprocess
 import re
+import torch
+from ultralytics import YOLO
+from PIL import Image
+import os
 
 #from Model.detect import Classifier
 from FindCentrewithCanny.ScrewCentre import CannyScrewCentre
 from Utils import Logging
 
 server_address = "http://192.168.137.28:1024"
+model_type = 'yolov8'
 
 auto_dataset_version = 1
 base_directory = "Autogathered_Dataset/" + str(auto_dataset_version) + "/"
@@ -48,7 +53,7 @@ mag = lambda a: a * sign(a)
 
 def ping_raspberrypi():
 	try:
-		output = subprocess.check_output(["ping", "raspberrypi.local"])
+		output = subprocess.check_output(["ping", "-4", "raspberrypi.local"])
 		output = output.decode("utf-8")
 		match = re.search(r"\[([^\]]+)\]", output)
 		print(match.group(1))
@@ -216,8 +221,7 @@ def find_and_move_to_screw(model=None):
 
 				image1 = np_zfile['arr_0']
 				print(f"image 1 shape: {image1.shape}")
-				#f_len = np_zfile['arr_1'] / 100  # To mm
-				cv2.imshow("Img1", cv2.cvtColor(image1, cv2.COLOR_YUV420p2RGB))
+				cv2.imshow("Img1", image1)
 				if cv2.waitKey(0) == 27:
 					cv2.destroyAllWindows()
 					exit()
@@ -225,33 +229,50 @@ def find_and_move_to_screw(model=None):
 				image2 = np_zfile['arr_1']
 				print(f"image 2 shape: {image2.shape}")
 				#f_len = np_zfile['arr_1'] / 100  # To mm
-				cv2.imshow("Img2", cv2.cvtColor(image2, cv2.COLOR_YUV420p2RGB))
+				cv2.imshow("Img2", image2)
 				if cv2.waitKey(0) == 27:
 					cv2.destroyAllWindows()
 					exit()
 
-
+				
 
 				# Locate and box the screws in both images
-				#output_img1, img_boxes1, scores1, nums1 = model.detect(image1)
-				#output_img2, img_boxes2, scores2, nums2 = model.detect(image2)
+				img1_predictions = model(image1)
+				img2_predictions = model(image2)
 
+				print(len(img1_predictions))
 				#  and (int(nums2[0]) is not 0)
-				if int(nums1[0]) != 0:
-					# Just to check image quality
-					cv2.imshow("Img1", output_img1)
-					cv2.waitKey(0)
-					cv2.imshow("Img2", output_img2)
-					cv2.waitKey(0)
+				if len(img1_predictions) != 0:
+					# Check for detections
+					img_array = img1_predictions[0].plot()  # plot a BGR numpy array of predictions
+					img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
+					open_cv_image = np.array(img) 
+					# Convert RGB to BGR 
+					image1 = open_cv_image[:, :, ::-1].copy() 
+
+					img_array = img2_predictions[0].plot()  # plot a BGR numpy array of predictions
+					img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
+					open_cv_image = np.array(img) 
+					# Convert RGB to BGR 
+					image2 = open_cv_image[:, :, ::-1].copy() 
+
+					cv2.imshow("Img1", image1)
+					if cv2.waitKey(0) == 27:
+						cv2.destroyAllWindows()
+						exit()
+					cv2.imshow("Img2", image2)
+					if cv2.waitKey(0) == 27:
+						cv2.destroyAllWindows()
+						exit()
 
 					if input("Proceed?: ") == 'y':
 						# Given at least one screw is detected, find the closest to the image center
 						closest_box1 = find_closest_box(image1, nums1, img_boxes1, scores1)
-						# closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
+						closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
 
 						# Index, coords, dist_to_center
 						bbx_center_1, dist_to_center1 = closest_box1[1], closest_box1[2]
-						# bbx_center_2, dist_to_center2 = closest_box2[1], closest_box2[2]
+						bbx_center_2, dist_to_center2 = closest_box2[1], closest_box2[2]
 
 						print("distance1: {}".format(dist_to_center1))
 						# print("distance2: {}".format(dist_to_center2))
@@ -510,11 +531,20 @@ def reset_robotic_arm():
 def main(_argv):
 	ip_address = ping_raspberrypi()
 	if ip_address:
-		print(f"Raspberry Pi found at IP address: {ip_address}")
+		global server_address
 		server_address = f"http://{ip_address}:1024"
+		print(f"Raspberry Pi found at IP address: {ip_address}")
 	else:
 		print("Raspberry Pi not found")
 		exit()
+
+	print(torch.cuda.device_count())
+
+	if model_type == 'yolov8':
+		# Load trained model from weights file
+		model = YOLO('yolov8_model/best.pt')
+	elif model_type == 'tf':
+		model = Classifier();
 
 
 	task = None
@@ -540,18 +570,15 @@ def main(_argv):
 			task = None
 		elif task == 1:
 			print("Screws Stream")
-			model = Classifier()
 			detect_screws_in_stream(model)
 		elif task == 2:
 			print("Move Robot")
 			move_robot()
 		elif task == 3:
 			print("Locating a Screw")
-			#model = Classifier()
-			find_and_move_to_screw()
+			find_and_move_to_screw(model)
 		elif task == 4:
 			print("Laptop Scan")
-			model = Classifier()
 			scan_laptops(model)
 		elif task == 5:
 			print("Find Robot Limit")
