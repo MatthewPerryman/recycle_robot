@@ -328,6 +328,14 @@ def find_and_move_to_screw(model=None):
 		except Exception as e:
 			print(str(e))
 
+# def laptop_search():
+# 	# Set the robot starting position to the heightest central location
+# 	# Set the camera focus according to height
+
+# 	# Take a photo
+# 	# Pass to model
+# 	# If no objects are detected, move the robot 10 cm to the right
+
 
 def get_simple_photo():
 	ImgRequest = requests.get(server_address + "/get_simple_photo")
