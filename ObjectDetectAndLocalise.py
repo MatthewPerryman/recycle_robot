@@ -25,12 +25,27 @@ model_type = 'yolov8'
 auto_dataset_version = 1
 base_directory = "Autogathered_Dataset/" + str(auto_dataset_version) + "/"
 IMG_LABELS_FILE = base_directory + "img_labels.json"
-Zd_height = 150
+
+
+#Zd_depth = -135  # (mm) = 14 cm with negative because it is in the -z direction (up)
+Zd_depth = -100  # (mm) = 10 cm with negative because it is in the -z direction (up)
+focal_length = 4.74	# (mm) = 0.474 cm with negative because it is in the -z direction (up)
+# Assuming the camera is fixed at lens position: 5.6818181818 (lense is at the position that allows Zd=14cm to in focus)
+# A rearrangement of 1/u + 1/v = 1/f
+u = focal_length * -Zd_depth / (focal_length + -Zd_depth)
+
+# Vector from motor tip to camera
+# At 0,0,-10, offset is 1 cm below camera
+camera_to_motor = (0, 0, -10)
+
+# Offset vector due to robot effector location being set to the suction cup.
+# This difference is between the suction cup and the camera
+robot_head_to_camera = (8, 0, -49)
 
 Canny = CannyScrewCentre()
 
 # Note: all coordinates are x, y
-image_shape = (640, 480, 3)
+image_shape = (480, 640, 3)
 m_frame_distance = (0, 0, -10)
 
 # Find the center pixel in the image
@@ -39,14 +54,6 @@ image_center = (image_shape[1] / 2, image_shape[0] / 2)
 # Based upon datasheet https://cdn.sparkfun.com/datasheets/Dev/RaspberryPi/ov5647_full.pdf#:~:text=The%20OV5647%20is
 # %20a%20low%20voltage%2C%20high%20performance%2C,the%20serial%20camera%20control%20bus%20or%20MIPI%20interface.
 pixel_size = 0.0014  # (mm) = 1.4 micrometers
-
-# (CMOS size - tot pixel size)/number of gaps (per axis)
-pixel_gap_size_x = (5.52 - (pixel_size * 2592)) / 2591
-pixel_gap_size_y = (4.7 - (pixel_size * 1944)) / 1943
-
-# Vector from motor tip to camera
-# At 0,0,-10, offset is 1 cm below camera
-motor_to_camera = (0, 0, 10)
 
 sign = lambda a: (a > 0) - (a < 0)
 mag = lambda a: a * sign(a)
@@ -100,7 +107,7 @@ def move_robot():
 	while True:
 		# Get user input for the command separated location
 		target = input("Target location <x,y,z>: ")
-		vector_target = [int(axis) for axis in target.split(',')]
+		vector_target = [float(axis) for axis in target.split(',')]
 
 		print("Trying to move to: {},{},{}".format(vector_target[0], vector_target[1], vector_target[2]))
 
@@ -115,6 +122,9 @@ def move_robot():
 			Logging.write_log("client", "Robot moved to {}".format(vector_target))
 		else:
 			print("Move Out of Bounds")
+		
+		if input("Enter y to continue: ") != 'y':
+			break
 
 
 # Returns the patch of the input image that contains the bounding box + extension
@@ -132,76 +142,67 @@ def get_patch(image, bounding_box):
 	return patch, (patch_top_left, patch_bottom_right)
 
 
-def patch_n_find_center(image, bbx):
-	patch, patch_coords = get_patch(image, bbx)
+def get_box_centre(boxes_data, index):
+	# Try simply finding the middle of the bounding box
+	# Select the bbxs of the screws in the image
+	print(f"classes: {boxes_data.cls}")
+	print(f"Their boxes: {boxes_data.xyxy}")
+	print(f"Their type: {type(boxes_data.xyxy)}")
 
-	# Pass patches to a canny edge detector to find the center of the screws
-	patch_center = Canny.find_center(patch)
+	# Convert to numpy array and select the screw box (will be the first in the list if only one was detected)
+	xyxy_coordinates = boxes_data.xyxy.detach().cpu().numpy()
+	xyxy_coordinates = xyxy_coordinates[index]
 
-	return patch_center, patch_coords
+	top_left = (xyxy_coordinates[0], xyxy_coordinates[1])
+	bottom_right = (xyxy_coordinates[2], xyxy_coordinates[3])
+
+	centre_coordinate = (top_left[0] + (bottom_right[0] - top_left[0]) / 2, top_left[1] + (bottom_right[1] - top_left[1]) / 2)
+
+	# patch, patch_coords = get_patch(image, bbx)
+
+	# # Pass patches to a canny edge detector to find the center of the screws
+	# patch_center = Canny.find_center(patch)
+
+	return centre_coordinate
 
 
 # Find the closest object to the center of the image
-def find_closest_box(image, nums, bbxs, scores):
-	# Store the index and distance of the closest box to the center - last 2 are y errored values
-	closest_to_center = [0, (0, 0), math.inf, (0, 0), 0]
-	for i in range(nums[0]):
-		# Boxes: [[(x0, y0), (x3, y3)]]
+def find_screw_boxes(predictions):
+	# Find the box center closest to the image center
+	box_centers = []
+	for i in range(predictions.data.shape[0]):
+		# if box is of class screw, find the centre of the box
+		# We are assuming only one screw is within the image and is detected correctly in both images.
+		if predictions.cls[i] == 0:
+			box_center = get_box_centre(predictions, i)
+			box_centers.append(box_center)
+		#TODO: match screws in frames by anticipating the new location of a screw based on previous location
+		#TODO: Could make box+padding patch and calculate image diffs to find common features between frames to identify more accurate matches.
 
-		# Create a patch around the bounding box, use canny to find center
-		patch_center, patch_coords = patch_n_find_center(image, bbxs[i])
-
-		# Convert patch coordinate to image coordinate
-		bbx_center = (patch_coords[0][0] + patch_center[0], patch_coords[0][1] + patch_center[1])
-
-		# Find the box center closest to the image center
-		dist_to_center = math.hypot((bbx_center[0] - image_center[0]),
-									(bbx_center[1] - image_center[1]))
-
-		if dist_to_center < closest_to_center[2]:
-			closest_to_center[0] = i
-			closest_to_center[1] = bbx_center
-			closest_to_center[2] = dist_to_center
-
-	# Outputs the box score and corner coordinates
-	logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
-														   np.array(bbxs[closest_to_center[0]])))
+	# # Outputs the box score and corner coordinates
+	# logging.info('\tClosest: Score: {}, Coords: {}'.format(np.array(scores[0][closest_to_center[0]]),
+	# 													   np.array(bbxs[closest_to_center[0]])))
 
 	# Return the closest boxes: index, top left and right coordinates, and hypot to centre
-	return closest_to_center
+	return box_centers
 
 
-def get_vector_to_screw(dist_to_center1, screw_center1, f_len, dist_to_center2=None):
-	if dist_to_center2 is not None:
-		# Perpendicular Distance (d) from lens to laptop =
-		# distance moved (mm) / (1 - (Frame1Dist_to_Centre/Frame2Dist_to_Center
-		Zd = 20 / (1 - (dist_to_center1 / dist_to_center2))
-	else:
-		Zd = -149
-
-	# Pixel x (Px) = (y axis distance between image center & box center * pixel size) + no. gaps between pixels * gap size
+def get_vector_to_screw(img1_screw_centre, img2_screw_centre, Zd):
+	# This code assumes the passing of one screws coordinates in each image img1_screw_centre[0]
+	# Pixel x (Px) = (y axis distance between image center & box center * pixel size)
 	# y axis label to match real world y and x
-	pixel_diff = (image_center[0] - screw_center1[0], image_center[1] - screw_center1[1])
-	Px = (pixel_diff[1] * pixel_size) + ((pixel_diff[1] - 1) * pixel_gap_size_y)
+	pixel_diff_1 = (img1_screw_centre[0][0] - image_center[0], img1_screw_centre[0][1] - image_center[1])
+	Px = (pixel_diff_1[0] * pixel_size)
 	# Pixel y (Py) same as above but with x axis distance
-	Py = (pixel_diff[0] * pixel_size) + ((pixel_diff[0] - 1) * pixel_gap_size_x)
+	Py = (pixel_diff_1[1] * pixel_size)
 
 	# Ratio, divide x&y by focal length, multiply by real world distance
-	Xd = (Zd * Px) / f_len
-	Yd = (Zd * Py) / f_len
+	Xd = (Px / u) * Zd
+	Yd = (Py / u) * Zd
 
-	camera_to_screw = (Xd, Yd, Zd)
+	camera_to_screw = (Yd, Xd, Zd)
 
-	print("Predicted distance from camera to screw: {}".format(camera_to_screw))
-
-	input("Enter any key to proceed with move")
-
-	# Vector arithmetic to get from a to c via b
-	motor_to_screw = {'Xd': float(camera_to_screw[0] + motor_to_camera[0]),
-					  'Yd': float(camera_to_screw[1] + motor_to_camera[1]),
-					  'Zd': camera_to_screw[2] + motor_to_camera[2]}
-
-	return motor_to_screw
+	return camera_to_screw
 
 
 def find_and_move_to_screw(model=None):
@@ -234,16 +235,18 @@ def find_and_move_to_screw(model=None):
 					cv2.destroyAllWindows()
 					exit()
 
-				
+				cv2.destroyAllWindows()
 
+				est_dist = 1/np_zfile['arr_2']
+				print(f"focal length: {est_dist}")
+				
 				# Locate and box the screws in both images
 				img1_predictions = model(image1)
 				img2_predictions = model(image2)
 
-				print(len(img1_predictions))
 				#  and (int(nums2[0]) is not 0)
 				if len(img1_predictions) != 0:
-					# Check for detections
+					## Check for detections
 					img_array = img1_predictions[0].plot()  # plot a BGR numpy array of predictions
 					img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
 					open_cv_image = np.array(img) 
@@ -265,41 +268,55 @@ def find_and_move_to_screw(model=None):
 						cv2.destroyAllWindows()
 						exit()
 
+					cv2.destroyAllWindows()
+
+					# A catch incase something incorrect was detected
 					if input("Proceed?: ") == 'y':
+
+						# print(f"boxes.boxes: {img1_predictions[0].boxes.boxes}")
+						# print(f"boxes.boxes.shape: {img1_predictions[0].boxes.boxes.shape}")
+
+						# print(f"boxes: {img1_predictions[0].boxes}")
+
 						# Given at least one screw is detected, find the closest to the image center
-						closest_box1 = find_closest_box(image1, nums1, img_boxes1, scores1)
-						closest_box2 = find_closest_box(image2, nums2, img_boxes2, scores2)
+						box1_centres = find_screw_boxes(img1_predictions[0].boxes)
+						box2_centres = find_screw_boxes(img2_predictions[0].boxes)
 
-						# Index, coords, dist_to_center
-						bbx_center_1, dist_to_center1 = closest_box1[1], closest_box1[2]
-						bbx_center_2, dist_to_center2 = closest_box2[1], closest_box2[2]
+						print(f"box1_centre: {box1_centres}")
+						print(f"box2_centre: {box2_centres}")
 
-						print("distance1: {}".format(dist_to_center1))
-						# print("distance2: {}".format(dist_to_center2))
+						# motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
+						camera_to_screw = get_vector_to_screw(box1_centres, box2_centres, Zd_depth)
 
-						# DEBUG: Output image 1 with line to center:
-						image_1 = Image.fromarray(output_img1)
-						draw_result_1 = ImageDraw.Draw(image_1)
-						draw_result_1.line([image_center, bbx_center_1], fill="blue")
-						image_1.show()
+						print("Predicted distance from camera to screw: {}".format(camera_to_screw))
 
-						# DEBUG: Output image 2 with line to center:
-						# image_2 = Image.fromarray(output_img2)
-						# draw_result_2 = ImageDraw.Draw(image_2)
-						# draw_result_2.line([image_center, bbx_center_2], fill="red")
-						# image_2.show()
+						# Vector arithmetic to get from a to c via b
+						motor_to_screw = {'Xd': 2.5*float(camera_to_screw[0] - camera_to_motor[0]),
+										'Yd': 2.5*float(camera_to_screw[1] - camera_to_motor[1]),
+										'Zd': camera_to_screw[2] - camera_to_motor[2]}
 
-						#  and (dist_to_center2 != math.inf)
-						if dist_to_center1 != math.inf:
-							# motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
-							motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len)
+						print(f"Predicted distance from robot head to screw: {motor_to_screw}")		
+						
+						# Cv2 display the first image with the location of the screw and the centre of the image both a dots
+						cv2.circle(image1, (int(box1_centres[0][0]), int(box1_centres[0][1])), 5, (0, 0, 255), -1)
+						cv2.circle(image1, (int(image_center[0]), int(image_center[1])), 5, (0, 255, 0), -1)
+						cv2.imshow("Img1", image1)
 
+						if cv2.waitKey(0) == 27:
+							cv2.destroyAllWindows()
+
+						if input("Enter y to proceed: ") == 'y':
+							print("Moving to screw")
+						else:
+							print("Move cancelled")
+							return False
+						if camera_to_motor != 0:
 							print(motor_to_screw)
 							print(requests.post(server_address + "/move_by_vector/",
 												data=bytes(json.dumps(motor_to_screw), 'utf-8')).content)
 							moving_to_screw = True
 						else:
-							print("Did not find the edge of one screw, RE-RUNNING")
+							continue
 					else:
 						cv2.destroyAllWindows()
 				else:
@@ -523,7 +540,8 @@ def find_robot_limit():
 
 
 def reset_robotic_arm():
-	status = requests.post(server_address + "/reset_robot/")
+	status = requests.post(server_address + "/set_position/",
+				  data=bytes(json.dumps({'Xd': 200, 'Yd': 0, 'Zd': 150}), 'utf-8'))
 
 	print(status.content)
 
@@ -552,11 +570,12 @@ def main(_argv):
 		print("Using the standard model...\n"
 			  "Options, you can return to this page:\n"
 			  "1 - Live stream image from robot and detect screws (Unknown is this works)\n"
-			  "2 - Move the robot to a location (Needs creating)\n"
-			  "3 - Locate a screw and move to it's location (Needs generalising)\n"
-			  "4 - Scan a laptop, autodetect screws and save to dataset (Needs functionalising)\n"
-			  "5 - Find the robots boundaries (Only extends in x axis)\n"
-			  "6 - Reset the robots location\n"
+			  "2 - Move the robot to a location\n"
+			  "3 - Locate a screw and move to it's location\n"
+			  "4 - Heuristic search laptop for screws\n"
+			  "5 - Scan a laptop, autodetect screws and save to dataset (Needs functionalising)\n"
+			  "6 - Find the robots boundaries (Only extends in x axis)\n"
+			  "7 - Reset the robots location\n"
 			  "0 - Exit\n")
 		task = input("Task: ")
 
@@ -578,14 +597,17 @@ def main(_argv):
 			print("Locating a Screw")
 			find_and_move_to_screw(model)
 		elif task == 4:
+			print("Laptop Search")
+			(model, 1)
+		elif task == 5:
 			print("Laptop Scan")
 			scan_laptops(model)
-		elif task == 5:
+		elif task == 6:
 			print("Find Robot Limit")
 			find_robot_limit()
-		elif task == 6:
+		elif task == 7:
 			print("Resetting Robotic Arm")
-			find_robot_limit()
+			reset_robotic_arm()
 		elif task == 0:
 			print("Exiting")
 			exit(0)
