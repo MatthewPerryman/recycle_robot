@@ -1,5 +1,6 @@
 # Importing Required Modules
 import cv2
+from matplotlib import pyplot as plt
 import requests
 import numpy as np
 from absl import app, logging
@@ -37,11 +38,11 @@ u = focal_length * abs(Zd_depth) / (focal_length + abs(Zd_depth))
 
 # Vector from motor tip to camera
 # At 0,0,-10, offset is 1 cm below camera
-camera_to_motor = (0, 0, -10)
+camera_offset = (0, 0, 10)
 
 # Offset vector due to robot effector location being set to the suction cup.
 # This difference is between the suction cup and the camera
-robot_head_to_camera = (8, 0, -49)
+robot_head_to_camera = (0.9, 0, 1.8)
 
 Canny = CannyScrewCentre()
 
@@ -200,15 +201,19 @@ def get_vector_to_screw(img1_screw_centre, Zd, img2_screw_centre=None):
 		pixel_diff_1 = (image_center[0] - img1_screw_centre[0], image_center[1] - img1_screw_centre[1])
 	else:
 		pixel_diff_1 = (image_center[0] - img1_screw_centre[0][0], image_center[1] - img1_screw_centre[0][1])
-	Px = (pixel_diff_1[0] * pixel_size)
-	# Pixel y (Py) same as above but with x axis distance
-	Py = (pixel_diff_1[1] * pixel_size)
+	screw_in_camera_location = [pixel_diff_1[0] * pixel_size, pixel_diff_1[1] * pixel_size]
+
+	camera_axis_to_robot_axis = [-1, -1]
+
+	screw_in_camera_location = screw_in_camera_location * np.transpose(camera_axis_to_robot_axis)
 
 	# Ratio, divide x&y by focal length, multiply by real world distance
-	Xd = (Px / u) * abs(Zd)
-	Yd = (Py / u) * abs(Zd)
+	# Negate the pixel distance because the image is inverted so the axis are reversed
+	# Also, the cameras x and y are mapped to y and x in the robot coordinates
 
-	camera_to_screw = (Yd, Xd, Zd)
+	camera_to_screw = (screw_in_camera_location[1] * abs(Zd) / u,
+						screw_in_camera_location[0] * abs(Zd) / u,
+						Zd)
 
 	return camera_to_screw
 
@@ -221,7 +226,7 @@ def find_and_move_to_screw(model=None):
 			# Creating an request object to store the response
 			# The URL is referenced sys.argv[1]
 
-			ImgRequest = requests.get(server_address + "/get_images_for_depth")
+			ImgRequest = requests.get(server_address + "/get_photo")
 			Logging.write_log("client", "Received Image from Server")
 
 			if ImgRequest.status_code == requests.codes.ok:
@@ -235,22 +240,22 @@ def find_and_move_to_screw(model=None):
 					cv2.destroyAllWindows()
 					exit()
 				
-				image2 = np_zfile['arr_1']
-				print(f"image 2 shape: {image2.shape}")
-				#f_len = np_zfile['arr_1'] / 100  # To mm
-				cv2.imshow("Img2", image2)
-				if cv2.waitKey(0) == 27:
-					cv2.destroyAllWindows()
-					exit()
+				# image2 = np_zfile['arr_1']
+				# print(f"image 2 shape: {image2.shape}")
+				# #f_len = np_zfile['arr_1'] / 100  # To mm
+				# cv2.imshow("Img2", image2)
+				# if cv2.waitKey(0) == 27:
+				# 	cv2.destroyAllWindows()
+				# 	exit()
 
 				cv2.destroyAllWindows()
 
-				est_dist = 1/np_zfile['arr_2']
-				print(f"focal length: {est_dist}")
+				# est_dist = 1/np_zfile['arr_2']
+				# print(f"focal length: {est_dist}")
 				
 				# Locate and box the screws in both images
 				img1_predictions = model(image1)
-				img2_predictions = model(image2)
+				#img2_predictions = model(image2)
 
 				#  and (int(nums2[0]) is not 0)
 				if len(img1_predictions) != 0:
@@ -261,20 +266,20 @@ def find_and_move_to_screw(model=None):
 					# Convert RGB to BGR 
 					image1 = open_cv_image[:, :, ::-1].copy() 
 
-					img_array = img2_predictions[0].plot()  # plot a BGR numpy array of predictions
-					img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
-					open_cv_image = np.array(img) 
-					# Convert RGB to BGR 
-					image2 = open_cv_image[:, :, ::-1].copy() 
+					# img_array = img2_predictions[0].plot()  # plot a BGR numpy array of predictions
+					# img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
+					# open_cv_image = np.array(img) 
+					# # Convert RGB to BGR 
+					# image2 = open_cv_image[:, :, ::-1].copy() 
 
 					cv2.imshow("Img1", image1)
 					if cv2.waitKey(0) == 27:
 						cv2.destroyAllWindows()
 						exit()
-					cv2.imshow("Img2", image2)
-					if cv2.waitKey(0) == 27:
-						cv2.destroyAllWindows()
-						exit()
+					# cv2.imshow("Img2", image2)
+					# if cv2.waitKey(0) == 27:
+					# 	cv2.destroyAllWindows()
+					# 	exit()
 
 					cv2.destroyAllWindows()
 
@@ -288,20 +293,29 @@ def find_and_move_to_screw(model=None):
 
 						# Given at least one screw is detected, find the closest to the image center
 						box1_centres = find_screw_boxes(img1_predictions[0].boxes)
-						box2_centres = find_screw_boxes(img2_predictions[0].boxes)
+						#box2_centres = find_screw_boxes(img2_predictions[0].boxes)
 
 						print(f"box1_centre: {box1_centres}")
-						print(f"box2_centre: {box2_centres}")
+						#print(f"box2_centre: {box2_centres}")
 
 						# motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
-						camera_to_screw = get_vector_to_screw(box1_centres, Zd_depth, box2_centres)
+						camera_to_screw = get_vector_to_screw(box1_centres, Zd_depth)
 
 						print("Predicted distance from camera to screw: {}".format(camera_to_screw))
 
-						# Vector arithmetic to get from a to c via b
-						motor_to_screw = {'Xd': int(2.5*float(camera_to_screw[0]) - camera_to_motor[0]),
-										'Yd': int(2.5*float(camera_to_screw[1]) - camera_to_motor[1]),
-										'Zd': int(camera_to_screw[2] - camera_to_motor[2])}
+						angle = get_wrist_angle()
+						print("Wrist angle: {}".format(angle))
+
+						if angle != None:
+							# Rotate the camera to motor vector by the wrist angle
+							rotated_robot_head_to_camera = rotate_vector(robot_head_to_camera, angle)
+							print("Rotated camera to motor vector: {}".format(rotated_robot_head_to_camera))
+						
+						# - rotated_robot_head_to_camera[0]
+						# Calculate the screw vector relative to the robot
+						motor_to_screw = {'Xd': int(camera_offset[0] + (2.5*camera_to_screw[0])),
+											'Yd': int(camera_offset[1] + (2.5*camera_to_screw[1])),
+											'Zd': int(camera_offset[2] + camera_to_screw[2])}
 
 						print(f"Predicted distance from robot head to screw: {motor_to_screw}")		
 						
@@ -318,7 +332,7 @@ def find_and_move_to_screw(model=None):
 						else:
 							print("Move cancelled")
 							return False
-						if camera_to_motor != 0:
+						if camera_offset != 0:
 							print(motor_to_screw)
 							print(requests.post(server_address + "/move_by_vector/",
 												data=bytes(json.dumps(motor_to_screw), 'utf-8')).content)
@@ -336,6 +350,21 @@ def find_and_move_to_screw(model=None):
 		except Exception as e:
 			print(str(e))
 
+# Function to rotate a vector by an angle
+def rotate_vector(vector, angle):
+	# Convert angle to radians
+	angle = math.radians(angle)
+
+	# Create rotation matrix
+	rotation_matrix = np.array([[math.cos(angle), -math.sin(angle), 0],
+								[math.sin(angle), math.cos(angle), 0],
+								[0, 0, 1]])
+
+	# Multiply rotation matrix by vector
+	rotated_vector = np.matmul(rotation_matrix, vector)
+
+	return rotated_vector
+
 def locate_screw_rel_to_robot(candidate_box_data):
 	# Get the robots current location
 	location = requests.get(server_address + "/get_position/")
@@ -346,12 +375,19 @@ def locate_screw_rel_to_robot(candidate_box_data):
 	camera_to_screw = get_vector_to_screw(candidate_box_data['centre'], Zd_depth)
 	print("Predicted distance from camera to screw: {}".format(camera_to_screw))
 
-	# TODO: Get the wrist angle from the robot and rotate the camera to mtoro vector by that angle
+	angle = get_wrist_angle()
+	print("Wrist angle: {}".format(angle))
+
+	if angle != None:
+		# Rotate the camera to motor vector by the wrist angle
+		rotated_robot_head_to_camera = rotate_vector(robot_head_to_camera, angle)
+		print("Rotated camera to motor vector: {}".format(rotated_robot_head_to_camera))
 	
+	# - rotated_robot_head_to_camera[0]
 	# Calculate the screw vector relative to the robot
-	robot_to_screw = {'Xd': int(location['Xd'] - camera_to_motor[0] + (2.5*camera_to_screw[0])),
-						'Yd': int(location['Yd'] - camera_to_motor[1] + (2.5*camera_to_screw[1])),
-						'Zd': int(location['Zd'] - camera_to_motor[2] + camera_to_screw[2])}
+	robot_to_screw = {'Xd': int(location['Xd'] + camera_offset[0] + (2.5*camera_to_screw[0])),
+						'Yd': int(location['Yd'] + camera_offset[1] + (2.5*camera_to_screw[1])),
+						'Zd': int(location['Zd'] + camera_offset[2] + camera_to_screw[2])}
 	
 	# Store the screw vector and offsets in the dictionary
 	candidate_box_data['loc'] = robot_to_screw
@@ -390,33 +426,25 @@ def search_for_screws(function_args):
 
 	
 	Logging.write_log("client", "\nNew Run:\n")
-	try:
-		# print(f"image 1 shape: {image.shape}")
-		# cv2.imshow("Img1", image)
-		# if cv2.waitKey(0) == 27:
-		# 	cv2.destroyAllWindows()
-		# 	exit()
-
-		# cv2.destroyAllWindows()
-		
+	try:		
 		# Locate and box the screws in both images
 		img_predictions = model(image)
 
 		if len(img_predictions[0].boxes.boxes) != 0:
-			## DEBUG
-			# img_array = img_predictions[0].plot()  # plot a BGR numpy array of predictions
-			# img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
-			# open_cv_image = np.array(img) 
-			# # Convert RGB to BGR 
-			# labelled_image = open_cv_image[:, :, ::-1].copy() 
+			# DEBUG
+			img_array = img_predictions[0].plot()  # plot a BGR numpy array of predictions
+			img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
+			open_cv_image = np.array(img) 
+			# Convert RGB to BGR 
+			labelled_image = open_cv_image[:, :, ::-1].copy() 
 
-			# cv2.imshow("Img1", labelled_image)
-			# if cv2.waitKey(0) == 27:
-			# 	cv2.destroyAllWindows()
-			# 	exit()
+			cv2.imshow("Img1", labelled_image)
+			if cv2.waitKey(0) == 27:
+				cv2.destroyAllWindows()
+				exit()
 
-			#cv2.destroyAllWindows()
-			## DEBUG
+			cv2.destroyAllWindows()
+			# DEBUG
 				
 			# Structure:
 			#	{index: {class: int, 'box': [x1, y1, x2, y2], 'conf': float, 'loc': [x, y, z], 'centre': [x, y]}}}
@@ -442,7 +470,11 @@ def search_for_screws(function_args):
 							top_left[1] + (bottom_right[1] - top_left[1]) / 2)
 
 				# Add the box, we will run check later for overlap
-				candidate_screw_boxes[i] = {'class': box_cls, 'box': xyxy_coordinates, 
+				if len(box_locations) != 0:
+					index = max(box_locations.keys()) + i+1
+				else:
+					index = i
+				candidate_screw_boxes[index] = {'class': box_cls, 'box': xyxy_coordinates, 
 											'conf': conf, 'loc': (0, 0, 0), 'centre': centre}
 					
 			
@@ -516,12 +548,12 @@ def search_for_screws(function_args):
 					# Draw a dot for the screws centre
 					cv2.circle(image, (int(candidate_box_data['centre'][0]), int(candidate_box_data['centre'][1])), 2, (0, 255, 0), -1)
 					
-			## DEBUG
+			# # DEBUG
 			# cv2.imshow("Selected Annotations", image)
 
 			# if cv2.waitKey(0) == 27:
 			# 	cv2.destroyAllWindows()
-			# DEBUG
+			# # DEBUG
 
 			box_locations.update(candidate_screw_boxes)
 
@@ -567,6 +599,18 @@ def get_photo():
 		print("Error: {}".format(ImgRequest.status_code))
 		return 1
 
+# Create a function to get the wrist angle (this is separate for simplicity)
+def get_wrist_angle():
+	AngleRequest = requests.get(server_address + "/get_wrist_angle")
+	Logging.write_log("client", "Received Angle from Server")
+
+	if AngleRequest.status_code == requests.codes.ok:
+		# Read data
+		angle = AngleRequest.json()['angle']
+
+		return angle
+	else:
+		return None
 
 def try_annotate_and_save_image(function_args):
 	(model, image, image_id) = function_args
@@ -609,6 +653,12 @@ def plan_route_to_screws(bounding_boxes):
 		if 'screw' in box.keys():
 			locations_dict[index] = {'index': index, 'loc': box['screw']['loc'], 'distances': {}}
 
+	# Add a box for the robot location
+	# Request the robots current location
+	location = requests.get(server_address + "/get_position/")
+	location = location.json()
+	locations_dict['robot'] = {'index': 'robot', 'loc': location, 'distances': {}}
+
 	# Calculate the euclidean distance between each screw bounding box
 	for index1, box1 in locations_dict.items():
 		for index2, box2 in locations_dict.items():
@@ -625,9 +675,9 @@ def plan_route_to_screws(bounding_boxes):
 	# Initialise the screw_locations array and the visited bool
 	screw_locations = []
 	
-	# Start at the highest index
-	current_box = locations_dict[max(locations_dict.keys())]
-	screw_locations.append(current_box['loc'])
+	# Start at the robots location
+	current_box = locations_dict['robot']
+	screw_locations.append(locations_dict['robot']['loc'])
 
 	# Find the nearest neighbour to the current box
 	while len(screw_locations) != len(locations_dict):
@@ -668,6 +718,18 @@ def move_to_screws(screw_locations):
 		print("Move to screws failed")
 		print(str(e))
 
+# Function to plot screw x,y coordinates on a graph representing the surface of the laptop
+def plot_screw_locations(bounding_boxes):
+	# Iterate through bounding_boxes to plot the x and y of the loc of each screw
+	for index, box in bounding_boxes.items():
+		if 'screw' in box.keys():
+			plt.scatter(box['screw']['loc']['Yd'], box['screw']['loc']['Xd'])
+	# Fix the axis scale
+	# plt.axis([0, 300, -150, 150])
+
+	# Show the plot
+	plt.show()
+
 def find_and_contact_screws(model):
 	try:
 		# Create the dict to store the screw data and add it to the function args
@@ -676,6 +738,10 @@ def find_and_contact_screws(model):
 		function_args = (4, model, bounding_boxes)
 		# Build list of screws
 		roam_and_apply_function(search_for_screws, function_args)
+
+		# Display the x and y coordinates of the screws on a graph representing the surface of the laptop
+		plot_screw_locations(bounding_boxes)
+
 		# Build route to screws
 		route = plan_route_to_screws(bounding_boxes)
 
