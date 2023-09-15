@@ -1,5 +1,6 @@
 # Importing Required Modules
 import cv2
+from humanfriendly import Timer
 from matplotlib import pyplot as plt
 import requests
 import numpy as np
@@ -28,13 +29,33 @@ dataset_name = "test_dataset"
 base_directory = f"Autogathered_Dataset/{dataset_name}/"
 IMG_LABELS_FILE = base_directory + "img_labels.json"
 
+test_directory = f"test_results/"
+
+# Globals to allow for easy time tracking
+start_time = 0
+end_time = 0
+# Scan time is the time to move the robot to each increment and take a photo
+start_scan_time = 0
+end_scan_time = 0
+# Detection time is the time to request the image and run detection
+start_detection_time = 0
+end_detection_time = 0
+# Manual duplicate removal times
+manual_start_time = 0
+manual_end_time = 0
+
+# All these should be added to the log file
+
+test_iteration = 'full_5/'
+test_results_file_name = test_directory + test_iteration + "test_results.txt"
+
 
 Zd_depth = -135  # (mm) = 14 cm with negative because it is in the -z direction (up)
 #Zd_depth = -100  # (mm) = 10 cm with negative because it is in the -z direction (up)
 focal_length = 4.74	# (mm) = 0.474 cm with negative because it is in the -z direction (up)
 # Assuming the camera is fixed at lens position: 5.6818181818 (lense is at the position that allows Zd=14cm to in focus)
 # A rearrangement of 1/u + 1/v = 1/f
-u = focal_length * abs(Zd_depth) / (focal_length + abs(Zd_depth))
+u = focal_length * abs(Zd_depth) / (abs(Zd_depth) - focal_length)
 
 # Vector from motor tip to camera
 # At 0,0,-10, offset is 1 cm below camera
@@ -236,115 +257,82 @@ def find_and_move_to_screw(model=None):
 				image1 = np_zfile['arr_0']
 				print(f"image 1 shape: {image1.shape}")
 				cv2.imshow("Img1", image1)
+
 				if cv2.waitKey(0) == 27:
 					cv2.destroyAllWindows()
-					exit()
-				
-				# image2 = np_zfile['arr_1']
-				# print(f"image 2 shape: {image2.shape}")
-				# #f_len = np_zfile['arr_1'] / 100  # To mm
-				# cv2.imshow("Img2", image2)
-				# if cv2.waitKey(0) == 27:
-				# 	cv2.destroyAllWindows()
-				# 	exit()
+					return
 
 				cv2.destroyAllWindows()
-
-				# est_dist = 1/np_zfile['arr_2']
-				# print(f"focal length: {est_dist}")
 				
 				# Locate and box the screws in both images
 				img1_predictions = model(image1)
-				#img2_predictions = model(image2)
 
-				#  and (int(nums2[0]) is not 0)
-				if len(img1_predictions) != 0:
-					## Check for detections
-					img_array = img1_predictions[0].plot()  # plot a BGR numpy array of predictions
-					img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
-					open_cv_image = np.array(img) 
-					# Convert RGB to BGR 
-					image1 = open_cv_image[:, :, ::-1].copy() 
-
-					# img_array = img2_predictions[0].plot()  # plot a BGR numpy array of predictions
-					# img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
-					# open_cv_image = np.array(img) 
-					# # Convert RGB to BGR 
-					# image2 = open_cv_image[:, :, ::-1].copy() 
-
-					cv2.imshow("Img1", image1)
-					if cv2.waitKey(0) == 27:
-						cv2.destroyAllWindows()
-						exit()
-					# cv2.imshow("Img2", image2)
-					# if cv2.waitKey(0) == 27:
-					# 	cv2.destroyAllWindows()
-					# 	exit()
-
-					cv2.destroyAllWindows()
-
-					# A catch incase something incorrect was detected
-					if input("Proceed?: ") == 'y':
-
-						# print(f"boxes.boxes: {img1_predictions[0].boxes.boxes}")
-						# print(f"boxes.boxes.shape: {img1_predictions[0].boxes.boxes.shape}")
-
-						# print(f"boxes: {img1_predictions[0].boxes}")
-
-						# Given at least one screw is detected, find the closest to the image center
-						box1_centres = find_screw_boxes(img1_predictions[0].boxes)
-						#box2_centres = find_screw_boxes(img2_predictions[0].boxes)
-
-						print(f"box1_centre: {box1_centres}")
-						#print(f"box2_centre: {box2_centres}")
-
-						# motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
-						camera_to_screw = get_vector_to_screw(box1_centres, Zd_depth)
-
-						print("Predicted distance from camera to screw: {}".format(camera_to_screw))
-
-						angle = get_wrist_angle()
-						print("Wrist angle: {}".format(angle))
-
-						if angle != None:
-							# Rotate the camera to motor vector by the wrist angle
-							rotated_robot_head_to_camera = rotate_vector(robot_head_to_camera, angle)
-							print("Rotated camera to motor vector: {}".format(rotated_robot_head_to_camera))
-						
-						# - rotated_robot_head_to_camera[0]
-						# Calculate the screw vector relative to the robot
-						motor_to_screw = {'Xd': int(camera_offset[0] + (2.5*camera_to_screw[0])),
-											'Yd': int(camera_offset[1] + (2.5*camera_to_screw[1])),
-											'Zd': int(camera_offset[2] + camera_to_screw[2])}
-
-						print(f"Predicted distance from robot head to screw: {motor_to_screw}")		
-						
-						# Cv2 display the first image with the location of the screw and the centre of the image both a dots
-						cv2.circle(image1, (int(box1_centres[0][0]), int(box1_centres[0][1])), 5, (0, 0, 255), -1)
-						cv2.circle(image1, (int(image_center[0]), int(image_center[1])), 5, (0, 255, 0), -1)
-						cv2.imshow("Img1", image1)
-
-						if cv2.waitKey(0) == 27:
-							cv2.destroyAllWindows()
-
-						if input("Enter y to proceed: ") == 'y':
-							print("Moving to screw")
-						else:
-							print("Move cancelled")
-							return False
-						if camera_offset != 0:
-							print(motor_to_screw)
-							print(requests.post(server_address + "/move_by_vector/",
-												data=bytes(json.dumps(motor_to_screw), 'utf-8')).content)
-							moving_to_screw = True
-						else:
-							continue
-					else:
-						cv2.destroyAllWindows()
-				else:
+				if len(img1_predictions) == 0:
 					print("Error: No object was detected in one of the frames")
+					cv2.destroyAllWindows()
+					continue
+
+
+				## Check for detections
+				img_array = img1_predictions[0].plot()  # plot a BGR numpy array of predictions
+				img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
+				open_cv_image = np.array(img) 
+				# Convert RGB to BGR 
+				image1 = open_cv_image[:, :, ::-1].copy() 
+
+				cv2.imshow("Img1", image1)
+				if cv2.waitKey(0) == 27:
+					cv2.destroyAllWindows()
+					exit()
 
 				cv2.destroyAllWindows()
+
+				# A catch incase something incorrect was detected
+				if input("Proceed?: ") != 'y':
+					return
+
+				# Given at least one screw is detected, find the closest to the image center
+				box1_centres = find_screw_boxes(img1_predictions[0].boxes)
+				#box2_centres = find_screw_boxes(img2_predictions[0].boxes)
+
+				print(f"box1_centre: {box1_centres}")
+
+				# motor_to_screw = get_vector_to_screw(dist_to_center1, bbx_center_1, f_len, dist_to_center2)
+				camera_to_screw = get_vector_to_screw(box1_centres, Zd_depth)
+
+				print("Predicted distance from camera to screw: {}".format(camera_to_screw))
+
+				angle = get_wrist_angle()
+				print("Wrist angle: {}".format(angle))
+
+				if angle != None:
+					# Rotate the camera to motor vector by the wrist angle
+					rotated_robot_head_to_camera = rotate_vector(robot_head_to_camera, angle)
+					print("Rotated camera to motor vector: {}".format(rotated_robot_head_to_camera))
+				
+				# - rotated_robot_head_to_camera[0]
+				# Calculate the screw vector relative to the robot
+				motor_to_screw = {'Xd': int(camera_offset[0] + (2.5*camera_to_screw[0])),
+									'Yd': int(camera_offset[1] + (2.5*camera_to_screw[1])),
+									'Zd': int(camera_offset[2] + camera_to_screw[2])}
+
+				print(f"Predicted distance from robot head to screw: {motor_to_screw}")		
+				
+				# Cv2 display the first image with the location of the screw and the centre of the image both a dots
+				cv2.circle(image1, (int(box1_centres[0][0]), int(box1_centres[0][1])), 5, (0, 0, 255), -1)
+				cv2.circle(image1, (int(image_center[0]), int(image_center[1])), 5, (0, 255, 0), -1)
+				cv2.imshow("Img1", image1)
+				cv2.waitKey(0)
+
+				if input("Enter y to proceed: ") == 'y':
+					print("Moving to screw")
+					print(motor_to_screw)
+					print(requests.post(server_address + "/move_by_vector/",
+										data=bytes(json.dumps(motor_to_screw), 'utf-8')).content)
+					moving_to_screw = True
+				else:
+					print("Move cancelled")
+					return
 			else:
 				print("Error: {}".format(ImgRequest.status_code))
 		except Exception as e:
@@ -428,23 +416,25 @@ def search_for_screws(function_args):
 	Logging.write_log("client", "\nNew Run:\n")
 	try:		
 		# Locate and box the screws in both images
+		start_detection_time = time()
 		img_predictions = model(image)
+		end_detection_time = time()
 
 		if len(img_predictions[0].boxes.boxes) != 0:
-			# DEBUG
-			img_array = img_predictions[0].plot()  # plot a BGR numpy array of predictions
-			img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
-			open_cv_image = np.array(img) 
-			# Convert RGB to BGR 
-			labelled_image = open_cv_image[:, :, ::-1].copy() 
+			# # DEBUG
+			# img_array = img_predictions[0].plot()  # plot a BGR numpy array of predictions
+			# img = Image.fromarray(img_array[..., ::-1])  # RGB PIL image
+			# open_cv_image = np.array(img) 
+			# # Convert RGB to BGR 
+			# labelled_image = open_cv_image[:, :, ::-1].copy() 
 
-			cv2.imshow("Img1", labelled_image)
-			if cv2.waitKey(0) == 27:
-				cv2.destroyAllWindows()
-				exit()
+			# cv2.imshow("Img1", labelled_image)
+			# if cv2.waitKey(0) == 27:
+			# 	cv2.destroyAllWindows()
+			# 	exit()
 
-			cv2.destroyAllWindows()
-			# DEBUG
+			# cv2.destroyAllWindows()
+			# # DEBUG
 				
 			# Structure:
 			#	{index: {class: int, 'box': [x1, y1, x2, y2], 'conf': float, 'loc': [x, y, z], 'centre': [x, y]}}}
@@ -554,6 +544,19 @@ def search_for_screws(function_args):
 			# if cv2.waitKey(0) == 27:
 			# 	cv2.destroyAllWindows()
 			# # DEBUG
+
+			# Output the annotated image to a file
+			# Create names
+			file_name = test_directory + test_iteration + str(list(candidate_screw_boxes.keys()))
+			image_name = file_name + ".jpg"
+
+			# Save image
+			img_data = Image.fromarray(image)
+			img_data.save(image_name)
+
+			# Save the detection time to the file
+			with open(test_directory + test_iteration + "detection_time.txt", "a") as detection_time_file:
+				detection_time_file.write(f"detection time {list(candidate_screw_boxes.keys())}: {end_detection_time - start_detection_time}")
 
 			box_locations.update(candidate_screw_boxes)
 
@@ -695,8 +698,8 @@ def plan_route_to_screws(bounding_boxes):
 		# Set the current box to the nearest neighbour
 		current_box = locations_dict[nearest_neighbour]
 
-	# Print the screw locations with their indexes
-	[print(f"Screw: {index}:  {location}") for index, location in enumerate(screw_locations)]
+	# Remove the robot location from the screw_locations array
+	screw_locations.pop(0)
 
 	return screw_locations
 
@@ -711,24 +714,99 @@ def move_to_screws(screw_locations):
 			# Move the robot to the screw
 			print(requests.post(server_address + "/set_position/",
 					data=bytes(json.dumps(screw_loc), 'utf-8')).content)
-			# Wait for user input to move to the next screw
-			if input("Enter y to proceed: ") == 'y':
-				print("Moving to screw")
+			# # DEBUG
+			# # Wait for user input to move to the next screw
+			# if input("Enter y to proceed: ") == 'y':
+			# 	print("Moving to screw")
+			# # DEBUG
 	except Exception as e:
 		print("Move to screws failed")
 		print(str(e))
 
-# Function to plot screw x,y coordinates on a graph representing the surface of the laptop
-def plot_screw_locations(bounding_boxes):
+# Plot screw x,y coordinates on a graph representing the surface of the laptop
+# Then allow the user to review the points and remove duplicates
+def user_remove_duplicates(bounding_boxes):
 	# Iterate through bounding_boxes to plot the x and y of the loc of each screw
+	# With each point, display the index of the screw
 	for index, box in bounding_boxes.items():
 		if 'screw' in box.keys():
 			plt.scatter(box['screw']['loc']['Yd'], box['screw']['loc']['Xd'])
-	# Fix the axis scale
-	# plt.axis([0, 300, -150, 150])
+			plt.annotate(str(index), (box['screw']['loc']['Yd'], box['screw']['loc']['Xd']))
+
+	# Reverse the x axis to match the laptop
+	plt.gca().invert_xaxis()
 
 	# Show the plot
-	plt.show()
+	plt.show(block=False)
+
+	# Write plot to file
+	plt.savefig(test_directory + test_iteration + "screw_locations.png")
+
+	# Allow the user to remove duplicates
+	# Ask the user to enter the indexes of the screws that are duplicates
+	# If the inputs are valid, take the average of the locations of the duplicates and assign it to the first screw
+	# 	Then remove the rest of the screws
+	# If the inputs are invalid, ask the user to re-enter the indexes
+	# After each iteration, show the updated plot and ask the user to enter more duplicates
+	# If the user enters 'f', finish the loop
+
+	finished = False
+	while not finished:
+		duplicates = input("Please select screws that are repeats '2,3,4' (example): ")
+		if duplicates == 'f':
+			finished = True
+			# Clear the plot and replot the screws
+			# Save the plot to file
+			plt.clf()
+			for index, box in bounding_boxes.items():
+				if 'screw' in box.keys():
+					plt.scatter(box['screw']['loc']['Yd'], box['screw']['loc']['Xd'])
+					plt.annotate(str(index), (box['screw']['loc']['Yd'], box['screw']['loc']['Xd']))
+			
+			# Reverse the x axis to match the laptop
+			plt.gca().invert_xaxis()
+
+			plt.show(block=False)
+			
+			plt.savefig(test_directory + test_iteration + "screw_locations_deduplicated.png")
+			continue
+		# ensure duplicates is a string of the form '1,2,3'
+		if duplicates != '':
+			try:
+				duplicates = duplicates.split(',')
+				duplicates = [int(duplicate) for duplicate in duplicates]
+				# Take average of the duplicates location,
+				# replace the location of the first screw with the average
+				# remove the rest
+				average_location = np.array([0, 0, 0])
+				for duplicate in duplicates:
+					average_location += np.array([bounding_boxes[duplicate]['screw']['loc']['Xd'], 
+													bounding_boxes[duplicate]['screw']['loc']['Yd'], 
+													bounding_boxes[duplicate]['screw']['loc']['Zd']])
+				average_location = average_location / len(duplicates)
+				bounding_boxes[duplicates[0]]['screw']['loc']['Xd'] = average_location[0]
+				bounding_boxes[duplicates[0]]['screw']['loc']['Yd'] = average_location[1]
+				bounding_boxes[duplicates[0]]['screw']['loc']['Zd'] = average_location[2]
+				# Remove the rest of the duplicates
+				for duplicate in duplicates[1:]:
+					bounding_boxes.pop(duplicate)
+
+				# Clear the plot and replot the screws
+				plt.clf()
+				for index, box in bounding_boxes.items():
+					if 'screw' in box.keys():
+						plt.scatter(box['screw']['loc']['Yd'], box['screw']['loc']['Xd'])
+						plt.annotate(str(index), (box['screw']['loc']['Yd'], box['screw']['loc']['Xd']))
+				
+				# Reverse the x axis to match the laptop
+				plt.gca().invert_xaxis()
+
+				plt.show(block=False)
+
+			except:
+				print("Invalid input")
+				continue
+
 
 def find_and_contact_screws(model):
 	try:
@@ -740,7 +818,21 @@ def find_and_contact_screws(model):
 		roam_and_apply_function(search_for_screws, function_args)
 
 		# Display the x and y coordinates of the screws on a graph representing the surface of the laptop
-		plot_screw_locations(bounding_boxes)
+		manual_dedup_start_time = time()
+		user_remove_duplicates(bounding_boxes)
+		manual_dedup_end_time = time()
+
+		# Write the manual deduplication time to the file
+		with open(test_directory + test_iteration + "manual_dedup_time.txt", "a") as manual_dedup_time_file:
+			manual_dedup_time_file.write(f"manual deduplication time: {manual_dedup_end_time - manual_dedup_start_time}")
+
+		# Add interface for user to select screws, this is a simple solution to duplicate detections removal
+
+		# Add the annotations to the test_results file
+		with open(test_results_file_name, "a") as box_file:
+			for i, candidate_box_data in bounding_boxes.items():
+				box_file.write(str(candidate_box_data) + "\n")
+
 
 		# Build route to screws
 		route = plan_route_to_screws(bounding_boxes)
@@ -970,7 +1062,16 @@ def main(_argv):
 			find_and_move_to_screw(model)
 		elif task == 4:
 			print("Laptop Search")
+			# start timer for logging
+			start_time = time()
 			find_and_contact_screws(model)
+			reset_robotic_arm()
+			# end timer for logging
+			end_time = time()
+			# Write the total time to the file
+			with open(test_directory + test_iteration + "total_time.txt", "a") as total_time_file:
+				total_time_file.write(f"total time: {end_time - start_time}")
+
 		elif task == 5:
 			print("Laptop Scan")
 			scan_laptops(model)
@@ -980,6 +1081,9 @@ def main(_argv):
 		elif task == 7:
 			print("Resetting Robotic Arm")
 			reset_robotic_arm()
+		elif task == 8:
+			print("Testing")
+			#test(model)
 		elif task == 0:
 			print("Exiting")
 			exit(0)
