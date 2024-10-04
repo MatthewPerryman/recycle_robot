@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../recycle_robot_server"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"\"python.defaultInterpreterPath\"": "\"C:\\Users\\drago\\Documents\\gitrepos\\recycle_robot\\venv\\Scripts\\python.exe\""
+		}
+	}
+}
